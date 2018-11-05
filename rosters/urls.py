@@ -26,11 +26,11 @@ from .views import (
     StaffRuleDetailView,
     StaffRuleDeleteView,
     StaffRuleCreateView,
-    TimeslotListView,
-    TimeslotUpdateView,
-    TimeslotDetailView,
-    TimeslotDeleteView,
-    TimeslotCreateView,
+    TimeSlotListView,
+    TimeSlotUpdateView,
+    TimeSlotDetailView,
+    TimeSlotDeleteView,
+    TimeSlotCreateView,
 )
 
 urlpatterns = [
@@ -75,11 +75,11 @@ urlpatterns = [
     path('staff_rule/new/', StaffRuleCreateView.as_view(), name='staff_rule_new'),
     path('staff_rule/', StaffRuleListView.as_view(), name='staff_rule_list'),
     path('timeslot/<int:pk>/edit/',
-         TimeslotUpdateView.as_view(), name='timeslot_edit'),
+         TimeSlotUpdateView.as_view(), name='timeslot_edit'),
     path('timeslot/<int:pk>/',
-         TimeslotDetailView.as_view(), name='timeslot_detail'),
+         TimeSlotDetailView.as_view(), name='timeslot_detail'),
     path('timeslot/<int:pk>/delete/',
-         TimeslotDeleteView.as_view(), name='timeslot_delete'),
-    path('timeslot/new/', TimeslotCreateView.as_view(), name='timeslot_new'),
-    path('timeslot/', TimeslotListView.as_view(), name='timeslot_list'),
+         TimeSlotDeleteView.as_view(), name='timeslot_delete'),
+    path('timeslot/new/', TimeSlotCreateView.as_view(), name='timeslot_new'),
+    path('timeslot/', TimeSlotListView.as_view(), name='timeslot_list'),
 ]

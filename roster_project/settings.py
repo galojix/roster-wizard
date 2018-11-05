@@ -42,6 +42,7 @@ ALLOWED_HOSTS = tuple(env.list('ALLOWED_HOSTS', default=[]))
 
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
+    'rosters.apps.RostersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

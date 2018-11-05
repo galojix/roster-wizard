@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Leave{% endblock title %}
+
+{% block content %}
+  {% for leave in object_list %}
+    <div class="card">
+      <div class="card-header">
+        <span class="font-weight-bold">{{ leave.date }}</span> &middot;
+        <span class="text-muted">{{ leave.staff_member.first_name }} {{ leave.staff_member.last_name }}</span>
+      </div>
+      <div class="card-body">
+        <a href="{% url 'leave_edit' leave.pk %}">Edit</a> |
+        <a href="{% url 'leave_delete' leave.pk %}">Delete</a>
+      </div>
+      <div class="card-footer">
+
+      </div>
+    </div>
+    <br />
+  {% endfor %}
+{% endblock content %}

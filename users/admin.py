@@ -14,6 +14,8 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = [
         'username',
+        'first_name',
+        'last_name',
         'email',
         'ward_name',
         'is_staff',
