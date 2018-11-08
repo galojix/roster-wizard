@@ -14,8 +14,15 @@ class Leave(models.Model):
     )
 
     def __str__(self):
-        """String."""
-        return self.date
+        """How a leave object is displayed."""
+        leave_display = (
+            self.staff_member.last_name
+            + ', '
+            + self.staff_member.first_name
+            + ' '
+            + str(self.date)
+        )
+        return leave_display
 
     def get_absolute_url(self):
         """URL."""
@@ -122,7 +129,7 @@ class TimeSlot(models.Model):
 
     def __str__(self):
         """String."""
-        return self.date
+        return str(self.date)
 
     def get_absolute_url(self):
         """URL."""
