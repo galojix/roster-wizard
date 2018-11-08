@@ -66,7 +66,7 @@ class RoleDetailView(LoginRequiredMixin, DetailView):
 
 class RoleUpdateView(LoginRequiredMixin, UpdateView):
     model = Role
-    fields = ('title', 'body',)
+    fields = ('role_name', 'staff',)
     template_name = 'role_edit.html'
     login_url = 'login'
 
@@ -81,7 +81,7 @@ class RoleDeleteView(LoginRequiredMixin, DeleteView):
 class RoleCreateView(LoginRequiredMixin, CreateView):
     model = Role
     template_name = 'role_new.html'
-    fields = ('title', 'body')
+    fields = ('role_name', 'staff')
     login_url = 'login'
 
 

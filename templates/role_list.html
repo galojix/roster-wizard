@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Leave{% endblock title %}
+
+{% block content %}
+  {% for leave in object_list %}
+    <div class="card">
+      <div class="card-header">
+        <span class="font-weight-bold">{{ role.role_name }}</span> &middot;
+      </div>
+      <div class="card-body">
+        <a href="{% url 'role_edit' role.pk %}">Edit</a> |
+        <a href="{% url 'role_delete' role.pk %}">Delete</a>
+      </div>
+      <div class="card-footer">
+
+      </div>
+    </div>
+    <br />
+  {% endfor %}
+{% endblock content %}
