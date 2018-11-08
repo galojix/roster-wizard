@@ -9,8 +9,8 @@
   <p class="lead">
   </p>
 </div>
-<ul>
-    <li><a href="{% url 'leave_list' %}">Leave</li>
-    <li><a href="{% url 'role_list' %}">Roles</li>
-</ul>
+<div class="list-group">
+    <a href="{% url 'leave_list' %}" class="list-group-item list-group-item-action">Leave</a>
+    <a href="{% url 'role_list' %}" class="list-group-item list-group-item-action">Roles</a>
+</div>
 {% endblock content %}
