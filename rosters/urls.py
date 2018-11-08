@@ -49,7 +49,7 @@ urlpatterns = [
     path('role/<int:pk>/delete/',
          RoleDeleteView.as_view(), name='role_delete'),
     path('role/new/', RoleCreateView.as_view(), name='role_new'),
-    path('shift/', RoleListView.as_view(), name='shift_list'),
+    path('role/', RoleListView.as_view(), name='shift_list'),
     path('shift/<int:pk>/edit/',
          ShiftUpdateView.as_view(), name='shift_edit'),
     path('shift/<int:pk>/',
