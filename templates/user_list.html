@@ -3,6 +3,7 @@
 {% block title %}Staff{% endblock title %}
 
 {% block content %}
+<h2>Staff</h2>
 <table class="table table-striped table-bordered table-hover">
     <thead>
         <tr>
@@ -11,6 +12,7 @@
             <th>First Name</th>
             <th>Email Address</th>
             <th>Ward Name</th>
+            <th>Roles</th>
             <th>Action</th>
         </tr>
     {% for user in object_list %}
@@ -20,6 +22,11 @@
         <td>{{ user.first_name }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.ward_name }}</td>
+        <td>
+            {% for role in user.role_set.all %}
+            {{ role.role_name }}
+            {% endfor %}
+        </td>
         <td><a href="{% url 'user_edit' user.pk %}">Edit</a> | <a href="{% url 'user_delete' user.pk %}">Delete</a></td>
     </tr>
   {% endfor %}

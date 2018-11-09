@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 
 from .models import CustomUser
+from rosters.models import Role
 
 
 class UserListView(LoginRequiredMixin, ListView):
