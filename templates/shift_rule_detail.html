@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="shift_rule-entry">
+  <h2>Shift Rule Name: {{ object.shift_rule_name }}</h2>
+    <p>Hard Contraint: {{ object.hard_constraint}}</p>
+    <p>Shift: {{ object.shift }}</p>
+    <p>Roles: {% for role in object.shift.roles %}
+       {{ role.role_name }}
+       {% endfor %}
+    </p>
+</div>
+
+  <p><a href="{% url 'shift_rule_edit' object.pk %}">Edit</a> | <a href="{% url 'shift_rule_delete' object.pk %}">Delete</a></p>
+  <p>Back to <a href="{% url 'shift_rule_list' %}">All Shift Rules</a>.</p>
+{% endblock content %}
+/
