@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Shift Rule{% endblock title %}
+
+{% block content %}
+<h2>Shift Rule Role</h2>
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Shift Rule Name</th>
+            <th>Role</th>
+            <th>Count</th>
+            <th>Action</th>
+        </tr>
+    {% for shift_rule_role in object_list %}
+    <tr>
+        <td>{{ shift_rule_role.shift_rule.shift_rule_name }}</td>
+        <td>{{ shift_rule_role.role }}</td>
+        <td>{{ shift_rule_role.count }}</td>
+        <td><a href="{% url 'shift_rule_role_edit' shift_rule_role.pk %}">Edit</a> | <a href="{% url 'shift_rule_role_delete' shift_rule_role.pk %}">Delete</a></td>
+    </tr>
+  {% endfor %}
+</table>
+<a href="{% url 'shift_rule_role_new' %}">Create New Shift Rule Role</a>
+{% endblock content %}

@@ -96,6 +96,10 @@ class ShiftRuleRole(models.Model):
         """String."""
         return self.shift_rule.shift_rule_name + self.role.role_name
 
+    def get_absolute_url(self):
+        """URL."""
+        return reverse('shift_rule_role_detail', args=[str(self.id)])
+
 
 class StaffRule(models.Model):
     """Staff Rule."""

@@ -18,7 +18,7 @@
         <td>{{ shift_rule.shift_rule_name }}</td>
         <td>{{ shift_rule.hard_constraint }}</td>
         <td>{{ shift_rule.shift }}
-        <td>{% for role in shift_rule.shift.roles %}
+        <td>{% for role in shift_rule.roles.all %}
            {{ role.role_name }}
            {% endfor %}
         </td>

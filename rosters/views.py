@@ -9,6 +9,7 @@ from .models import (
     Role,
     Shift,
     ShiftRule,
+    ShiftRuleRole,
     StaffRule,
     TimeSlot,
 )
@@ -166,6 +167,39 @@ class ShiftRuleCreateView(LoginRequiredMixin, CreateView):
     model = ShiftRule
     template_name = 'shift_rule_new.html'
     fields = ('shift_rule_name', 'hard_constraint', 'shift')
+    login_url = 'login'
+
+
+class ShiftRuleRoleListView(LoginRequiredMixin, ListView):
+    model = ShiftRuleRole
+    template_name = 'shift_rule_role_list.html'
+    login_url = 'login'
+
+
+class ShiftRuleRoleDetailView(LoginRequiredMixin, DetailView):
+    model = ShiftRuleRole
+    template_name = 'shift_rule_role_detail.html'
+    login_url = 'login'
+
+
+class ShiftRuleRoleUpdateView(LoginRequiredMixin, UpdateView):
+    model = ShiftRuleRole
+    fields = ('shift_rule', 'role', 'count')
+    template_name = 'shift_rule_role_edit.html'
+    login_url = 'login'
+
+
+class ShiftRuleRoleDeleteView(LoginRequiredMixin, DeleteView):
+    model = ShiftRuleRole
+    template_name = 'shift_rule_role_delete.html'
+    success_url = reverse_lazy('shift_rule_role_list')
+    login_url = 'login'
+
+
+class ShiftRuleRoleCreateView(LoginRequiredMixin, CreateView):
+    model = ShiftRuleRole
+    template_name = 'shift_rule_role_new.html'
+    fields = ('shift_rule', 'role', 'count')
     login_url = 'login'
 
 
