@@ -7,6 +7,7 @@
 <table class="table table-striped table-bordered table-hover">
     <thead>
         <tr>
+            <th>Shift</th>
             <th>Shift Rule Name</th>
             <th>Role</th>
             <th>Count</th>
@@ -14,6 +15,7 @@
         </tr>
     {% for shift_rule_role in object_list %}
     <tr>
+        <td>{{ shift_rule_role.shift_rule.shift.shift_type }}</td>
         <td>{{ shift_rule_role.shift_rule.shift_rule_name }}</td>
         <td>{{ shift_rule_role.role }}</td>
         <td>{{ shift_rule_role.count }}</td>

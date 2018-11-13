@@ -175,6 +175,9 @@ class ShiftRuleRoleListView(LoginRequiredMixin, ListView):
     template_name = 'shift_rule_role_list.html'
     login_url = 'login'
 
+    def get_queryset(self):
+            return ShiftRuleRole.objects.order_by('shift_rule', 'role')
+
 
 class ShiftRuleRoleDetailView(LoginRequiredMixin, DetailView):
     model = ShiftRuleRole
