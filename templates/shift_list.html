@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Leave{% endblock title %}
+
+{% block content %}
+<h2>Shifts</h2>
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Shift Type</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+            <th>Sunday</th>
+            <th>Action</th>
+        </tr>
+    {% for shift in object_list %}
+    <tr>
+        <td>{{ shift.shift_type }}</td>
+        <td>{{ shift.monday }}</td>
+        <td>{{ shift.tuesday }}</td>
+        <td>{{ shift.wednesday }}</td>
+        <td>{{ shift.thursday }}</td>
+        <td>{{ shift.friday }}</td>
+        <td>{{ shift.saturday }}</td>
+        <td>{{ shift.sunday }}</td>
+        <td><a href="{% url 'shift_edit' shift.pk %}">Edit</a> | <a href="{% url 'shift_delete' shift.pk %}">Delete</a></td>
+    </tr>
+  {% endfor %}
+</table>
+<a href="{% url 'shift_new' %}">Create New Shift</a>
+{% endblock content %}

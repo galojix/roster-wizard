@@ -99,7 +99,16 @@ class ShiftDetailView(LoginRequiredMixin, DetailView):
 
 class ShiftUpdateView(LoginRequiredMixin, UpdateView):
     model = Shift
-    fields = ('title', 'body',)
+    fields = (
+        'shift_type',
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+        'sunday',
+    )
     template_name = 'shift_edit.html'
     login_url = 'login'
 
@@ -114,7 +123,16 @@ class ShiftDeleteView(LoginRequiredMixin, DeleteView):
 class ShiftCreateView(LoginRequiredMixin, CreateView):
     model = Shift
     template_name = 'shift_new.html'
-    fields = ('title', 'body')
+    fields = (
+        'shift_type',
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+        'sunday',
+    )
     login_url = 'login'
 
 
