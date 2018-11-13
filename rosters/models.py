@@ -48,7 +48,13 @@ class Shift(models.Model):
     """Shift."""
 
     shift_type = models.CharField(max_length=20, null=False, blank=False)
-    days_of_week = models.CharField(max_length=20, null=False, blank=False)
+    monday = models.BooleanField(null=False, blank=False, default=True)
+    tuesday = models.BooleanField(null=False, blank=False, default=True)
+    wednesday = models.BooleanField(null=False, blank=False, default=True)
+    thursday = models.BooleanField(null=False, blank=False, default=True)
+    friday = models.BooleanField(null=False, blank=False, default=True)
+    saturday = models.BooleanField(null=False, blank=False, default=True)
+    sunday = models.BooleanField(null=False, blank=False, default=True)
 
     def __str__(self):
         """String."""
