@@ -68,7 +68,8 @@ class Shift(models.Model):
 class ShiftRule(models.Model):
     """Shift Rule."""
 
-    shift_rule_name = models.CharField(max_length=20, null=False, blank=False)
+    shift_rule_name = models.CharField(
+        max_length=20, null=False, blank=False, unique=True)
     hard_constraint = models.BooleanField(null=False, blank=False)
     shift = models.ForeignKey(
         Shift,
