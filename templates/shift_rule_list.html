@@ -18,9 +18,9 @@
         <td>{{ shift_rule.shift_rule_name }}</td>
         <td>{{ shift_rule.hard_constraint }}</td>
         <td>{{ shift_rule.shift }}
-        <td>{% for role in shift_rule.roles.all %}
-           {{ role.role_name }}
-           {% endfor %}
+        <td>{% for shift_rule_role in shift_rule.shiftrulerole_set.all %}
+            {{ shift_rule_role.role}}:{{ shift_rule_role.count}}
+            {% endfor %}
         </td>
         <td><a href="{% url 'shift_rule_edit' shift_rule.pk %}">Edit</a> | <a href="{% url 'shift_rule_delete' shift_rule.pk %}">Delete</a></td>
     </tr>
