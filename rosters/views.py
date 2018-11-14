@@ -159,7 +159,7 @@ class ShiftRuleUpdateView(LoginRequiredMixin, UpdateView):
 class ShiftRuleDeleteView(LoginRequiredMixin, DeleteView):
     model = ShiftRule
     template_name = 'shift_rule_delete.html'
-    success_url = reverse_lazy('shift_rule_list')
+    success_url = reverse_lazy('shift_rule_role_list')
     login_url = 'login'
 
 
