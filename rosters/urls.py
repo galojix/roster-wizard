@@ -77,7 +77,7 @@ urlpatterns = [
          ShiftRuleRoleDetailView.as_view(), name='shift_rule_role_detail'),
     path('shiftrulerole/<int:pk>/delete/',
          ShiftRuleRoleDeleteView.as_view(), name='shift_rule_role_delete'),
-    path('shiftrulerole/new/', ShiftRuleRoleCreateView.as_view(), name='shift_rule_role_new'),
+    path('shiftrulerole/<slug:shiftrule>/new/', ShiftRuleRoleCreateView.as_view(), name='shift_rule_role_new'),
     path('shiftrulerole/', ShiftRuleRoleListView.as_view(), name='shift_rule_role_list'),
     path('leave/<int:pk>/edit/',
          StaffRuleUpdateView.as_view(), name='staff_rule_edit'),

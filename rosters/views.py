@@ -3,6 +3,7 @@ from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 
 from .models import (
     Leave,
@@ -142,6 +143,9 @@ class ShiftRuleListView(LoginRequiredMixin, ListView):
     template_name = 'shift_rule_list.html'
     login_url = 'login'
 
+    def get_queryset(self):
+            return ShiftRule.objects.order_by('shift', 'shift_rule_name')
+
 
 class ShiftRuleDetailView(LoginRequiredMixin, DetailView):
     model = ShiftRule
@@ -195,15 +199,21 @@ class ShiftRuleRoleUpdateView(LoginRequiredMixin, UpdateView):
 class ShiftRuleRoleDeleteView(LoginRequiredMixin, DeleteView):
     model = ShiftRuleRole
     template_name = 'shift_rule_role_delete.html'
-    success_url = reverse_lazy('shift_rule_role_list')
+    success_url = reverse_lazy('shift_rule_list')
     login_url = 'login'
 
 
 class ShiftRuleRoleCreateView(LoginRequiredMixin, CreateView):
     model = ShiftRuleRole
     template_name = 'shift_rule_role_new.html'
-    fields = ('shift_rule', 'role', 'count')
+    fields = ('role', 'count')
     login_url = 'login'
+
+    def form_valid(self, form):
+        shift_rule = get_object_or_404(
+            ShiftRule, id=self.kwargs['shiftrule'])
+        form.instance.shift_rule = shift_rule
+        return super().form_valid(form)
 
 
 class StaffRuleListView(LoginRequiredMixin, ListView):

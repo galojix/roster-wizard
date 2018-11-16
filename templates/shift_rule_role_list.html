@@ -1,36 +1,24 @@
 {% extends 'base.html' %}
 
-{% block title %}Shift Rule{% endblock title %}
+{% block title %}Shift Rule Roles{% endblock title %}
 
 {% block content %}
-<h2>Shift Rules</h2>
-<a href="{% url 'shift_rule_new' %}">Add New Shift Rule</a>
-{% regroup object_list by shift_rule as rule_list %}
-{% for rule in rule_list %}
-    <h4>Shift: {{ rule.grouper.shift.shift_type }}</h4>
-    <table class="table table-bordered table-hover">
-    <tr>
-        <th>Rule Name</th>
-        <th>Hard Constraint?</th>
-        <th>Action</th>
-    </tr>
-    <tr>
-        <td>{{ rule.grouper }}</td>
-        <td>{{ rule.grouper.hard_constraint }}</td>
-        <td><a href="{% url 'shift_rule_edit' rule.grouper.pk %}">Edit</a> | <a href="{% url 'shift_rule_delete' rule.grouper.pk %}">Delete</a></td>
-    </tr>
-    <tr>
-        <th>Role</th>
-        <th>Count</th>
-        <th>Action</th>
-    </tr>
-        {% for shift_rule_role in rule.list %}
+<h2>Shift Rule Roles</h2>
+<table class="table table-striped table-bordered table-hover">
+    <thead>
         <tr>
-            <td>{{ shift_rule_role.role }}</td>
-            <td>{{ shift_rule_role.count }}</td>
-            <td><a href="{% url 'shift_rule_role_new' %}">Add</a> | <a href="{% url 'shift_rule_role_edit' shift_rule_role.pk %}">Edit</a> | <a href="{% url 'shift_rule_role_delete' shift_rule_role.pk %}">Delete</a></td>
+            <th>Shift Rule</th>
+            <th>Role</th>
+            <th>Count</th>
+            <th>Action</th>
         </tr>
-        {% endfor %}
-    </table>
-{% endfor %}
+    {% for shift_rule_role in object_list %}
+    <tr>
+        <td>{{ shift_rule_role.shift_rule }}</td>
+        <td>{{ shift_rule_role.role }}</td>
+        <td>{{ shift_rule_role.count }}</td>
+        <td><a href="{% url 'shift_rule_role_edit' shift_rule_role.pk %}">Edit</a> | <a href="{% url 'shift_rule_role_delete' shift_rule_role.pk %}">Delete</a></td>
+    </tr>
+  {% endfor %}
+</table>
 {% endblock content %}
