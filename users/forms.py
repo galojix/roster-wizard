@@ -11,7 +11,7 @@ class CustomUserCreationForm(UserCreationForm):
         """Meta data."""
 
         model = CustomUser
-        fields = UserCreationForm.Meta.fields + ('ward_name',)
+        fields = UserCreationForm.Meta.fields + ("ward_name",)
 
 
 class CustomUserChangeForm(UserChangeForm):

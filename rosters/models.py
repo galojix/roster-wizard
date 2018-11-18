@@ -9,24 +9,23 @@ class Leave(models.Model):
 
     date = models.DateField(null=False, blank=False)
     staff_member = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
+        get_user_model(), on_delete=models.CASCADE
     )
 
     def __str__(self):
         """How a leave object is displayed."""
         leave_display = (
             self.staff_member.last_name
-            + ', '
+            + ", "
             + self.staff_member.first_name
-            + ' '
+            + " "
             + str(self.date)
         )
         return leave_display
 
     def get_absolute_url(self):
         """URL."""
-        return reverse('leave_detail', args=[str(self.id)])
+        return reverse("leave_detail", args=[str(self.id)])
 
 
 class Role(models.Model):
@@ -41,7 +40,7 @@ class Role(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse('role_detail', args=[str(self.id)])
+        return reverse("role_detail", args=[str(self.id)])
 
 
 class Shift(models.Model):
@@ -62,20 +61,18 @@ class Shift(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse('shift_detail', args=[str(self.id)])
+        return reverse("shift_detail", args=[str(self.id)])
 
 
 class ShiftRule(models.Model):
     """Shift Rule."""
 
     shift_rule_name = models.CharField(
-        max_length=20, null=False, blank=False, unique=True)
-    hard_constraint = models.BooleanField(null=False, blank=False)
-    shift = models.ForeignKey(
-        Shift,
-        on_delete=models.CASCADE,
+        max_length=20, null=False, blank=False, unique=True
     )
-    roles = models.ManyToManyField(Role, through='ShiftRuleRole')
+    hard_constraint = models.BooleanField(null=False, blank=False)
+    shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
+    roles = models.ManyToManyField(Role, through="ShiftRuleRole")
 
     def __str__(self):
         """String."""
@@ -83,7 +80,7 @@ class ShiftRule(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse('shift_rule_detail', args=[str(self.id)])
+        return reverse("shift_rule_detail", args=[str(self.id)])
 
 
 class ShiftRuleRole(models.Model):
@@ -99,7 +96,7 @@ class ShiftRuleRole(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse('shift_rule_role_detail', args=[str(self.id)])
+        return reverse("shift_rule_role_detail", args=[str(self.id)])
 
 
 class StaffRule(models.Model):
@@ -108,7 +105,7 @@ class StaffRule(models.Model):
     staff_rule_name = models.CharField(max_length=20, null=False, blank=False)
     hard_constraint = models.BooleanField(null=False, blank=False)
     staff = models.ManyToManyField(get_user_model())
-    shifts = models.ManyToManyField(Shift, through='StaffRuleShift')
+    shifts = models.ManyToManyField(Shift, through="StaffRuleShift")
 
     def __str__(self):
         """String."""
@@ -116,7 +113,7 @@ class StaffRule(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse('staff_rule_detail', args=[str(self.id)])
+        return reverse("staff_rule_detail", args=[str(self.id)])
 
 
 class StaffRuleShift(models.Model):
@@ -144,4 +141,4 @@ class TimeSlot(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse('timeslot_detail', args=[str(self.id)])
+        return reverse("timeslot_detail", args=[str(self.id)])

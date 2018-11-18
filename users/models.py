@@ -15,4 +15,4 @@ class CustomUser(AbstractUser):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse('user_detail', args=[str(self.id)])
+        return reverse("user_detail", args=[str(self.id)])

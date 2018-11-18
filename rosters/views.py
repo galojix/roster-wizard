@@ -14,269 +14,265 @@ from .models import (
     StaffRule,
     TimeSlot,
 )
-from .forms import (
-    LeaveCreateForm,
-    LeaveUpdateForm,
-)
+from .forms import LeaveCreateForm, LeaveUpdateForm
 
 
 class LeaveListView(LoginRequiredMixin, ListView):
     model = Leave
-    template_name = 'leave_list.html'
-    login_url = 'login'
+    template_name = "leave_list.html"
+    login_url = "login"
 
 
 class LeaveDetailView(LoginRequiredMixin, DetailView):
     model = Leave
-    template_name = 'leave_detail.html'
-    login_url = 'login'
+    template_name = "leave_detail.html"
+    login_url = "login"
 
 
 class LeaveUpdateView(LoginRequiredMixin, UpdateView):
     model = Leave
     form_class = LeaveUpdateForm
-    template_name = 'leave_edit.html'
-    login_url = 'login'
+    template_name = "leave_edit.html"
+    login_url = "login"
 
 
 class LeaveDeleteView(LoginRequiredMixin, DeleteView):
     model = Leave
-    template_name = 'leave_delete.html'
-    success_url = reverse_lazy('leave_list')
-    login_url = 'login'
+    template_name = "leave_delete.html"
+    success_url = reverse_lazy("leave_list")
+    login_url = "login"
 
 
 class LeaveCreateView(LoginRequiredMixin, CreateView):
     model = Leave
-    template_name = 'leave_new.html'
+    template_name = "leave_new.html"
     form_class = LeaveCreateForm
     # fields = ('date', 'staff_member')
-    login_url = 'login'
+    login_url = "login"
 
 
 class RoleListView(LoginRequiredMixin, ListView):
     model = Role
-    template_name = 'role_list.html'
-    login_url = 'login'
+    template_name = "role_list.html"
+    login_url = "login"
 
 
 class RoleDetailView(LoginRequiredMixin, DetailView):
     model = Role
-    template_name = 'role_detail.html'
-    login_url = 'login'
+    template_name = "role_detail.html"
+    login_url = "login"
 
 
 class RoleUpdateView(LoginRequiredMixin, UpdateView):
     model = Role
-    fields = ('role_name', 'staff')
-    template_name = 'role_edit.html'
-    login_url = 'login'
+    fields = ("role_name", "staff")
+    template_name = "role_edit.html"
+    login_url = "login"
 
 
 class RoleDeleteView(LoginRequiredMixin, DeleteView):
     model = Role
-    template_name = 'role_delete.html'
-    success_url = reverse_lazy('role_list')
-    login_url = 'login'
+    template_name = "role_delete.html"
+    success_url = reverse_lazy("role_list")
+    login_url = "login"
 
 
 class RoleCreateView(LoginRequiredMixin, CreateView):
     model = Role
-    template_name = 'role_new.html'
-    fields = ('role_name', 'staff')
-    login_url = 'login'
+    template_name = "role_new.html"
+    fields = ("role_name", "staff")
+    login_url = "login"
 
 
 class ShiftListView(LoginRequiredMixin, ListView):
     model = Shift
-    template_name = 'shift_list.html'
-    login_url = 'login'
+    template_name = "shift_list.html"
+    login_url = "login"
 
 
 class ShiftDetailView(LoginRequiredMixin, DetailView):
     model = Shift
-    template_name = 'shift_detail.html'
-    login_url = 'login'
+    template_name = "shift_detail.html"
+    login_url = "login"
 
 
 class ShiftUpdateView(LoginRequiredMixin, UpdateView):
     model = Shift
     fields = (
-        'shift_type',
-        'monday',
-        'tuesday',
-        'wednesday',
-        'thursday',
-        'friday',
-        'saturday',
-        'sunday',
+        "shift_type",
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
     )
-    template_name = 'shift_edit.html'
-    login_url = 'login'
+    template_name = "shift_edit.html"
+    login_url = "login"
 
 
 class ShiftDeleteView(LoginRequiredMixin, DeleteView):
     model = Shift
-    template_name = 'shift_delete.html'
-    success_url = reverse_lazy('shift_list')
-    login_url = 'login'
+    template_name = "shift_delete.html"
+    success_url = reverse_lazy("shift_list")
+    login_url = "login"
 
 
 class ShiftCreateView(LoginRequiredMixin, CreateView):
     model = Shift
-    template_name = 'shift_new.html'
+    template_name = "shift_new.html"
     fields = (
-        'shift_type',
-        'monday',
-        'tuesday',
-        'wednesday',
-        'thursday',
-        'friday',
-        'saturday',
-        'sunday',
+        "shift_type",
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
     )
-    login_url = 'login'
+    login_url = "login"
 
 
 class ShiftRuleListView(LoginRequiredMixin, ListView):
     model = ShiftRule
-    template_name = 'shift_rule_list.html'
-    login_url = 'login'
+    template_name = "shift_rule_list.html"
+    login_url = "login"
 
     def get_queryset(self):
-            return ShiftRule.objects.order_by('shift', 'shift_rule_name')
+        return ShiftRule.objects.order_by("shift", "shift_rule_name")
 
 
 class ShiftRuleDetailView(LoginRequiredMixin, DetailView):
     model = ShiftRule
-    template_name = 'shift_rule_detail.html'
-    login_url = 'login'
+    template_name = "shift_rule_detail.html"
+    login_url = "login"
 
 
 class ShiftRuleUpdateView(LoginRequiredMixin, UpdateView):
     model = ShiftRule
-    fields = ('shift_rule_name', 'hard_constraint', 'shift')
-    template_name = 'shift_rule_edit.html'
-    login_url = 'login'
+    fields = ("shift_rule_name", "hard_constraint", "shift")
+    template_name = "shift_rule_edit.html"
+    login_url = "login"
 
 
 class ShiftRuleDeleteView(LoginRequiredMixin, DeleteView):
     model = ShiftRule
-    template_name = 'shift_rule_delete.html'
-    success_url = reverse_lazy('shift_rule_list')
-    login_url = 'login'
+    template_name = "shift_rule_delete.html"
+    success_url = reverse_lazy("shift_rule_list")
+    login_url = "login"
 
 
 class ShiftRuleCreateView(LoginRequiredMixin, CreateView):
     model = ShiftRule
-    template_name = 'shift_rule_new.html'
-    fields = ('shift_rule_name', 'hard_constraint', 'shift')
-    login_url = 'login'
+    template_name = "shift_rule_new.html"
+    fields = ("shift_rule_name", "hard_constraint", "shift")
+    login_url = "login"
 
 
 class ShiftRuleRoleListView(LoginRequiredMixin, ListView):
     model = ShiftRuleRole
-    template_name = 'shift_rule_role_list.html'
-    login_url = 'login'
+    template_name = "shift_rule_role_list.html"
+    login_url = "login"
 
     def get_queryset(self):
-            return ShiftRuleRole.objects.order_by('shift_rule', 'role')
+        return ShiftRuleRole.objects.order_by("shift_rule", "role")
 
 
 class ShiftRuleRoleDetailView(LoginRequiredMixin, DetailView):
     model = ShiftRuleRole
-    template_name = 'shift_rule_role_detail.html'
-    login_url = 'login'
+    template_name = "shift_rule_role_detail.html"
+    login_url = "login"
 
 
 class ShiftRuleRoleUpdateView(LoginRequiredMixin, UpdateView):
     model = ShiftRuleRole
-    fields = ('shift_rule', 'role', 'count')
-    template_name = 'shift_rule_role_edit.html'
-    login_url = 'login'
+    fields = ("shift_rule", "role", "count")
+    template_name = "shift_rule_role_edit.html"
+    login_url = "login"
 
 
 class ShiftRuleRoleDeleteView(LoginRequiredMixin, DeleteView):
     model = ShiftRuleRole
-    template_name = 'shift_rule_role_delete.html'
-    success_url = reverse_lazy('shift_rule_list')
-    login_url = 'login'
+    template_name = "shift_rule_role_delete.html"
+    success_url = reverse_lazy("shift_rule_list")
+    login_url = "login"
 
 
 class ShiftRuleRoleCreateView(LoginRequiredMixin, CreateView):
     model = ShiftRuleRole
-    template_name = 'shift_rule_role_new.html'
-    fields = ('role', 'count')
-    login_url = 'login'
+    template_name = "shift_rule_role_new.html"
+    fields = ("role", "count")
+    login_url = "login"
 
     def form_valid(self, form):
-        shift_rule = get_object_or_404(
-            ShiftRule, id=self.kwargs['shiftrule'])
+        shift_rule = get_object_or_404(ShiftRule, id=self.kwargs["shiftrule"])
         form.instance.shift_rule = shift_rule
         return super().form_valid(form)
 
 
 class StaffRuleListView(LoginRequiredMixin, ListView):
     model = StaffRule
-    template_name = 'staff_rule_list.html'
-    login_url = 'login'
+    template_name = "staff_rule_list.html"
+    login_url = "login"
 
 
 class StaffRuleDetailView(LoginRequiredMixin, DetailView):
     model = StaffRule
-    template_name = 'staff_rule_detail.html'
-    login_url = 'login'
+    template_name = "staff_rule_detail.html"
+    login_url = "login"
 
 
 class StaffRuleUpdateView(LoginRequiredMixin, UpdateView):
     model = StaffRule
-    fields = ('title', 'body',)
-    template_name = 'staff_rule_edit.html'
-    login_url = 'login'
+    fields = ("title", "body")
+    template_name = "staff_rule_edit.html"
+    login_url = "login"
 
 
 class StaffRuleDeleteView(LoginRequiredMixin, DeleteView):
     model = StaffRule
-    template_name = 'staff_rule_delete.html'
-    success_url = reverse_lazy('staff_rule_list')
-    login_url = 'login'
+    template_name = "staff_rule_delete.html"
+    success_url = reverse_lazy("staff_rule_list")
+    login_url = "login"
 
 
 class StaffRuleCreateView(LoginRequiredMixin, CreateView):
     model = StaffRule
-    template_name = 'staff_rule_new.html'
-    fields = ('title', 'body')
-    login_url = 'login'
+    template_name = "staff_rule_new.html"
+    fields = ("title", "body")
+    login_url = "login"
 
 
 class TimeSlotListView(LoginRequiredMixin, ListView):
     model = TimeSlot
-    template_name = 'timeslot_list.html'
-    login_url = 'login'
+    template_name = "timeslot_list.html"
+    login_url = "login"
 
 
 class TimeSlotDetailView(LoginRequiredMixin, DetailView):
     model = TimeSlot
-    template_name = 'timeslot_detail.html'
-    login_url = 'login'
+    template_name = "timeslot_detail.html"
+    login_url = "login"
 
 
 class TimeSlotUpdateView(LoginRequiredMixin, UpdateView):
     model = TimeSlot
-    fields = ('title', 'body',)
-    template_name = 'timeslot_edit.html'
-    login_url = 'login'
+    fields = ("title", "body")
+    template_name = "timeslot_edit.html"
+    login_url = "login"
 
 
 class TimeSlotDeleteView(LoginRequiredMixin, DeleteView):
     model = TimeSlot
-    template_name = 'timeslot_delete.html'
-    success_url = reverse_lazy('timeslot_list')
-    login_url = 'login'
+    template_name = "timeslot_delete.html"
+    success_url = reverse_lazy("timeslot_list")
+    login_url = "login"
 
 
 class TimeSlotCreateView(LoginRequiredMixin, CreateView):
     model = TimeSlot
-    template_name = 'timeslot_new.html'
-    fields = ('title', 'body')
-    login_url = 'login'
+    template_name = "timeslot_new.html"
+    fields = ("title", "body")
+    login_url = "login"
