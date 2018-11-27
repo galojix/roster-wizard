@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Shift Rule{% endblock title %}
+{% block title %}Shift Rules{% endblock title %}
 
 {% block content %}
 <h2>Shift Rules</h2>
@@ -13,7 +13,7 @@
             <th>Action</th>
             <th>Roles</th>
         </tr>
-    {% for shift_rule in object_list %}
+    {% for shift_rule in shiftrule_list %}
     <tr>
         <td>{{ shift_rule.shift }}
         <td>{{ shift_rule.shift_rule_name }}</td>

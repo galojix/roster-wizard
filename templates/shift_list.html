@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Leave{% endblock title %}
+{% block title %}Shifts{% endblock title %}
 
 {% block content %}
 <h2>Shifts</h2>
@@ -17,7 +17,7 @@
             <th>Sunday</th>
             <th>Action</th>
         </tr>
-    {% for shift in object_list %}
+    {% for shift in shift_list %}
     <tr>
         <td>{{ shift.shift_type }}</td>
         <td>{{ shift.monday }}</td>

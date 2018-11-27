@@ -11,7 +11,7 @@
             <th>Staff Member</th>
             <th>Action</th>
         </tr>
-    {% for leave in object_list %}
+    {% for leave in leave_list %}
     <tr>
         <td>{{ leave.date }}</td>
         <td>{{ leave.staff_member.last_name }}, {{ leave.staff_member.first_name }}</td>

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Leave{% endblock title %}
+{% block title %}Roles{% endblock title %}
 
 {% block content %}
 <h2>Roles</h2>
@@ -10,7 +10,7 @@
             <th>Role</th>
             <th>Action</th>
         </tr>
-    {% for role in object_list %}
+    {% for role in role_list %}
     <tr>
         <td>{{ role.role_name }}</td>
         <td><a href="{% url 'role_edit' role.pk %}">Edit</a> | <a href="{% url 'role_delete' role.pk %}">Delete</a></td>
