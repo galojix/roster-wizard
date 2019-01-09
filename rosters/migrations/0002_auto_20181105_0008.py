@@ -5,19 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('rosters', '0001_initial'),
-    ]
+    dependencies = [("rosters", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='leave',
-            name='date',
-            field=models.DateTimeField(),
+            model_name="leave", name="date", field=models.DateTimeField()
         ),
         migrations.AlterField(
-            model_name='timeslot',
-            name='date',
-            field=models.DateTimeField(),
+            model_name="timeslot", name="date", field=models.DateTimeField()
         ),
     ]

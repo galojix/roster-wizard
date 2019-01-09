@@ -5,48 +5,43 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('rosters', '0003_auto_20181105_0010'),
-    ]
+    dependencies = [("rosters", "0003_auto_20181105_0010")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='shift',
-            name='days_of_week',
-        ),
+        migrations.RemoveField(model_name="shift", name="days_of_week"),
         migrations.AddField(
-            model_name='shift',
-            name='friday',
+            model_name="shift",
+            name="friday",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='shift',
-            name='monday',
+            model_name="shift",
+            name="monday",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='shift',
-            name='saturday',
+            model_name="shift",
+            name="saturday",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='shift',
-            name='sunday',
+            model_name="shift",
+            name="sunday",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='shift',
-            name='thursday',
+            model_name="shift",
+            name="thursday",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='shift',
-            name='tuesday',
+            model_name="shift",
+            name="tuesday",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='shift',
-            name='wednesday',
+            model_name="shift",
+            name="wednesday",
             field=models.BooleanField(default=True),
         ),
     ]

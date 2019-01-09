@@ -9,96 +9,194 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='Leave',
+            name="Leave",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField()),
-                ('staff_member', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField()),
+                (
+                    "staff_member",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Role',
+            name="Role",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('role_name', models.CharField(max_length=50)),
-                ('staff', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("role_name", models.CharField(max_length=50)),
+                ("staff", models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
-            name='Shift',
+            name="Shift",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('shift_type', models.CharField(max_length=20)),
-                ('days_of_week', models.CharField(max_length=20)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("shift_type", models.CharField(max_length=20)),
+                ("days_of_week", models.CharField(max_length=20)),
             ],
         ),
         migrations.CreateModel(
-            name='ShiftRule',
+            name="ShiftRule",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('shift_rule_name', models.CharField(max_length=20)),
-                ('hard_constraint', models.BooleanField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("shift_rule_name", models.CharField(max_length=20)),
+                ("hard_constraint", models.BooleanField()),
             ],
         ),
         migrations.CreateModel(
-            name='ShiftRuleRole',
+            name="ShiftRuleRole",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('count', models.IntegerField()),
-                ('role', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rosters.Role')),
-                ('shift_rule', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rosters.ShiftRule')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("count", models.IntegerField()),
+                (
+                    "role",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="rosters.Role",
+                    ),
+                ),
+                (
+                    "shift_rule",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="rosters.ShiftRule",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='StaffRule',
+            name="StaffRule",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('staff_rule_name', models.CharField(max_length=20)),
-                ('hard_constraint', models.BooleanField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("staff_rule_name", models.CharField(max_length=20)),
+                ("hard_constraint", models.BooleanField()),
             ],
         ),
         migrations.CreateModel(
-            name='StaffRuleShift',
+            name="StaffRuleShift",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('position', models.IntegerField()),
-                ('shift', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rosters.Shift')),
-                ('staff_rule', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rosters.StaffRule')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("position", models.IntegerField()),
+                (
+                    "shift",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="rosters.Shift",
+                    ),
+                ),
+                (
+                    "staff_rule",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="rosters.StaffRule",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='TimeSlot',
+            name="TimeSlot",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField()),
-                ('shifts', models.ManyToManyField(to='rosters.Shift')),
-                ('staff', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField()),
+                ("shifts", models.ManyToManyField(to="rosters.Shift")),
+                ("staff", models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
-            model_name='staffrule',
-            name='shifts',
-            field=models.ManyToManyField(through='rosters.StaffRuleShift', to='rosters.Shift'),
+            model_name="staffrule",
+            name="shifts",
+            field=models.ManyToManyField(
+                through="rosters.StaffRuleShift", to="rosters.Shift"
+            ),
         ),
         migrations.AddField(
-            model_name='staffrule',
-            name='staff',
+            model_name="staffrule",
+            name="staff",
             field=models.ManyToManyField(to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
-            model_name='shiftrule',
-            name='roles',
-            field=models.ManyToManyField(through='rosters.ShiftRuleRole', to='rosters.Role'),
+            model_name="shiftrule",
+            name="roles",
+            field=models.ManyToManyField(
+                through="rosters.ShiftRuleRole", to="rosters.Role"
+            ),
         ),
         migrations.AddField(
-            model_name='shiftrule',
-            name='shift',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rosters.Shift'),
+            model_name="shiftrule",
+            name="shift",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="rosters.Shift"
+            ),
         ),
     ]

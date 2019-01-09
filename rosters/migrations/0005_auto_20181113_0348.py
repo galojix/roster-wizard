@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('rosters', '0004_auto_20181113_0101'),
-    ]
+    dependencies = [("rosters", "0004_auto_20181113_0101")]
 
     operations = [
         migrations.AlterField(
-            model_name='shiftrule',
-            name='shift_rule_name',
+            model_name="shiftrule",
+            name="shift_rule_name",
             field=models.CharField(max_length=20, unique=True),
-        ),
+        )
     ]
