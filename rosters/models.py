@@ -133,6 +133,10 @@ class StaffRuleShift(models.Model):
             + str(self.position)
         )
 
+    def get_absolute_url(self):
+        """URL."""
+        return reverse("staff_rule_shift_detail", args=[str(self.id)])
+
 
 class TimeSlot(models.Model):
     """Time Slot."""

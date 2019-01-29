@@ -260,7 +260,7 @@ class StaffRuleShiftDetailView(LoginRequiredMixin, DetailView):
 
 class StaffRuleShiftUpdateView(LoginRequiredMixin, UpdateView):
     model = StaffRuleShift
-    fields = ("title", "body")
+    fields = ("shift", "position")
     template_name = "staff_rule_shift_edit.html"
     login_url = "login"
 
@@ -275,8 +275,13 @@ class StaffRuleShiftDeleteView(LoginRequiredMixin, DeleteView):
 class StaffRuleShiftCreateView(LoginRequiredMixin, CreateView):
     model = StaffRuleShift
     template_name = "staff_rule_shift_new.html"
-    fields = ("title", "body")
+    fields = ("shift", "position")
     login_url = "login"
+
+    def form_valid(self, form):
+        staff_rule = get_object_or_404(StaffRule, id=self.kwargs["staffrule"])
+        form.instance.staff_rule = staff_rule
+        return super().form_valid(form)
 
 
 class TimeSlotListView(LoginRequiredMixin, ListView):

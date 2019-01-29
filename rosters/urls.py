@@ -114,7 +114,7 @@ urlpatterns = [
         name="shift_rule_role_list",
     ),
     path(
-        "leave/<int:pk>/edit/",
+        "staffruleshift/<int:pk>/edit/",
         StaffRuleUpdateView.as_view(),
         name="staff_rule_edit",
     ),
@@ -133,7 +133,7 @@ urlpatterns = [
     ),
     path("staffrule/", StaffRuleListView.as_view(), name="staff_rule_list"),
     path(
-        "leave/<int:pk>/edit/",
+        "staffruleshift/<int:pk>/edit/",
         StaffRuleShiftUpdateView.as_view(),
         name="staff_rule_shift_edit",
     ),
@@ -148,7 +148,7 @@ urlpatterns = [
         name="staff_rule_shift_delete",
     ),
     path(
-        "staffruleshift/new/",
+        "staffruleshift/<slug:staffrule>/new/",
         StaffRuleShiftCreateView.as_view(),
         name="staff_rule_shift_new",
     ),
