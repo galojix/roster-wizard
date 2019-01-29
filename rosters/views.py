@@ -12,6 +12,7 @@ from .models import (
     ShiftRule,
     ShiftRuleRole,
     StaffRule,
+    StaffRuleShift,
     TimeSlot,
 )
 from .forms import LeaveCreateForm, LeaveUpdateForm
@@ -226,7 +227,7 @@ class StaffRuleDetailView(LoginRequiredMixin, DetailView):
 
 class StaffRuleUpdateView(LoginRequiredMixin, UpdateView):
     model = StaffRule
-    fields = ("title", "body")
+    fields = ("staff_rule_name", "hard_constraint")
     template_name = "staff_rule_edit.html"
     login_url = "login"
 
@@ -241,6 +242,39 @@ class StaffRuleDeleteView(LoginRequiredMixin, DeleteView):
 class StaffRuleCreateView(LoginRequiredMixin, CreateView):
     model = StaffRule
     template_name = "staff_rule_new.html"
+    fields = ("staff_rule_name", "hard_constraint")
+    login_url = "login"
+
+
+class StaffRuleShiftListView(LoginRequiredMixin, ListView):
+    model = StaffRuleShift
+    template_name = "staff_rule_shift_list.html"
+    login_url = "login"
+
+
+class StaffRuleShiftDetailView(LoginRequiredMixin, DetailView):
+    model = StaffRuleShift
+    template_name = "staff_rule_shift_detail.html"
+    login_url = "login"
+
+
+class StaffRuleShiftUpdateView(LoginRequiredMixin, UpdateView):
+    model = StaffRuleShift
+    fields = ("title", "body")
+    template_name = "staff_rule_shift_edit.html"
+    login_url = "login"
+
+
+class StaffRuleShiftDeleteView(LoginRequiredMixin, DeleteView):
+    model = StaffRuleShift
+    template_name = "staff_rule_shift_delete.html"
+    success_url = reverse_lazy("staff_rule_shift_list")
+    login_url = "login"
+
+
+class StaffRuleShiftCreateView(LoginRequiredMixin, CreateView):
+    model = StaffRuleShift
+    template_name = "staff_rule_shift_new.html"
     fields = ("title", "body")
     login_url = "login"
 

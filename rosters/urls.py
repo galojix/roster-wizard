@@ -31,6 +31,11 @@ from .views import (
     StaffRuleDetailView,
     StaffRuleDeleteView,
     StaffRuleCreateView,
+    StaffRuleShiftListView,
+    StaffRuleShiftUpdateView,
+    StaffRuleShiftDetailView,
+    StaffRuleShiftDeleteView,
+    StaffRuleShiftCreateView,
     TimeSlotListView,
     TimeSlotUpdateView,
     TimeSlotDetailView,
@@ -127,6 +132,31 @@ urlpatterns = [
         "staffrule/new/", StaffRuleCreateView.as_view(), name="staff_rule_new"
     ),
     path("staffrule/", StaffRuleListView.as_view(), name="staff_rule_list"),
+    path(
+        "leave/<int:pk>/edit/",
+        StaffRuleShiftUpdateView.as_view(),
+        name="staff_rule_shift_edit",
+    ),
+    path(
+        "staffruleshift/<int:pk>/",
+        StaffRuleShiftDetailView.as_view(),
+        name="staff_rule_shift_detail",
+    ),
+    path(
+        "staffruleshift/<int:pk>/delete/",
+        StaffRuleShiftDeleteView.as_view(),
+        name="staff_rule_shift_delete",
+    ),
+    path(
+        "staffruleshift/new/",
+        StaffRuleShiftCreateView.as_view(),
+        name="staff_rule_shift_new",
+    ),
+    path(
+        "staffruleshift/",
+        StaffRuleShiftListView.as_view(),
+        name="staff_rule_shift_list",
+    ),
     path(
         "timeslot/<int:pk>/edit/",
         TimeSlotUpdateView.as_view(),

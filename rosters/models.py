@@ -125,7 +125,13 @@ class StaffRuleShift(models.Model):
 
     def __str__(self):
         """String."""
-        return self.staff_rule.staff_rule_name + self.shift.shift_name
+        return (
+            self.staff_rule.staff_rule_name
+            + ":"
+            + self.shift.shift_type
+            + ":"
+            + str(self.position)
+        )
 
 
 class TimeSlot(models.Model):
