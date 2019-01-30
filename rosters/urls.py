@@ -114,7 +114,7 @@ urlpatterns = [
         name="shift_rule_role_list",
     ),
     path(
-        "staffruleshift/<int:pk>/edit/",
+        "staffrule/<int:pk>/edit/",
         StaffRuleUpdateView.as_view(),
         name="staff_rule_edit",
     ),
