@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="timeslot-entry">
+  <h2>{{ timeslot.date }}</h2>
+    <p>for {{ timeslot.shift.shift_type}} on {{ timeslot.date }}</p>
+</div>
+
+  <p><a href="{% url 'timeslot_edit' timeslot.pk %}">Edit</a> | <a href="{% url 'timeslot_delete' timeslot.pk %}">Delete</a></p>
+  <p>Back to <a href="{% url 'timeslot_list' %}">All Timeslots</a>.</p>
+{% endblock content %}

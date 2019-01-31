@@ -143,7 +143,7 @@ class TimeSlot(models.Model):
 
     date = models.DateField(null=False, blank=False)
     staff = models.ManyToManyField(get_user_model())
-    shifts = models.ManyToManyField(Shift)
+    shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
 
     def __str__(self):
         """String."""

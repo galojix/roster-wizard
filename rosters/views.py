@@ -298,7 +298,7 @@ class TimeSlotDetailView(LoginRequiredMixin, DetailView):
 
 class TimeSlotUpdateView(LoginRequiredMixin, UpdateView):
     model = TimeSlot
-    fields = ("title", "body")
+    fields = ("date", "shift", "staff")
     template_name = "timeslot_edit.html"
     login_url = "login"
 
@@ -313,5 +313,5 @@ class TimeSlotDeleteView(LoginRequiredMixin, DeleteView):
 class TimeSlotCreateView(LoginRequiredMixin, CreateView):
     model = TimeSlot
     template_name = "timeslot_new.html"
-    fields = ("title", "body")
+    fields = ("date", "shift", "staff")
     login_url = "login"
