@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         """How a user object is displayed."""
-        return self.username
+        return self.last_name + ',' + self.first_name
 
     def get_absolute_url(self):
         """URL."""

@@ -95,8 +95,8 @@ class ShiftRuleRole(models.Model):
         return self.shift_rule.shift_rule_name + self.role.role_name
 
     def get_absolute_url(self):
-        """URL."""
-        return reverse("shift_rule_role_detail", args=[str(self.id)])
+        """Next URL to display after updating."""
+        return reverse("shift_rule_list")
 
 
 class StaffRule(models.Model):
@@ -135,7 +135,7 @@ class StaffRuleShift(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("staff_rule_shift_detail", args=[str(self.id)])
+        return reverse("staff_rule_list")
 
 
 class TimeSlot(models.Model):
@@ -147,8 +147,8 @@ class TimeSlot(models.Model):
 
     def __str__(self):
         """String."""
-        return str(self.date)
+        return str(self.date) + ':' + self.shift.shift_type
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("timeslot_detail", args=[str(self.id)])
+        return reverse("timeslot_list")

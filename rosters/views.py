@@ -294,6 +294,9 @@ class TimeSlotListView(LoginRequiredMixin, ListView):
     template_name = "timeslot_list.html"
     login_url = "login"
 
+    def get_queryset(self):
+        return TimeSlot.objects.order_by("date", "shift")
+
 
 class TimeSlotDetailView(LoginRequiredMixin, DetailView):
     model = TimeSlot
