@@ -15,7 +15,12 @@ from .models import (
     StaffRuleShift,
     TimeSlot,
 )
-from .forms import LeaveCreateForm, LeaveUpdateForm
+from .forms import (
+    LeaveCreateForm,
+    LeaveUpdateForm,
+    TimeSlotUpdateForm,
+    TimeSlotCreateForm,
+)
 
 
 class LeaveListView(LoginRequiredMixin, ListView):
@@ -298,7 +303,7 @@ class TimeSlotDetailView(LoginRequiredMixin, DetailView):
 
 class TimeSlotUpdateView(LoginRequiredMixin, UpdateView):
     model = TimeSlot
-    fields = ("date", "shift", "staff")
+    form_class = TimeSlotUpdateForm
     template_name = "timeslot_edit.html"
     login_url = "login"
 
@@ -312,6 +317,6 @@ class TimeSlotDeleteView(LoginRequiredMixin, DeleteView):
 
 class TimeSlotCreateView(LoginRequiredMixin, CreateView):
     model = TimeSlot
+    form_class = TimeSlotCreateForm
     template_name = "timeslot_new.html"
-    fields = ("date", "shift", "staff")
     login_url = "login"

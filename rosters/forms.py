@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from .models import Leave
+from .models import Leave, TimeSlot
 
 
 class DateInput(forms.DateInput):
@@ -19,4 +19,18 @@ class LeaveUpdateForm(ModelForm):
     class Meta:
         model = Leave
         fields = ("date", "staff_member")
+        widgets = {"date": DateInput()}
+
+
+class TimeSlotCreateForm(ModelForm):
+    class Meta:
+        model = TimeSlot
+        fields = ("date", "shift", "staff")
+        widgets = {"date": DateInput()}
+
+
+class TimeSlotUpdateForm(ModelForm):
+    class Meta:
+        model = TimeSlot
+        fields = ("date", "shift", "staff")
         widgets = {"date": DateInput()}
