@@ -295,7 +295,7 @@ class TimeSlotListView(LoginRequiredMixin, ListView):
     login_url = "login"
 
     def get_queryset(self):
-        return TimeSlot.objects.order_by("date", "shift")
+        return TimeSlot.objects.order_by("date", "shift__shift_type")
 
 
 class TimeSlotDetailView(LoginRequiredMixin, DetailView):
