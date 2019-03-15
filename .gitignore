@@ -2,3 +2,4 @@
 *.pyo
 *.db
 .env
+.vscode
