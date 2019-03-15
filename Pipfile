@@ -10,6 +10,9 @@ django-environ = "*"
 
 [dev-packages]
 pylint = "*"
+pylint-django = "*"
+flake8 = "*"
+pydocstyle = "*"
 
 [requires]
 python_version = "3.6"
