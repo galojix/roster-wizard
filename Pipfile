@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 django-environ = "*"
 "psycopg2-binary" = "*"
+ortools = "*"
 
 [dev-packages]
 pylint = "*"
