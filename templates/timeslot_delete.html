@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Delete</h1>
     <form action="" method="post">{% csrf_token %}
-      <p>Are you sure you want to delete timeslot for "{{ timeslot.shift.shift_type}} on {{ timeslot.date }}"?</p>
+      <p>Are you sure you want to delete shift for "{{ timeslot.shift.shift_type}} on {{ timeslot.date }}"?</p>
       <button class="btn btn-danger ml-2" type="submit">Confirm</button>
     </form>
 {% endblock content %}
