@@ -41,6 +41,7 @@ from .views import (
     TimeSlotDetailView,
     TimeSlotDeleteView,
     TimeSlotCreateView,
+    generate_roster,
 )
 
 urlpatterns = [
@@ -174,4 +175,5 @@ urlpatterns = [
     ),
     path("timeslot/new/", TimeSlotCreateView.as_view(), name="timeslot_new"),
     path("timeslot/", TimeSlotListView.as_view(), name="timeslot_list"),
+    path("timeslot/generate", generate_roster, name="generate_roster"),
 ]

@@ -32,5 +32,6 @@
   </tr>
   {% endfor %}
 </table>
-<a href="{% url 'timeslot_new' %}">Add New Shift</a>
+<p><a href="{% url 'timeslot_new' %}">Add New Shift</a></p>
+<p><a href="{% url 'generate_roster' %}">Generate New Roster</a></p>
 {% endblock content %}
