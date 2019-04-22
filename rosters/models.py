@@ -70,7 +70,6 @@ class ShiftRule(models.Model):
     shift_rule_name = models.CharField(
         max_length=20, null=False, blank=False, unique=True
     )
-    hard_constraint = models.BooleanField(null=False, blank=False)
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
     roles = models.ManyToManyField(Role, through="ShiftRuleRole")
 
@@ -103,7 +102,6 @@ class StaffRule(models.Model):
     """Staff Rule."""
 
     staff_rule_name = models.CharField(max_length=20, null=False, blank=False)
-    hard_constraint = models.BooleanField(null=False, blank=False)
     staff = models.ManyToManyField(get_user_model())
     shifts = models.ManyToManyField(Shift, through="StaffRuleShift")
 

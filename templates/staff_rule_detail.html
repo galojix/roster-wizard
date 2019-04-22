@@ -3,7 +3,6 @@
 {% block content %}
 <div class="staff_rule-entry">
   <h2>Staff Rule Name: {{ staffrule.staff_rule_name }}</h2>
-    <p>Hard Contraint: {{ staffrule.hard_constraint}}</p>
     <p>Shifts: {% for staff_rule_shift in staffrule.staffruleshift_set.all %}
        {{ staff_rule_shift.shift.shift_type }}:{{ staff_rule_shift.position }}
        {% endfor %}

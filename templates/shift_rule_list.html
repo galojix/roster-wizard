@@ -9,7 +9,6 @@
         <tr>
             <th>Shift</th>
             <th>Shift Rule Name</th>
-            <th>Hard Constraint</th>
             <th>Action</th>
             <th>Roles</th>
         </tr>
@@ -17,7 +16,6 @@
     <tr>
         <td>{{ shift_rule.shift }}
         <td>{{ shift_rule.shift_rule_name }}</td>
-        <td>{{ shift_rule.hard_constraint }}</td>
         <td><a href="{% url 'shift_rule_edit' shift_rule.pk %}">Edit</a> | <a href="{% url 'shift_rule_delete' shift_rule.pk %}">Delete</a></td>
         <td>
             {% for shift_rule_role in shift_rule.shiftrulerole_set.all %}

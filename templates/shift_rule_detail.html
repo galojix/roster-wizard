@@ -3,7 +3,6 @@
 {% block content %}
 <div class="shift_rule-entry">
   <h2>Shift Rule Name: {{ shiftrule.shift_rule_name }}</h2>
-    <p>Hard Contraint: {{ shiftrule.hard_constraint}}</p>
     <p>Shift: {{ shiftrule.shift }}</p>
     <p>Roles: {% for shift_rule_role in shiftrule.shiftrulerole_set.all %}
        {{ shift_rule_role.role.role_name }}:{{ shift_rule_role.count }}

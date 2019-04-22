@@ -158,7 +158,7 @@ class ShiftRuleDetailView(LoginRequiredMixin, DetailView):
 
 class ShiftRuleUpdateView(LoginRequiredMixin, UpdateView):
     model = ShiftRule
-    fields = ("shift_rule_name", "hard_constraint", "shift")
+    fields = ("shift_rule_name", "shift")
     template_name = "shift_rule_edit.html"
     login_url = "login"
 
@@ -173,7 +173,7 @@ class ShiftRuleDeleteView(LoginRequiredMixin, DeleteView):
 class ShiftRuleCreateView(LoginRequiredMixin, CreateView):
     model = ShiftRule
     template_name = "shift_rule_new.html"
-    fields = ("shift_rule_name", "hard_constraint", "shift")
+    fields = ("shift_rule_name", "shift")
     login_url = "login"
 
 
@@ -232,7 +232,7 @@ class StaffRuleDetailView(LoginRequiredMixin, DetailView):
 
 class StaffRuleUpdateView(LoginRequiredMixin, UpdateView):
     model = StaffRule
-    fields = ("staff_rule_name", "hard_constraint")
+    fields = ("staff_rule_name")
     template_name = "staff_rule_edit.html"
     login_url = "login"
 
@@ -247,7 +247,7 @@ class StaffRuleDeleteView(LoginRequiredMixin, DeleteView):
 class StaffRuleCreateView(LoginRequiredMixin, CreateView):
     model = StaffRule
     template_name = "staff_rule_new.html"
-    fields = ("staff_rule_name", "hard_constraint")
+    fields = ("staff_rule_name")
     login_url = "login"
 
 

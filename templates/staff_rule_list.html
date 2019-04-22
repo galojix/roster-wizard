@@ -8,7 +8,6 @@
     <thead>
         <tr>
             <th>Staff Rule Name</th>
-            <th>Hard Constraint</th>
             <th>Action</th>
             <th>Shifts and Positions</th>
 
@@ -16,7 +15,6 @@
     {% for staff_rule in staffrule_list %}
     <tr>
         <td>{{ staff_rule.staff_rule_name }}</td>
-        <td>{{ staff_rule.hard_constraint }}</td>
         <td><a href="{% url 'staff_rule_edit' staff_rule.pk %}">Edit</a> | <a href="{% url 'staff_rule_delete' staff_rule.pk %}">Delete</a></td>
         <td>
             {% for staff_rule_shift in staff_rule.staffruleshift_set.all %}
