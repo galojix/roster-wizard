@@ -172,7 +172,7 @@ class Preference(models.Model):
             + " "
             + str(self.timeslot.date)
         )
-        return leave_display
+        return preference_display
 
     def get_absolute_url(self):
         """URL."""
