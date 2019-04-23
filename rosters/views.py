@@ -235,7 +235,7 @@ class StaffRuleDetailView(LoginRequiredMixin, DetailView):
 
 class StaffRuleUpdateView(LoginRequiredMixin, UpdateView):
     model = StaffRule
-    fields = ("staff_rule_name")
+    fields = "staff_rule_name"
     template_name = "staff_rule_edit.html"
     login_url = "login"
 
@@ -250,7 +250,7 @@ class StaffRuleDeleteView(LoginRequiredMixin, DeleteView):
 class StaffRuleCreateView(LoginRequiredMixin, CreateView):
     model = StaffRule
     template_name = "staff_rule_new.html"
-    fields = ("staff_rule_name")
+    fields = "staff_rule_name"
     login_url = "login"
 
 
@@ -525,7 +525,6 @@ def generate_roster(request):
             [0, 0, 1],
             [0, 0, 0],
         ],
-
     ]
     # Creates the model.
     model = cp_model.CpModel()
@@ -612,7 +611,7 @@ class PreferenceDetailView(LoginRequiredMixin, DetailView):
 class PreferenceUpdateView(LoginRequiredMixin, UpdateView):
     model = Preference
     # form_class = PreferenceUpdateForm
-    fields = ('timeslot', 'priority')
+    fields = ("timeslot", "priority")
     template_name = "preference_edit.html"
     login_url = "login"
 
@@ -628,5 +627,5 @@ class PreferenceCreateView(LoginRequiredMixin, CreateView):
     model = Preference
     template_name = "preference_new.html"
     # form_class = PreferenceCreateForm
-    fields = ('staff_member', 'timeslot', 'priority')
+    fields = ("staff_member", "timeslot", "priority")
     login_url = "login"

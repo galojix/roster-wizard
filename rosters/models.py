@@ -145,7 +145,7 @@ class TimeSlot(models.Model):
 
     def __str__(self):
         """String."""
-        return str(self.date) + ':' + self.shift.shift_type
+        return str(self.date) + ":" + self.shift.shift_type
 
     def get_absolute_url(self):
         """URL."""

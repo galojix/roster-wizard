@@ -181,13 +181,25 @@ urlpatterns = [
     path("timeslot/new/", TimeSlotCreateView.as_view(), name="timeslot_new"),
     path("timeslot/", TimeSlotListView.as_view(), name="timeslot_list"),
     path("timeslot/generate", generate_roster, name="generate_roster"),
-    path("preference/<int:pk>/edit/", PreferenceUpdateView.as_view(), name="preference_edit"),
-    path("preference/<int:pk>/", PreferenceDetailView.as_view(), name="preference_detail"),
+    path(
+        "preference/<int:pk>/edit/",
+        PreferenceUpdateView.as_view(),
+        name="preference_edit",
+    ),
+    path(
+        "preference/<int:pk>/",
+        PreferenceDetailView.as_view(),
+        name="preference_detail",
+    ),
     path(
         "preference/<int:pk>/delete/",
         PreferenceDeleteView.as_view(),
         name="preference_delete",
     ),
-    path("preference/new/", PreferenceCreateView.as_view(), name="preference_new"),
+    path(
+        "preference/new/",
+        PreferenceCreateView.as_view(),
+        name="preference_new",
+    ),
     path("preference/", PreferenceListView.as_view(), name="preference_list"),
 ]
