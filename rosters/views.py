@@ -16,6 +16,7 @@ from .models import (
     StaffRule,
     StaffRuleShift,
     TimeSlot,
+    Preference,
 )
 from .forms import (
     LeaveCreateForm,
@@ -594,3 +595,38 @@ def generate_roster(request):
     print("  - wall time       : %f s" % solver.WallTime())
 
     return HttpResponseRedirect(reverse_lazy("timeslot_list"))
+
+
+class PreferenceListView(LoginRequiredMixin, ListView):
+    model = Preference
+    template_name = "preference_list.html"
+    login_url = "login"
+
+
+class PreferenceDetailView(LoginRequiredMixin, DetailView):
+    model = Preference
+    template_name = "preference_detail.html"
+    login_url = "login"
+
+
+class PreferenceUpdateView(LoginRequiredMixin, UpdateView):
+    model = Preference
+    # form_class = PreferenceUpdateForm
+    fields = ('timeslot', 'priority')
+    template_name = "preference_edit.html"
+    login_url = "login"
+
+
+class PreferenceDeleteView(LoginRequiredMixin, DeleteView):
+    model = Preference
+    template_name = "preference_delete.html"
+    success_url = reverse_lazy("preference_list")
+    login_url = "login"
+
+
+class PreferenceCreateView(LoginRequiredMixin, CreateView):
+    model = Preference
+    template_name = "preference_new.html"
+    # form_class = PreferenceCreateForm
+    fields = ('staff_member', 'timeslot', 'priority')
+    login_url = "login"

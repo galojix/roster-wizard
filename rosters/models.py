@@ -150,3 +150,30 @@ class TimeSlot(models.Model):
     def get_absolute_url(self):
         """URL."""
         return reverse("timeslot_list")
+
+
+class Preference(models.Model):
+    """Preference."""
+
+    priority = models.IntegerField(null=False, blank=False)
+    timeslot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE)
+    staff_member = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        """How a preference object is displayed."""
+        preference_display = (
+            self.staff_member.last_name
+            + ", "
+            + self.staff_member.first_name
+            + " "
+            + self.timeslot.shift.shift_type
+            + " "
+            + str(self.timeslot.date)
+        )
+        return leave_display
+
+    def get_absolute_url(self):
+        """URL."""
+        return reverse("preference_detail", args=[str(self.id)])

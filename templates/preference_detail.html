@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="preference-entry">
+  <h2>{{ preference.timeslot.date }}</h2>
+    <p>for {{ preference.staff_member.username}}</p>
+</div>
+
+  <p><a href="{% url 'preference_edit' preference.pk %}">Edit</a> | <a href="{% url 'preference_delete' preference.pk %}">Delete</a></p>
+  <p>Back to <a href="{% url 'preference_list' %}">All Preferences</a></p>
+{% endblock content %}
