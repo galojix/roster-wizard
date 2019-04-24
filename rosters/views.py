@@ -235,7 +235,7 @@ class StaffRuleDetailView(LoginRequiredMixin, DetailView):
 
 class StaffRuleUpdateView(LoginRequiredMixin, UpdateView):
     model = StaffRule
-    fields = "staff_rule_name"
+    fields = ("staff_rule_name",)
     template_name = "staff_rule_edit.html"
     login_url = "login"
 
@@ -250,7 +250,7 @@ class StaffRuleDeleteView(LoginRequiredMixin, DeleteView):
 class StaffRuleCreateView(LoginRequiredMixin, CreateView):
     model = StaffRule
     template_name = "staff_rule_new.html"
-    fields = "staff_rule_name"
+    fields = ("staff_rule_name",)
     login_url = "login"
 
 

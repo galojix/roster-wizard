@@ -17,7 +17,7 @@ class CustomUserAdmin(UserAdmin):
         "first_name",
         "last_name",
         "email",
-        "ward_name",
+        "shifts_per_roster",
         "is_staff",
     ]
 
