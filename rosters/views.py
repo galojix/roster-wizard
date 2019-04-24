@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
@@ -593,7 +593,7 @@ def generate_roster(request):
     )
     print("  - wall time       : %f s" % solver.WallTime())
 
-    return HttpResponseRedirect(reverse_lazy("timeslot_list"))
+    return HttpResponseRedirect(reverse("timeslot_list"))
 
 
 class PreferenceListView(LoginRequiredMixin, ListView):
