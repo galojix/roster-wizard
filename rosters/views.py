@@ -6,6 +6,8 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from ortools.sat.python import cp_model
+from django.contrib.auth.decorators import login_required
+
 
 from .models import (
     Leave,
@@ -328,6 +330,7 @@ class TimeSlotCreateView(LoginRequiredMixin, CreateView):
     login_url = "login"
 
 
+@login_required
 def generate_roster(request):
     num_nurses = 21
     num_shifts = 3
