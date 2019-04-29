@@ -2,8 +2,8 @@
 
 {% block content %}
 <div class="leave-entry">
-  <h2>{{ object.date }}</h2>
-    <p>for {{ object.staff_member.username}}</p>
+  <h2>{{ leave.date }}</h2>
+    <p>for {{ leave.staff_member.username}}</p>
 </div>
 
   <p><a href="{% url 'leave_edit' leave.pk %}">Edit</a> | <a href="{% url 'leave_delete' leave.pk %}">Delete</a></p>
