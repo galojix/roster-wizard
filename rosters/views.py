@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from ortools.sat.python import cp_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 
 
 from .models import (
@@ -332,6 +333,9 @@ class TimeSlotCreateView(LoginRequiredMixin, CreateView):
 
 @login_required
 def generate_roster(request):
+    nurses = get_user_model().objects.all()
+    num_nurses = nurses.count()
+    print(num_nurses)
     num_nurses = 21
     num_shifts = 3
     num_days = 7
