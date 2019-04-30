@@ -13,6 +13,9 @@ class UserListView(LoginRequiredMixin, ListView):
     template_name = "user_list.html"
     login_url = "login"
 
+    def get_queryset(self):
+        return CustomUser.objects.order_by("username")
+
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = CustomUser
