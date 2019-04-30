@@ -26,7 +26,13 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = CustomUser
     template_name = "user_edit.html"
-    fields = ("username", "first_name", "last_name", "email", "shifts_per_roster")
+    fields = (
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "shifts_per_roster",
+    )
     login_url = "login"
 
 
@@ -40,5 +46,11 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
 class UserCreateView(LoginRequiredMixin, CreateView):
     model = CustomUser
     template_name = "user_new.html"
-    fields = ("username", "first_name", "last_name", "email", "shifts_per_roster")
+    fields = (
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "shifts_per_roster",
+    )
     login_url = "login"
