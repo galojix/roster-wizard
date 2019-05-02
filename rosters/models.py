@@ -32,8 +32,7 @@ class Role(models.Model):
     """Role."""
 
     role_name = models.CharField(max_length=50, null=False, blank=False)
-    staff = models.ManyToManyField(get_user_model())
-
+    
     def __str__(self):
         """String."""
         return self.role_name

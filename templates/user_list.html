@@ -20,8 +20,7 @@
         <td>{{ user.first_name }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.shifts_per_roster }}</td>
-        <td>
-            {% for role in user.role_set.all %}
+        <td>{% for role in user.roles.all %}
             {{ role.role_name }}
             {% endfor %}
         </td>

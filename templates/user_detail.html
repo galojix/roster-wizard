@@ -10,14 +10,17 @@
               <th>Last Name</th>
               <th>First Name</th>
               <th>Email Address</th>
-              <th>Ward Name</th>
+              <th>Roles</th>
           </tr>
       <tr>
           <td>{{ customuser.username }}</td>
           <td>{{ customuser.last_name }}</td>
           <td>{{ customuser.first_name }}</td>
           <td>{{ customuser.email }}</td>
-          <td>{{ customuser.ward_name }}</td>
+          <td>{% for role in customuser.roles.all %}
+              {{ role.role_name }}
+              {% endfor %}
+          </td>
       </tr>
   </table>
 </div>

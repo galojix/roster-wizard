@@ -32,6 +32,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         "last_name",
         "email",
         "shifts_per_roster",
+        "roles",
     )
     login_url = "login"
 
@@ -52,5 +53,6 @@ class UserCreateView(LoginRequiredMixin, CreateView):
         "last_name",
         "email",
         "shifts_per_roster",
+        "roles",
     )
     login_url = "login"

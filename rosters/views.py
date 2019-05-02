@@ -77,7 +77,7 @@ class RoleDetailView(LoginRequiredMixin, DetailView):
 
 class RoleUpdateView(LoginRequiredMixin, UpdateView):
     model = Role
-    fields = ("role_name", "staff")
+    fields = ("role_name",)
     template_name = "role_edit.html"
     login_url = "login"
 
