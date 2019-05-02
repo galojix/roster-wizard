@@ -14,7 +14,7 @@ class UserListView(LoginRequiredMixin, ListView):
     login_url = "login"
 
     def get_queryset(self):
-        return CustomUser.objects.order_by("username")
+        return CustomUser.objects.order_by("last_name", "first_name")
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
