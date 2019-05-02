@@ -341,197 +341,17 @@ def generate_roster(request):
     all_nurses = range(num_nurses)
     all_shifts = range(num_shifts)
     all_days = range(num_days)
-    shift_requests = [
-        [
-            [0, 0, 1],
-            [0, 0, 0],
-            [0, 0, 1],
-            [0, 0, 0],
-            [0, 0, 1],
-            [0, 1, 0],
-            [0, 0, 1],
-        ],
-        [
-            [0, 0, 1],
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [1, 0, 0],
-            [0, 0, 0],
-            [0, 0, 1],
-        ],
-        [
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 0, 0],
-            [1, 0, 0],
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-        ],
-        [
-            [0, 0, 1],
-            [0, 1, 0],
-            [1, 0, 0],
-            [0, 1, 0],
-            [0, 0, 0],
-            [1, 0, 0],
-            [0, 0, 0],
-        ],
-        [
-            [0, 0, 0],
-            [0, 0, 1],
-            [0, 1, 0],
-            [0, 1, 0],
-            [1, 0, 0],
-            [0, 1, 0],
-            [0, 0, 0],
-        ],
-        [
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [1, 0, 0],
-            [0, 1, 0],
-            [0, 0, 1],
-        ],
-        [
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 0, 0],
-            [1, 0, 0],
-            [1, 0, 0],
-            [0, 1, 0],
-            [0, 0, 0],
-        ],
-        [
-            [0, 0, 0],
-            [1, 0, 0],
-            [1, 0, 0],
-            [1, 0, 0],
-            [1, 0, 0],
-            [1, 0, 0],
-            [0, 0, 0],
-        ],
-        [
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 0],
-            [0, 0, 0],
-        ],
-        [
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 0, 0],
-        ],
-        [
-            [0, 0, 0],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 0],
-        ],
-        [
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-        ],
-        [
-            [1, 0, 0],
-            [1, 0, 0],
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-        ],
-        [
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-        ],
-        [
-            [0, 1, 0],
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-        ],
-        [
-            [1, 0, 0],
-            [0, 0, 0],
-            [0, 0, 0],
-            [1, 0, 0],
-            [1, 0, 0],
-            [1, 0, 0],
-            [1, 0, 0],
-        ],
-        [
-            [0, 0, 0],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 0],
-        ],
-        [
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-        ],
-        [
-            [1, 0, 0],
-            [1, 0, 0],
-            [1, 0, 0],
-            [1, 0, 0],
-            [1, 0, 0],
-            [0, 0, 0],
-            [0, 0, 0],
-        ],
-        [
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-        ],
-        [
-            [0, 0, 0],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 1],
-            [0, 0, 0],
-        ],
-    ]
+    shift_requests = []
+    for nurse in nurses:
+        nurse_shift_requests = []
+        preferences = nurse.preference_set.all()
+        print(preferences)
+        for day in range(num_days):  # Timeslots ?
+            nurse_shift_requests_for_day = []
+            for shift in range(num_shifts):
+                nurse_shift_requests_for_day.append(0)
+            nurse_shift_requests.append(nurse_shift_requests_for_day)
+        shift_requests.append(nurse_shift_requests)
     # Creates the model.
     model = cp_model.CpModel()
 
@@ -577,27 +397,27 @@ def generate_roster(request):
     # Creates the solver and solve.
     solver = cp_model.CpSolver()
     solver.Solve(model)
-    for d in all_days:
-        print("Day", d)
-        for n in all_nurses:
-            for s in all_shifts:
-                if solver.Value(shifts[(n, d, s)]) == 1:
-                    if shift_requests[n][d][s] == 1:
-                        print("Nurse", n, "works shift", s, "(requested).")
-                    else:
-                        print("Nurse", n, "works shift", s, "(not requested).")
-        print()
+    # for d in all_days:
+    #     print("Day", d)
+    #     for n in all_nurses:
+    #         for s in all_shifts:
+    #             if solver.Value(shifts[(n, d, s)]) == 1:
+    #                 if shift_requests[n][d][s] == 1:
+    #                     print("Nurse", n, "works shift", s, "(requested).")
+    #                 else:
+    #                     print("Nurse", n, "works shift", s, "(not requested).")
+    #     print()
 
-    # Statistics.
-    print()
-    print("Statistics")
-    print(
-        "  - Number of shift requests met = %i" % solver.ObjectiveValue(),
-        "(out of",
-        num_nurses * min_shifts_per_nurse,
-        ")",
-    )
-    print("  - wall time       : %f s" % solver.WallTime())
+    # # Statistics.
+    # print()
+    # print("Statistics")
+    # print(
+    #     "  - Number of shift requests met = %i" % solver.ObjectiveValue(),
+    #     "(out of",
+    #     num_nurses * min_shifts_per_nurse,
+    #     ")",
+    # )
+    # print("  - wall time       : %f s" % solver.WallTime())
 
     return HttpResponseRedirect(reverse("timeslot_list"))
 
