@@ -336,7 +336,7 @@ def generate_roster(request):
     nurses = get_user_model().objects.all()
     num_nurses = nurses.count()
     print(num_nurses)
-    num_nurses = 21
+    # num_nurses = 21
     num_shifts = 3
     num_days = 7
     all_nurses = range(num_nurses)
