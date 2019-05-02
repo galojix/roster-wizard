@@ -2,12 +2,13 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import PermissionDenied
+# from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from ortools.sat.python import cp_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+# import datetime
 
 
 from .models import (
@@ -341,17 +342,33 @@ def generate_roster(request):
     all_nurses = range(num_nurses)
     all_shifts = range(num_shifts)
     all_days = range(num_days)
+    # TimeSlot.objects.all().delete()
+    # date = datetime.date.today()
+    # for day in range(num_days):
+    #     for shift in shifts:
+    #         TimeSlot(date=date, shift=shift).save()
+    #     date += datetime.timedelta(days=1)
+    timeslots = TimeSlot.objects.all()
     shift_requests = []
     for nurse in nurses:
         nurse_shift_requests = []
         preferences = nurse.preference_set.all()
         print(preferences)
-        for day in range(num_days):  # Timeslots ?
+        for timeslot in timeslots:
             nurse_shift_requests_for_day = []
-            for shift in range(num_shifts):
-                nurse_shift_requests_for_day.append(0)
+            for shift in shifts:
+                priority = 0
+                for preference in preferences:
+                    if (
+                        preference.timeslot == timeslot
+                        and preference.timeslot.shift == shift
+                    ):
+                        print("Found!!!")
+                        priority = preference.priority
+                nurse_shift_requests_for_day.append(priority)
             nurse_shift_requests.append(nurse_shift_requests_for_day)
         shift_requests.append(nurse_shift_requests)
+    # print(shift_requests)
     # Creates the model.
     model = cp_model.CpModel()
 
@@ -397,27 +414,27 @@ def generate_roster(request):
     # Creates the solver and solve.
     solver = cp_model.CpSolver()
     solver.Solve(model)
-    # for d in all_days:
-    #     print("Day", d)
-    #     for n in all_nurses:
-    #         for s in all_shifts:
-    #             if solver.Value(shifts[(n, d, s)]) == 1:
-    #                 if shift_requests[n][d][s] == 1:
-    #                     print("Nurse", n, "works shift", s, "(requested).")
-    #                 else:
-    #                     print("Nurse", n, "works shift", s, "(not requested).")
-    #     print()
+    for d in all_days:
+        print("Day", d)
+        for n in all_nurses:
+            for s in all_shifts:
+                if solver.Value(shifts[(n, d, s)]) == 1:
+                    if shift_requests[n][d][s] == 1:
+                        print("Nurse", n, "works shift", s, "(requested).")
+                    else:
+                        print("Nurse", n, "works shift", s, "(not requested).")
+        print()
 
-    # # Statistics.
-    # print()
-    # print("Statistics")
-    # print(
-    #     "  - Number of shift requests met = %i" % solver.ObjectiveValue(),
-    #     "(out of",
-    #     num_nurses * min_shifts_per_nurse,
-    #     ")",
-    # )
-    # print("  - wall time       : %f s" % solver.WallTime())
+    # Statistics.
+    print()
+    print("Statistics")
+    print(
+        "  - Number of shift requests met = %i" % solver.ObjectiveValue(),
+        "(out of",
+        num_nurses * min_shifts_per_nurse,
+        ")",
+    )
+    print("  - wall time       : %f s" % solver.WallTime())
 
     return HttpResponseRedirect(reverse("timeslot_list"))
 
