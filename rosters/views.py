@@ -2,6 +2,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
+
 # from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
@@ -339,9 +340,6 @@ def generate_roster(request):
     shifts = Shift.objects.all()
     num_shifts = shifts.count()
     num_days = 7
-    all_nurses = range(num_nurses)
-    all_shifts = range(num_shifts)
-    all_days = range(num_days)
     TimeSlot.objects.all().delete()
     date = datetime.date.today()
     for day in range(num_days):
@@ -359,10 +357,7 @@ def generate_roster(request):
             for shift in shifts:
                 priority = 0
                 for preference in preferences:
-                    if (
-                        preference.day == day
-                        and preference.shift == shift
-                    ):
+                    if preference.day == day and preference.shift == shift:
                         print("Found!!!")
                         priority = preference.priority
                 nurse_shift_requests_for_day.append(priority)
@@ -375,20 +370,20 @@ def generate_roster(request):
     # Creates shift variables.
     # shifts[(n, d, s)]: nurse 'n' works shift 's' on day 'd'.
     shifts = {}
-    for n in all_nurses:
-        for d in all_days:
-            for s in all_shifts:
+    for n in range(num_nurses):
+        for d in range(num_days):
+            for s in range(num_shifts):
                 shifts[(n, d, s)] = model.NewBoolVar(f"shift_n{n}d{d}s{s}")
 
     # Each shift is assigned to exactly two nurses.
-    for d in all_days:
-        for s in all_shifts:
-            model.Add(sum(shifts[(n, d, s)] for n in all_nurses) == 5)
+    for d in range(num_days):
+        for s in range(num_shifts):
+            model.Add(sum(shifts[(n, d, s)] for n in range(num_nurses)) == 5)
 
     # Each nurse works at most one shift per day.
-    for n in all_nurses:
-        for d in all_days:
-            model.Add(sum(shifts[(n, d, s)] for s in all_shifts) <= 1)
+    for n in range(num_nurses):
+        for d in range(num_days):
+            model.Add(sum(shifts[(n, d, s)] for s in range(num_shifts)) <= 1)
 
     # min_shifts_assigned is the largest integer such that every nurse can be
     # assigned at least that number of shifts.
@@ -396,9 +391,11 @@ def generate_roster(request):
     # 2 * (num_shifts * num_days) // num_nurses
     max_shifts_per_nurse = 5
     # min_shifts_per_nurse + 1 - 1
-    for n in all_nurses:
+    for n in range(num_nurses):
         num_shifts_worked = sum(
-            shifts[(n, d, s)] for d in all_days for s in all_shifts
+            shifts[(n, d, s)]
+            for d in range(num_days)
+            for s in range(num_shifts)
         )
         model.Add(min_shifts_per_nurse <= num_shifts_worked)
         model.Add(num_shifts_worked <= max_shifts_per_nurse)
@@ -406,18 +403,18 @@ def generate_roster(request):
     model.Maximize(
         sum(
             shift_requests[n][d][s] * shifts[(n, d, s)]
-            for n in all_nurses
-            for d in all_days
-            for s in all_shifts
+            for n in range(num_nurses)
+            for d in range(num_days)
+            for s in range(num_shifts)
         )
     )
     # Creates the solver and solve.
     solver = cp_model.CpSolver()
     solver.Solve(model)
-    for d in all_days:
+    for d in range(num_days):
         print("Day", d)
-        for n in all_nurses:
-            for s in all_shifts:
+        for n in range(num_nurses):
+            for s in range(num_shifts):
                 if solver.Value(shifts[(n, d, s)]) == 1:
                     if shift_requests[n][d][s] == 1:
                         print("Nurse", n, "works shift", s, "(requested).")
