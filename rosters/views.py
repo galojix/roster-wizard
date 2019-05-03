@@ -420,7 +420,7 @@ def generate_roster(request):
         print("Day", d)
         for n, nurse in enumerate(nurses):
             for s, shift in enumerate(shifts):
-                print("shift", s, "shifts", shifts)
+                # print("shift", s, "shifts", shifts)
                 if solver.Value(shift_vars[(n, d, s)]) == 1:
                     if shift_requests[n][d][s] == 1:
                         print("Nurse", n, "works shift", s, "(requested).")
