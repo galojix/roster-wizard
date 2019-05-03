@@ -373,7 +373,9 @@ def generate_roster(request):
     for n in range(num_nurses):
         for d in range(num_days):
             for s in range(num_shifts):
-                shift_vars[(n, d, s)] = model.NewIntVar(0, 100, f"shift_n{n}d{d}s{s}")
+                shift_vars[(n, d, s)] = model.NewIntVar(
+                    0, 100, f"shift_n{n}d{d}s{s}"
+                )
 
     # Each shift is assigned to exactly 5 nurses.
     for d in range(num_days):
