@@ -344,7 +344,7 @@ def generate_roster(request):
     date = datetime.date.today()
     for day in range(num_days):
         for shift in shifts:
-            TimeSlot(date=date, shift=shift).save()
+            TimeSlot.objects.create(date=date, shift=shift)
         date += datetime.timedelta(days=1)
     # timeslots = TimeSlot.objects.all()
     shift_requests = []
