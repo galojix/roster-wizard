@@ -373,7 +373,7 @@ def generate_roster(request):
     for n in range(num_nurses):
         for d in range(num_days):
             for s in range(num_shifts):
-                shift_vars[(n, d, s)] = model.NewBoolVar(f"shift_n{n}d{d}s{s}")
+                shift_vars[(n, d, s)] = model.NewIntVar(0, 100, f"shift_n{n}d{d}s{s}")
 
     # Each shift is assigned to exactly 5 nurses.
     for d in range(num_days):
@@ -422,7 +422,7 @@ def generate_roster(request):
             for s, shift in enumerate(shifts):
                 # print("shift", s, "shifts", shifts)
                 if solver.Value(shift_vars[(n, d, s)]) == 1:
-                    if shift_requests[n][d][s] == 1:
+                    if shift_requests[n][d][s] >= 1:
                         print("Nurse", n, "works shift", s, "(requested).")
                         TimeSlot.objects.get(date=date, shift=shift).staff.add(
                             nurse
