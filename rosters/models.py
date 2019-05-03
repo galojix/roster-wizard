@@ -32,7 +32,7 @@ class Role(models.Model):
     """Role."""
 
     role_name = models.CharField(max_length=50, null=False, blank=False)
-    
+
     def __str__(self):
         """String."""
         return self.role_name
@@ -155,7 +155,8 @@ class Preference(models.Model):
     """Preference."""
 
     priority = models.IntegerField(null=False, blank=False)
-    timeslot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE)
+    day = models.IntegerField(null=False, blank=False)
+    shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
     staff_member = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE
     )
@@ -167,9 +168,9 @@ class Preference(models.Model):
             + ", "
             + self.staff_member.first_name
             + " "
-            + self.timeslot.shift.shift_type
+            + self.shift.shift_type
             + " "
-            + str(self.timeslot.date)
+            + str(self.day)
         )
         return preference_display
 

@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from ortools.sat.python import cp_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-# import datetime
+import datetime
 
 
 from .models import (
@@ -342,26 +342,26 @@ def generate_roster(request):
     all_nurses = range(num_nurses)
     all_shifts = range(num_shifts)
     all_days = range(num_days)
-    # TimeSlot.objects.all().delete()
-    # date = datetime.date.today()
-    # for day in range(num_days):
-    #     for shift in shifts:
-    #         TimeSlot(date=date, shift=shift).save()
-    #     date += datetime.timedelta(days=1)
-    timeslots = TimeSlot.objects.all()
+    TimeSlot.objects.all().delete()
+    date = datetime.date.today()
+    for day in range(num_days):
+        for shift in shifts:
+            TimeSlot(date=date, shift=shift).save()
+        date += datetime.timedelta(days=1)
+    # timeslots = TimeSlot.objects.all()
     shift_requests = []
     for nurse in nurses:
         nurse_shift_requests = []
         preferences = nurse.preference_set.all()
         print(preferences)
-        for timeslot in timeslots:
+        for day in range(num_days):
             nurse_shift_requests_for_day = []
             for shift in shifts:
                 priority = 0
                 for preference in preferences:
                     if (
-                        preference.timeslot == timeslot
-                        and preference.timeslot.shift == shift
+                        preference.day == day
+                        and preference.shift == shift
                     ):
                         print("Found!!!")
                         priority = preference.priority
@@ -454,7 +454,7 @@ class PreferenceDetailView(LoginRequiredMixin, DetailView):
 class PreferenceUpdateView(LoginRequiredMixin, UpdateView):
     model = Preference
     # form_class = PreferenceUpdateForm
-    fields = ("timeslot", "priority")
+    fields = ("day", "shift", "priority")
     template_name = "preference_edit.html"
     login_url = "login"
 
@@ -470,5 +470,5 @@ class PreferenceCreateView(LoginRequiredMixin, CreateView):
     model = Preference
     template_name = "preference_new.html"
     # form_class = PreferenceCreateForm
-    fields = ("staff_member", "timeslot", "priority")
+    fields = ("staff_member", "day", "shift", "priority")
     login_url = "login"
