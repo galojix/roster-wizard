@@ -378,12 +378,16 @@ def generate_roster(request):
     # Each shift is assigned to exactly 5 nurses.
     for d in range(num_days):
         for s in range(num_shifts):
-            model.Add(sum(shift_vars[(n, d, s)] for n in range(num_nurses)) == 5)
+            model.Add(
+                sum(shift_vars[(n, d, s)] for n in range(num_nurses)) == 5
+            )
 
     # Each nurse works at most one shift per day.
     for n in range(num_nurses):
         for d in range(num_days):
-            model.Add(sum(shift_vars[(n, d, s)] for s in range(num_shifts)) <= 1)
+            model.Add(
+                sum(shift_vars[(n, d, s)] for s in range(num_shifts)) <= 1
+            )
 
     # min_shifts_assigned is the largest integer such that every nurse can be
     # assigned at least that number of shifts.
@@ -420,10 +424,14 @@ def generate_roster(request):
                 if solver.Value(shift_vars[(n, d, s)]) == 1:
                     if shift_requests[n][d][s] == 1:
                         print("Nurse", n, "works shift", s, "(requested).")
-                        TimeSlot.objects.get(date=date, shift=shift).staff.add(nurse)
+                        TimeSlot.objects.get(date=date, shift=shift).staff.add(
+                            nurse
+                        )
                     else:
                         print("Nurse", n, "works shift", s, "(not requested).")
-                        TimeSlot.objects.get(date=date, shift=shift).staff.add(nurse)
+                        TimeSlot.objects.get(date=date, shift=shift).staff.add(
+                            nurse
+                        )
         print()
         date += datetime.timedelta(days=1)
 
