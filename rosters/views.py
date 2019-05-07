@@ -403,7 +403,7 @@ def generate_roster(request):
             for d in range(num_days)
             for s in range(num_shifts)
         )
-        if nurse.shifts_per_roster != 0:
+        if nurse.shifts_per_roster != 0:  # 0 means no limit / temporary staff
             model.Add(nurse.shifts_per_roster == num_shifts_worked)
 
     model.Maximize(
