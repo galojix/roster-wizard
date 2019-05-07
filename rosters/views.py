@@ -395,16 +395,15 @@ def generate_roster(request):
     # assigned at least that number of shifts.
     min_shifts_per_nurse = 5
     # 2 * (num_shifts * num_days) // num_nurses
-    max_shifts_per_nurse = 5
+    # max_shifts_per_nurse = 5
     # min_shifts_per_nurse + 1 - 1
-    for n in range(num_nurses):
+    for n, nurse in enumerate(nurses):
         num_shifts_worked = sum(
             shift_vars[(n, d, s)]
             for d in range(num_days)
             for s in range(num_shifts)
         )
-        model.Add(min_shifts_per_nurse <= num_shifts_worked)
-        model.Add(num_shifts_worked <= max_shifts_per_nurse)
+        model.Add(nurse.shifts_per_roster == num_shifts_worked)
 
     model.Maximize(
         sum(
