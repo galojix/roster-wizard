@@ -339,7 +339,7 @@ def generate_roster(request):
     num_nurses = nurses.count()
     shifts = Shift.objects.all()
     num_shifts = shifts.count()
-    num_days = 7
+    num_days = 14
     TimeSlot.objects.all().delete()
     date = datetime.date.today()
     for day in range(num_days):
@@ -370,9 +370,7 @@ def generate_roster(request):
     for n in range(num_nurses):
         for d in range(num_days):
             for s in range(num_shifts):
-                shift_vars[(n, d, s)] = model.NewIntVar(
-                    0, 100, f"shift_n{n}d{d}s{s}"
-                )
+                shift_vars[(n, d, s)] = model.NewBoolVar(f"shift_n{n}d{d}s{s}")
 
     # Assign each shift to exactly 5 nurses
     for d in range(num_days):
@@ -382,11 +380,12 @@ def generate_roster(request):
             )
 
     # Assign at most one shift per day per nurse
-    for n in range(num_nurses):
+    for n, nurse in enumerate(nurses):
         for d in range(num_days):
-            model.Add(
-                sum(shift_vars[(n, d, s)] for s in range(num_shifts)) <= 1
-            )
+            if nurse.shifts_per_roster != 0:  # 0 means no limit / temp staff
+                model.Add(
+                    sum(shift_vars[(n, d, s)] for s in range(num_shifts)) <= 1
+                )
 
     # Enforce shifts per roster for each nurse
     for n, nurse in enumerate(nurses):
@@ -407,7 +406,7 @@ def generate_roster(request):
             for s in range(num_shifts)
         )
     )
-    
+
     # Create the solver and solve
     solver = cp_model.CpSolver()
     solver.Solve(model)
