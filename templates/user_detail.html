@@ -10,6 +10,7 @@
               <th>Last Name</th>
               <th>First Name</th>
               <th>Email Address</th>
+              <th>Shifts per Roster</th>
               <th>Roles</th>
           </tr>
       <tr>
@@ -17,6 +18,7 @@
           <td>{{ customuser.last_name }}</td>
           <td>{{ customuser.first_name }}</td>
           <td>{{ customuser.email }}</td>
+          <td>{{ customuser.shifts_per_roster }}</td>
           <td>{% for role in customuser.roles.all %}
               {{ role.role_name }}
               {% endfor %}
