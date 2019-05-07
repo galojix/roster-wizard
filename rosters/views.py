@@ -346,29 +346,26 @@ def generate_roster(request):
         for shift in shifts:
             TimeSlot.objects.create(date=date, shift=shift)
         date += datetime.timedelta(days=1)
-    # timeslots = TimeSlot.objects.all()
     shift_requests = []
     for nurse in nurses:
         nurse_shift_requests = []
         preferences = nurse.preference_set.all()
-        print(preferences)
         for day in range(num_days):
             nurse_shift_requests_for_day = []
             for shift in shifts:
                 priority = 0
                 for preference in preferences:
                     if preference.day == day and preference.shift == shift:
-                        print("Found!!!")
                         priority = preference.priority
                 nurse_shift_requests_for_day.append(priority)
             nurse_shift_requests.append(nurse_shift_requests_for_day)
         shift_requests.append(nurse_shift_requests)
-    # print(shift_requests)
-    # Creates the model.
+
+    # Create the model
     model = cp_model.CpModel()
 
-    # Creates shift variables.
-    # shifts[(n, d, s)]: nurse 'n' works shift 's' on day 'd'.
+    # Create shift variables
+    # shifts[(n, d, s)]: nurse 'n' works shift 's' on day 'd'
     shift_vars = {}
     for n in range(num_nurses):
         for d in range(num_days):
@@ -377,26 +374,21 @@ def generate_roster(request):
                     0, 100, f"shift_n{n}d{d}s{s}"
                 )
 
-    # Each shift is assigned to exactly 5 nurses.
+    # Assign each shift to exactly 5 nurses
     for d in range(num_days):
         for s in range(num_shifts):
             model.Add(
                 sum(shift_vars[(n, d, s)] for n in range(num_nurses)) == 5
             )
 
-    # Each nurse works at most one shift per day.
+    # Assign at most one shift per day per nurse
     for n in range(num_nurses):
         for d in range(num_days):
             model.Add(
                 sum(shift_vars[(n, d, s)] for s in range(num_shifts)) <= 1
             )
 
-    # min_shifts_assigned is the largest integer such that every nurse can be
-    # assigned at least that number of shifts.
-    min_shifts_per_nurse = 5
-    # 2 * (num_shifts * num_days) // num_nurses
-    # max_shifts_per_nurse = 5
-    # min_shifts_per_nurse + 1 - 1
+    # Enforce shifts per roster for each nurse
     for n, nurse in enumerate(nurses):
         num_shifts_worked = sum(
             shift_vars[(n, d, s)]
@@ -406,6 +398,7 @@ def generate_roster(request):
         if nurse.shifts_per_roster != 0:  # 0 means no limit / temporary staff
             model.Add(nurse.shifts_per_roster == num_shifts_worked)
 
+    # Maximise the number of satisfied shift requests
     model.Maximize(
         sum(
             shift_requests[n][d][s] * shift_vars[(n, d, s)]
@@ -414,7 +407,8 @@ def generate_roster(request):
             for s in range(num_shifts)
         )
     )
-    # Creates the solver and solve.
+    
+    # Create the solver and solve
     solver = cp_model.CpSolver()
     solver.Solve(model)
     date = datetime.date.today()
@@ -422,7 +416,6 @@ def generate_roster(request):
         print("Day", d)
         for n, nurse in enumerate(nurses):
             for s, shift in enumerate(shifts):
-                # print("shift", s, "shifts", shifts)
                 if solver.Value(shift_vars[(n, d, s)]) == 1:
                     if shift_requests[n][d][s] >= 1:
                         print("Nurse", n, "works shift", s, "(requested).")
@@ -438,15 +431,15 @@ def generate_roster(request):
         date += datetime.timedelta(days=1)
 
     # Statistics.
-    print()
-    print("Statistics")
-    print(
-        "  - Number of shift requests met = %i" % solver.ObjectiveValue(),
-        "(out of",
-        num_nurses * min_shifts_per_nurse,
-        ")",
-    )
-    print("  - wall time       : %f s" % solver.WallTime())
+    # print()
+    # print("Statistics")
+    # print(
+    #     "  - Number of shift requests met = %i" % solver.ObjectiveValue(),
+    #     "(out of",
+    #     num_nurses * min_shifts_per_nurse,
+    #     ")",
+    # )
+    # print("  - wall time       : %f s" % solver.WallTime())
 
     return HttpResponseRedirect(reverse("timeslot_list"))
 
