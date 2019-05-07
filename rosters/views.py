@@ -403,7 +403,8 @@ def generate_roster(request):
             for d in range(num_days)
             for s in range(num_shifts)
         )
-        model.Add(nurse.shifts_per_roster == num_shifts_worked)
+        if nurse.shifts_per_roster != 0:
+            model.Add(nurse.shifts_per_roster == num_shifts_worked)
 
     model.Maximize(
         sum(
