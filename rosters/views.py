@@ -378,6 +378,22 @@ def generate_roster(request):
             model.Add(
                 sum(shift_vars[(n, d, s)] for n in range(num_nurses)) == 5
             )
+    
+    # for s, shift in enumerate(shifts):
+    #     shiftrules = shift.shiftrule_set.all()
+    #     for shiftrule in shiftrules:
+    #         shiftruleroles = shiftrulerole_set.all()
+    #         for shiftrulerole in shiftruleroles:
+    #             shiftrulerole.role 
+    #             shiftrulerole.count
+
+    for s, shift in enumerate(shifts):
+        for d in range(num_days):
+            for n, nurse in enumerate(nurses):
+                for role in nurse.roles.all():
+                    print(role.role_name)
+                    if "RN" != role.role_name and "SRN" != role.role_name and "CN" != role.role_name:
+                        model.Add(shift_vars[(n, d, s)] == 0)
 
     # Assign at most one shift per day per nurse
     for n, nurse in enumerate(nurses):
