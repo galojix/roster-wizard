@@ -90,7 +90,13 @@ class ShiftRuleRole(models.Model):
 
     def __str__(self):
         """String."""
-        return self.shift_rule.shift_rule_name + " " + self.role.role_name + ":" + str(self.count)
+        return (
+            self.shift_rule.shift_rule_name
+            + " "
+            + self.role.role_name
+            + ":"
+            + str(self.count)
+        )
 
     def get_absolute_url(self):
         """Next URL to display after updating."""

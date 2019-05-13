@@ -378,35 +378,82 @@ def generate_roster(request):
             model.Add(
                 sum(shift_vars[(n, d, s)] for n in range(num_nurses)) == 5
             )
-    
+
     # for s, shift in enumerate(shifts):
     #     shiftrules = shift.shiftrule_set.all()
     #     for shiftrule in shiftrules:
     #         shiftruleroles = shiftrulerole_set.all()
     #         for shiftrulerole in shiftruleroles:
-    #             shiftrulerole.role 
+    #             shiftrulerole.role
     #             shiftrulerole.count
 
-    # for s, shift in enumerate(shifts):
-    #     for d in range(num_days):
-    #         model.Add(
-    #             sum(shift_vars[(n, d, s)] for n in for n, nurse in enumerate(nurses) if "RN") == 3 and
-    #             sum(shift_vars[(n, d, s)] for n in for n, nurse in enumerate(nurses) if "SRN") == 2
-    #         )
-    #         for n, nurse in enumerate(nurses):
-    #             for role in nurse.roles.all():
-    #                 print(role.role_name)
-    #                 if role.role_name == "RN"
-    #                 if "RN" != role.role_name and "SRN" != role.role_name and "CN" != role.role_name:
-    #                     model.Add(shift_vars[(n, d, s)] == 0)
+    # rn_nurses = nurses.filter(roles__role_name="RN")
+    # srn_nurses = nurses.filter(roles__role_name="SRN")
+
+    # Map nurse pk to shift_vars n ?
+
+    rn_nurses = []
+    srn_nurses = []
+    for n, nurse in enumerate(nurses):
+        rn = False
+        srn = False
+        for role in nurse.roles.all():
+            if role.role_name == "RN":
+                rn = True
+            if role.role_name == "SRN":
+                srn = True
+        if rn:
+            rn_nurses.append(True)
+        else:
+            rn_nurses.append(False)
+        if srn:
+            srn_nurses.append(True)
+        else:
+            srn_nurses.append(False)
+
+    print(rn_nurses, srn_nurses)
+
+    for s, shift in enumerate(shifts):
+        for d in range(num_days):
+            model.Add(
+                (
+                    (
+                        sum(
+                            shift_vars[(n, d, s)]
+                            for n, nurse in enumerate(nurses)
+                            if rn_nurses[n]
+                        )
+                        >= 3
+                        and sum(
+                            shift_vars[(n, d, s)]
+                            for n, nurse in enumerate(nurses)
+                            if srn_nurses[n]
+                        )
+                        >= 1
+                    )
+                    # or (
+                    #     sum(
+                    #         shift_vars[(n, d, s)]
+                    #         for n, nurse in enumerate(nurses)
+                    #         if rn_nurses[n]
+                    #     )
+                    #     == 2
+                    #     and sum(
+                    #         shift_vars[(n, d, s)]
+                    #         for n, nurse in enumerate(nurses)
+                    #         if srn_nurses[n]
+                    #     )
+                    #     == 3
+                    # )
+                )
+            )
 
     # Assign at most one shift per day per nurse
     for n, nurse in enumerate(nurses):
         for d in range(num_days):
-            if nurse.shifts_per_roster != 0:  # 0 means no limit / temp staff
-                model.Add(
-                    sum(shift_vars[(n, d, s)] for s in range(num_shifts)) <= 1
-                )
+            model.Add(
+                sum(shift_vars[(n, d, s)] for s in range(num_shifts)) <= 1
+            )
 
     # Enforce shifts per roster for each nurse
     for n, nurse in enumerate(nurses):
