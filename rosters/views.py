@@ -240,7 +240,7 @@ class StaffRuleDetailView(LoginRequiredMixin, DetailView):
 
 class StaffRuleUpdateView(LoginRequiredMixin, UpdateView):
     model = StaffRule
-    fields = ("staff_rule_name",)
+    fields = ("staff_rule_name", "staff")
     template_name = "staff_rule_edit.html"
     login_url = "login"
 
@@ -387,13 +387,18 @@ def generate_roster(request):
     #             shiftrulerole.role 
     #             shiftrulerole.count
 
-    for s, shift in enumerate(shifts):
-        for d in range(num_days):
-            for n, nurse in enumerate(nurses):
-                for role in nurse.roles.all():
-                    print(role.role_name)
-                    if "RN" != role.role_name and "SRN" != role.role_name and "CN" != role.role_name:
-                        model.Add(shift_vars[(n, d, s)] == 0)
+    # for s, shift in enumerate(shifts):
+    #     for d in range(num_days):
+    #         model.Add(
+    #             sum(shift_vars[(n, d, s)] for n in for n, nurse in enumerate(nurses) if "RN") == 3 and
+    #             sum(shift_vars[(n, d, s)] for n in for n, nurse in enumerate(nurses) if "SRN") == 2
+    #         )
+    #         for n, nurse in enumerate(nurses):
+    #             for role in nurse.roles.all():
+    #                 print(role.role_name)
+    #                 if role.role_name == "RN"
+    #                 if "RN" != role.role_name and "SRN" != role.role_name and "CN" != role.role_name:
+    #                     model.Add(shift_vars[(n, d, s)] == 0)
 
     # Assign at most one shift per day per nurse
     for n, nurse in enumerate(nurses):

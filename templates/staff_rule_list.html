@@ -6,6 +6,7 @@
     <thead>
         <tr>
             <th>Staff Rule Name</th>
+            <th>Staff</th>
             <th>Action</th>
             <th>Shifts and Positions</th>
 
@@ -13,6 +14,10 @@
     {% for staff_rule in staffrule_list %}
     <tr>
         <td>{{ staff_rule.staff_rule_name }}</td>
+        <td>{% for staff_member in staff_rule.staff.all %}
+            {{ staff_member.last_name }}, {{ staff_member.first_name }}
+            {% endfor %}
+        </td>
         <td><a href="{% url 'staff_rule_edit' staff_rule.pk %}">Edit</a> | <a href="{% url 'staff_rule_delete' staff_rule.pk %}">Delete</a></td>
         <td>
             {% for staff_rule_shift in staff_rule.staffruleshift_set.all %}
