@@ -335,17 +335,23 @@ class TimeSlotCreateView(LoginRequiredMixin, CreateView):
 
 @login_required
 def generate_roster(request):
+
     nurses = get_user_model().objects.all()
-    num_nurses = nurses.count()
     shifts = Shift.objects.all()
-    num_shifts = shifts.count()
     num_days = 14
+
+    # Create dates and timeslots
     TimeSlot.objects.all().delete()
+    dates = []
     date = datetime.date.today()
     for day in range(num_days):
+        dates.append(date)
         for shift in shifts:
             TimeSlot.objects.create(date=date, shift=shift)
         date += datetime.timedelta(days=1)
+    timeslots = TimeSlot.objects.all()
+
+    # Create shift requests
     shift_requests = []
     for nurse in nurses:
         nurse_shift_requests = []
@@ -365,137 +371,111 @@ def generate_roster(request):
     model = cp_model.CpModel()
 
     # Create shift variables
-    # shifts[(n, d, s)]: nurse 'n' works shift 's' on day 'd'
+    # shifts[(n, r, d, t)]:
+    # nurse 'n' with role 'r' works on date 'd' in timeslot 't'
     shift_vars = {}
-    for n in range(num_nurses):
-        for d in range(num_days):
-            for s in range(num_shifts):
-                shift_vars[(n, d, s)] = model.NewBoolVar(f"shift_n{n}d{d}s{s}")
-
+    for nurse in nurses:
+        for role in nurse.roles.all():
+            for date in dates:
+                for timeslot in TimeSlot.objects.filter(date=date):
+                    n = nurse.id
+                    r = role.id
+                    d = date
+                    t = timeslot.id
+                    shift_vars[(n, r, d, t)] = model.NewBoolVar(
+                        f"shift_n{n}r{r}d{d}t{t}"
+                    )
+    
     # Assign each shift to exactly 5 nurses
-    for d in range(num_days):
-        for s in range(num_shifts):
-            model.Add(
-                sum(shift_vars[(n, d, s)] for n in range(num_nurses)) == 5
+    for timeslot in timeslots:
+        t = timeslot.id
+        model.Add(
+            sum(
+                shift_vars[(nurse.id, role.id, timeslot.date, t)]
+                for nurse in nurses
+                for role in nurse.roles.all()
             )
+            == 5
+        )
 
-    # for s, shift in enumerate(shifts):
-    #     shiftrules = shift.shiftrule_set.all()
+    # Enforce shift rules
+    # for timeslot in timeslots:
+    #     shiftrules = timeslot.shift.shiftrule_set.all()
     #     for shiftrule in shiftrules:
     #         shiftruleroles = shiftrulerole_set.all()
     #         for shiftrulerole in shiftruleroles:
     #             shiftrulerole.role
     #             shiftrulerole.count
-
-    # rn_nurses = nurses.filter(roles__role_name="RN")
-    # srn_nurses = nurses.filter(roles__role_name="SRN")
-
-    # Map nurse pk to shift_vars n ?
-
-    rn_nurses = []
-    srn_nurses = []
-    for n, nurse in enumerate(nurses):
-        rn = False
-        srn = False
-        for role in nurse.roles.all():
-            if role.role_name == "RN":
-                rn = True
-            if role.role_name == "SRN":
-                srn = True
-        if rn:
-            rn_nurses.append(True)
-        else:
-            rn_nurses.append(False)
-        if srn:
-            srn_nurses.append(True)
-        else:
-            srn_nurses.append(False)
-
-    print(rn_nurses, srn_nurses)
-
-    for s, shift in enumerate(shifts):
-        for d in range(num_days):
-            model.Add(
-                (
-                    (
-                        sum(
-                            shift_vars[(n, d, s)]
-                            for n, nurse in enumerate(nurses)
-                            if rn_nurses[n]
-                        )
-                        >= 3
-                        and sum(
-                            shift_vars[(n, d, s)]
-                            for n, nurse in enumerate(nurses)
-                            if srn_nurses[n]
-                        )
-                        >= 1
-                    )
-                    # or (
-                    #     sum(
-                    #         shift_vars[(n, d, s)]
-                    #         for n, nurse in enumerate(nurses)
-                    #         if rn_nurses[n]
-                    #     )
-                    #     == 2
-                    #     and sum(
-                    #         shift_vars[(n, d, s)]
-                    #         for n, nurse in enumerate(nurses)
-                    #         if srn_nurses[n]
-                    #     )
-                    #     == 3
-                    # )
-                )
-            )
-
+    
     # Assign at most one shift per day per nurse
-    for n, nurse in enumerate(nurses):
-        for d in range(num_days):
+    for nurse in nurses:
+        for date in dates:
             model.Add(
-                sum(shift_vars[(n, d, s)] for s in range(num_shifts)) <= 1
+                sum(
+                    shift_vars[(nurse.id, role.id, date, timeslot.id)]
+                    for role in nurse.roles.all()
+                    for timeslot in TimeSlot.objects.filter(date=date)
+                )
+                <= 1
             )
 
     # Enforce shifts per roster for each nurse
-    for n, nurse in enumerate(nurses):
+    for nurse in nurses:
         num_shifts_worked = sum(
-            shift_vars[(n, d, s)]
-            for d in range(num_days)
-            for s in range(num_shifts)
+            shift_vars[(nurse.id, role.id, date, timeslot.id)]
+            for role in nurse.roles.all()
+            for date in dates
+            for timeslot in TimeSlot.objects.filter(date=date)
         )
-        if nurse.shifts_per_roster != 0:  # 0 means no limit / temporary staff
+        if nurse.shifts_per_roster != 0:  
             model.Add(nurse.shifts_per_roster == num_shifts_worked)
 
     # Maximise the number of satisfied shift requests
     model.Maximize(
         sum(
-            shift_requests[n][d][s] * shift_vars[(n, d, s)]
-            for n in range(num_nurses)
-            for d in range(num_days)
-            for s in range(num_shifts)
+            shift_requests[n][d][s]
+            * shift_vars[(nurse.id, role.id, date, timeslot.id)]
+            for n, nurse in enumerate(nurses)
+            for role in nurse.roles.all()
+            for d, date in enumerate(dates)
+            for s, timeslot in enumerate(TimeSlot.objects.filter(date=date))
         )
     )
 
     # Create the solver and solve
     solver = cp_model.CpSolver()
     solver.Solve(model)
-    date = datetime.date.today()
-    for d in range(num_days):
+    print("Shift_vars:", shift_vars)
+    for d, date in enumerate(dates):
         print("Day", d)
         for n, nurse in enumerate(nurses):
-            for s, shift in enumerate(shifts):
-                if solver.Value(shift_vars[(n, d, s)]) == 1:
-                    if shift_requests[n][d][s] >= 1:
-                        print("Nurse", n, "works shift", s, "(requested).")
-                        TimeSlot.objects.get(date=date, shift=shift).staff.add(
-                            nurse
+            for role in nurse.roles.all():
+                for s, timeslot in enumerate(
+                    TimeSlot.objects.filter(date=date)
+                ):
+                    if (
+                        solver.Value(
+                            shift_vars[(nurse.id, role.id, date, timeslot.id)]
                         )
-                    else:
-                        print("Nurse", n, "works shift", s, "(not requested).")
-                        TimeSlot.objects.get(date=date, shift=shift).staff.add(
-                            nurse
-                        )
+                        == 1
+                    ):
+                        if shift_requests[n][d][s] >= 1:
+                            print("Nurse", n, "works shift", s, "(requested).")
+                            TimeSlot.objects.get(
+                                date=date, shift=timeslot.shift
+                            ).staff.add(nurse)
+                        else:
+                            print(
+                                "Nurse",
+                                n,
+                                "works shift",
+                                s,
+                                "(not requested).",
+                            )
+                            TimeSlot.objects.get(
+                                date=date, shift=timeslot.shift
+                            ).staff.add(nurse)
         print()
-        date += datetime.timedelta(days=1)
 
     # Statistics.
     # print()
