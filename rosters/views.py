@@ -337,7 +337,7 @@ class TimeSlotCreateView(LoginRequiredMixin, CreateView):
 def generate_roster(request):
 
     nurses = get_user_model().objects.all()
-    shifts = Shift.objects.all().order_by('shift_type')
+    shifts = Shift.objects.all().order_by("shift_type")
     num_days = 14
 
     # Create dates and timeslots
@@ -377,7 +377,9 @@ def generate_roster(request):
     for nurse in nurses:
         for role in nurse.roles.all():
             for date in dates:
-                for timeslot in TimeSlot.objects.filter(date=date).order_by('shift__shift_type'):
+                for timeslot in TimeSlot.objects.filter(date=date).order_by(
+                    "shift__shift_type"
+                ):
                     n = nurse.id
                     r = role.id
                     d = date
@@ -385,7 +387,7 @@ def generate_roster(request):
                     shift_vars[(n, r, d, t)] = model.NewBoolVar(
                         f"shift_n{n}r{r}d{d}t{t}"
                     )
-    
+
     # Assign each shift to exactly 5 nurses
     for timeslot in timeslots:
         t = timeslot.id
@@ -409,19 +411,19 @@ def generate_roster(request):
 
     for timeslot in timeslots:
         model.Add(
-            # sum(
-            #     shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
-            #     for nurse in nurses
-            #     for role in nurse.roles.all()
-            #     if role.id == 1
-            # )
-            # == 4 or
             sum(
                 shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
                 for nurse in nurses
                 for role in nurse.roles.all()
-                if role.id == 2
-            ) >= 1
+                if role.id == 1
+            )
+            == 3
+            # sum(
+            #     shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
+            #     for nurse in nurses
+            #     for role in nurse.roles.all()
+            #     if role.id == 2
+            # ) == 2
         )
 
     # Assign at most one shift per day per nurse
@@ -431,7 +433,9 @@ def generate_roster(request):
                 sum(
                     shift_vars[(nurse.id, role.id, date, timeslot.id)]
                     for role in nurse.roles.all()
-                    for timeslot in TimeSlot.objects.filter(date=date).order_by('shift__shift_type')
+                    for timeslot in TimeSlot.objects.filter(
+                        date=date
+                    ).order_by("shift__shift_type")
                 )
                 <= 1
             )
@@ -442,9 +446,11 @@ def generate_roster(request):
             shift_vars[(nurse.id, role.id, date, timeslot.id)]
             for role in nurse.roles.all()
             for date in dates
-            for timeslot in TimeSlot.objects.filter(date=date).order_by('shift__shift_type')
+            for timeslot in TimeSlot.objects.filter(date=date).order_by(
+                "shift__shift_type"
+            )
         )
-        if nurse.shifts_per_roster != 0:  
+        if nurse.shifts_per_roster != 0:
             model.Add(nurse.shifts_per_roster == num_shifts_worked)
 
     # Maximise the number of satisfied shift requests
@@ -455,20 +461,25 @@ def generate_roster(request):
             for n, nurse in enumerate(nurses)
             for role in nurse.roles.all()
             for d, date in enumerate(dates)
-            for s, timeslot in enumerate(TimeSlot.objects.filter(date=date).order_by('shift__shift_type'))
+            for s, timeslot in enumerate(
+                TimeSlot.objects.filter(date=date).order_by(
+                    "shift__shift_type"
+                )
+            )
         )
     )
 
     # Create the solver and solve
     solver = cp_model.CpSolver()
     solver.Solve(model)
-    print("Shift_vars:", shift_vars)
     for d, date in enumerate(dates):
         print("Day", d)
         for n, nurse in enumerate(nurses):
             for role in nurse.roles.all():
                 for s, timeslot in enumerate(
-                    TimeSlot.objects.filter(date=date).order_by('shift__shift_type')
+                    TimeSlot.objects.filter(date=date).order_by(
+                        "shift__shift_type"
+                    )
                 ):
                     if (
                         solver.Value(
