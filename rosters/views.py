@@ -394,7 +394,7 @@ def generate_roster(request):
         model.Add(
             sum(
                 shift_vars[(nurse.id, role.id, timeslot.date, t)]
-                for nurse in nurses
+                for nurse in nurses.filter()
                 for role in nurse.roles.all()
             )
             == 5
@@ -409,43 +409,51 @@ def generate_roster(request):
     #             shiftrulerole.role
     #             shiftrulerole.count
 
+    nurses_with_role = {}
+    nurses_with_role[1] = nurses.filter(roles__id=1)
+    nurses_with_role[2] = nurses.filter(roles__id=2)
+
     for timeslot in timeslots:
         intermediate_var = model.NewBoolVar('intermediate')
+
+        role_id = 1
+        role_count = 2
         model.Add(
             sum(
-                shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
-                for nurse in nurses
-                for role in nurse.roles.all()
-                if role.id == 1
-            ) 
-            == 2
-        ).OnlyEnforceIf(intermediate_var)
-        model.Add(
-            sum(
-                shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
-                for nurse in nurses
-                for role in nurse.roles.all()
-                if role.id == 2
-            ) 
-            == 3
-        ).OnlyEnforceIf(intermediate_var)
-        model.Add(
-            sum(
-                shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
-                for nurse in nurses
-                for role in nurse.roles.all()
-                if role.id == 1
+                shift_vars[(nurse.id, role_id, timeslot.date, timeslot.id)]
+                for nurse in nurses_with_role[role_id]
             )
-            == 3
-        ).OnlyEnforceIf(intermediate_var.Not())
+            == role_count
+        ).OnlyEnforceIf(intermediate_var)
+
+        role_id = 2
+        role_count = 3
         model.Add(
             sum(
-                shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
-                for nurse in nurses
-                for role in nurse.roles.all()
-                if role.id == 2
-            ) 
-            == 2
+                shift_vars[(nurse.id, role_id, timeslot.date, timeslot.id)]
+                for nurse in nurses_with_role[role_id]
+            )
+            == role_count
+        ).OnlyEnforceIf(intermediate_var)
+
+        role_id = 1
+        role_count = 3
+        model.Add(
+            sum(
+                shift_vars[(nurse.id, role_id, timeslot.date, timeslot.id)]
+                for nurse in nurses_with_role[role_id]
+            )
+            == role_count
+        ).OnlyEnforceIf(intermediate_var.Not())
+
+        role_id = 2
+        role_count = 2
+        model.Add(
+            sum(
+                shift_vars[(nurse.id, role_id, timeslot.date, timeslot.id)]
+                for nurse in nurses_with_role[role_id]
+            )
+            == role_count
         ).OnlyEnforceIf(intermediate_var.Not())
 
     # Assign at most one shift per day per nurse
