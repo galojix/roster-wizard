@@ -394,7 +394,7 @@ def generate_roster(request):
         model.Add(
             sum(
                 shift_vars[(nurse.id, role.id, timeslot.date, t)]
-                for nurse in nurses.filter()
+                for nurse in nurses
                 for role in nurse.roles.all()
             )
             == 5
