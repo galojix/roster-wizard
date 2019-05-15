@@ -410,6 +410,25 @@ def generate_roster(request):
     #             shiftrulerole.count
 
     for timeslot in timeslots:
+        intermediate_var = model.NewBoolVar('intermediate')
+        model.Add(
+            sum(
+                shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
+                for nurse in nurses
+                for role in nurse.roles.all()
+                if role.id == 1
+            ) 
+            == 2
+        ).OnlyEnforceIf(intermediate_var)
+        model.Add(
+            sum(
+                shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
+                for nurse in nurses
+                for role in nurse.roles.all()
+                if role.id == 2
+            ) 
+            == 3
+        ).OnlyEnforceIf(intermediate_var)
         model.Add(
             sum(
                 shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
@@ -418,13 +437,16 @@ def generate_roster(request):
                 if role.id == 1
             )
             == 3
-            # sum(
-            #     shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
-            #     for nurse in nurses
-            #     for role in nurse.roles.all()
-            #     if role.id == 2
-            # ) == 2
-        )
+        ).OnlyEnforceIf(intermediate_var.Not())
+        model.Add(
+            sum(
+                shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
+                for nurse in nurses
+                for role in nurse.roles.all()
+                if role.id == 2
+            ) 
+            == 2
+        ).OnlyEnforceIf(intermediate_var.Not())
 
     # Assign at most one shift per day per nurse
     for nurse in nurses:
