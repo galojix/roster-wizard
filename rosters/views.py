@@ -409,52 +409,94 @@ def generate_roster(request):
     #             shiftrulerole.role
     #             shiftrulerole.count
 
-    nurses_with_role = {}
-    nurses_with_role[1] = nurses.filter(roles__id=1)
-    nurses_with_role[2] = nurses.filter(roles__id=2)
+    shift_rules = {}
+    for shift in shifts:
+        shift_rules[shift.id] = []
+        shiftrules = ShiftRule.objects.filter(shift=shift)
+        for shiftrule in shiftrules:
+            shiftruleroles = shiftrule.shiftrulerole_set.all()
+            role_count = {}
+            for shiftrulerole in shiftruleroles:
+                role_count[shiftrulerole.role.id] = shiftrulerole.count
+            shift_rules[shift.id].append(role_count)
 
-    for timeslot in timeslots:
-        intermediate_var = model.NewBoolVar('intermediate')
+    # print(shift_rules)
 
-        role_id = 1
-        role_count = 2
-        model.Add(
-            sum(
-                shift_vars[(nurse.id, role_id, timeslot.date, timeslot.id)]
-                for nurse in nurses_with_role[role_id]
-            )
-            == role_count
-        ).OnlyEnforceIf(intermediate_var)
+    intermediate_vars = {
+        (shift_id, rule_num): model.NewBoolVar(f"s{shift_id}r{rule_num}")
+        for shift_id in shift_rules
+        for rule_num, rule in enumerate(shift_rules[shift_id])
+    }
 
-        role_id = 2
-        role_count = 3
-        model.Add(
-            sum(
-                shift_vars[(nurse.id, role_id, timeslot.date, timeslot.id)]
-                for nurse in nurses_with_role[role_id]
-            )
-            == role_count
-        ).OnlyEnforceIf(intermediate_var)
+    for shift_id in shift_rules:
+        for rule_num, rule in enumerate(shift_rules[shift_id]):
+            conditions = []
+            for key, value in intermediate_vars.items():
+                if key == (shift_id, rule_num):
+                    conditions.append(intermediate_vars[key])
+                else:
+                    conditions.append(intermediate_vars[key].Not())
+            for role_id in rule:
+                for role_id in rule:
+                    role_count = rule[role_id]
+                    for timeslot in timeslots.filter(shift__id=shift_id):
+                        model.Add(
+                            sum(
+                                shift_vars[
+                                    (
+                                        nurse.id,
+                                        role_id,
+                                        timeslot.date,
+                                        timeslot.id,
+                                    )
+                                ]
+                                for nurse in nurses.filter(roles__id=role_id)
+                            )
+                            == role_count
+                        ).OnlyEnforceIf(conditions)
 
-        role_id = 1
-        role_count = 3
-        model.Add(
-            sum(
-                shift_vars[(nurse.id, role_id, timeslot.date, timeslot.id)]
-                for nurse in nurses_with_role[role_id]
-            )
-            == role_count
-        ).OnlyEnforceIf(intermediate_var.Not())
+    # for timeslot in timeslots:
+    #     intermediate_var = model.NewBoolVar('intermediate')
 
-        role_id = 2
-        role_count = 2
-        model.Add(
-            sum(
-                shift_vars[(nurse.id, role_id, timeslot.date, timeslot.id)]
-                for nurse in nurses_with_role[role_id]
-            )
-            == role_count
-        ).OnlyEnforceIf(intermediate_var.Not())
+    #     role_id = 1
+    #     role_count = 2
+    #     model.Add(
+    #         sum(
+    #             shift_vars[(nurse.id, role_id, timeslot.date, timeslot.id)]
+    #             for nurse in nurses_with_role[role_id]
+    #         )
+    #         == role_count
+    #     ).OnlyEnforceIf(intermediate_var)
+
+    #     role_id = 2
+    #     role_count = 3
+    #     model.Add(
+    #         sum(
+    #             shift_vars[(nurse.id, role_id, timeslot.date, timeslot.id)]
+    #             for nurse in nurses_with_role[role_id]
+    #         )
+    #         == role_count
+    #     ).OnlyEnforceIf(intermediate_var)
+
+    #     role_id = 1
+    #     role_count = 3
+    #     model.Add(
+    #         sum(
+    #             shift_vars[(nurse.id, role_id, timeslot.date, timeslot.id)]
+    #             for nurse in nurses_with_role[role_id]
+    #         )
+    #         == role_count
+    #     ).OnlyEnforceIf(intermediate_var.Not())
+
+    #     role_id = 2
+    #     role_count = 2
+    #     model.Add(
+    #         sum(
+    #             shift_vars[(nurse.id, role_id, timeslot.date, timeslot.id)]
+    #             for nurse in nurses_with_role[role_id]
+    #         )
+    #         == role_count
+    #     ).OnlyEnforceIf(intermediate_var.Not())
 
     # Assign at most one shift per day per nurse
     for nurse in nurses:
@@ -503,7 +545,7 @@ def generate_roster(request):
     solver = cp_model.CpSolver()
     solver.Solve(model)
     for d, date in enumerate(dates):
-        print("Day", d)
+        # print("Day", d)
         for n, nurse in enumerate(nurses):
             for role in nurse.roles.all():
                 for s, timeslot in enumerate(
@@ -518,22 +560,22 @@ def generate_roster(request):
                         == 1
                     ):
                         if shift_requests[n][d][s] >= 1:
-                            print("Nurse", n, "works shift", s, "(requested).")
+                            # print("Nurse", n, "works shift", s, "(requested).")
                             TimeSlot.objects.get(
                                 date=date, shift=timeslot.shift
                             ).staff.add(nurse)
                         else:
-                            print(
-                                "Nurse",
-                                n,
-                                "works shift",
-                                s,
-                                "(not requested).",
-                            )
+                            # print(
+                            #     "Nurse",
+                            #     n,
+                            #     "works shift",
+                            #     s,
+                            #     "(not requested).",
+                            # )
                             TimeSlot.objects.get(
                                 date=date, shift=timeslot.shift
                             ).staff.add(nurse)
-        print()
+        # print()
 
     # Statistics.
     # print()
