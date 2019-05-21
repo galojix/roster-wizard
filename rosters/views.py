@@ -2,7 +2,6 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from collections import OrderedDict
 
 # from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
@@ -402,7 +401,7 @@ def generate_roster(request):
         )
 
     # Collect shift rules into friendly structure
-    shift_rules = OrderedDict()
+    shift_rules = {}
     for shift in shifts:
         shift_rules[shift.id] = []
         shiftrules = ShiftRule.objects.filter(shift=shift)
