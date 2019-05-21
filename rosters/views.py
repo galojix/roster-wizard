@@ -2,6 +2,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from collections import OrderedDict
 
 # from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
@@ -408,8 +409,9 @@ def generate_roster(request):
     #         for shiftrulerole in shiftruleroles:
     #             shiftrulerole.role
     #             shiftrulerole.count
-
-    shift_rules = {}
+    
+    # Collect shift rules into friendly structure
+    shift_rules = OrderedDict()
     for shift in shifts:
         shift_rules[shift.id] = []
         shiftrules = ShiftRule.objects.filter(shift=shift)
@@ -422,21 +424,28 @@ def generate_roster(request):
 
     # print(shift_rules)
 
+    # Intermediate shift rule variables
     intermediate_vars = {
         (shift_id, rule_num): model.NewBoolVar(f"s{shift_id}r{rule_num}")
         for shift_id in shift_rules
         for rule_num, rule in enumerate(shift_rules[shift_id])
     }
 
+    # Only one shift rule at a time can be satisfied
     for shift_id in shift_rules:
-        for rule_num, rule in enumerate(shift_rules[shift_id]):
-            conditions = []
-            for key, value in intermediate_vars.items():
-                if key == (shift_id, rule_num):
-                    conditions.append(intermediate_vars[key])
-                else:
-                    conditions.append(intermediate_vars[key].Not())
-            for role_id in rule:
+        if len(shift_rules[shift_id]) >= 1:
+            model.Add(
+                sum(
+                    intermediate_vars[(shift_id, rule_num)]
+                    for rule_num, rule in enumerate(shift_rules[shift_id])
+                )
+                == 1
+            )
+
+    # Enforce one shift rule per shift per timeslot
+    for shift_id in shift_rules:
+        if len(shift_rules[shift_id]) >= 1:
+            for rule_num, rule in enumerate(shift_rules[shift_id]):
                 for role_id in rule:
                     role_count = rule[role_id]
                     for timeslot in timeslots.filter(shift__id=shift_id):
@@ -453,7 +462,9 @@ def generate_roster(request):
                                 for nurse in nurses.filter(roles__id=role_id)
                             )
                             == role_count
-                        ).OnlyEnforceIf(conditions)
+                        ).OnlyEnforceIf(
+                            intermediate_vars[(shift_id, rule_num)]
+                        )
 
     # for timeslot in timeslots:
     #     intermediate_var = model.NewBoolVar('intermediate')
@@ -553,6 +564,7 @@ def generate_roster(request):
                         "shift__shift_type"
                     )
                 ):
+                    # print("Shift var:", shift_vars[(nurse.id, role.id, date, timeslot.id)], nurse.id, role.id, date, timeslot.id)
                     if (
                         solver.Value(
                             shift_vars[(nurse.id, role.id, date, timeslot.id)]
@@ -560,18 +572,18 @@ def generate_roster(request):
                         == 1
                     ):
                         if shift_requests[n][d][s] >= 1:
-                            # print("Nurse", n, "works shift", s, "(requested).")
+                            print("Nurse", n, "works shift", s, "(requested).")
                             TimeSlot.objects.get(
                                 date=date, shift=timeslot.shift
                             ).staff.add(nurse)
                         else:
-                            # print(
-                            #     "Nurse",
-                            #     n,
-                            #     "works shift",
-                            #     s,
-                            #     "(not requested).",
-                            # )
+                            print(
+                                "Nurse",
+                                n,
+                                "works shift",
+                                s,
+                                "(not requested).",
+                            )
                             TimeSlot.objects.get(
                                 date=date, shift=timeslot.shift
                             ).staff.add(nurse)
