@@ -389,16 +389,16 @@ def generate_roster(request):
                     )
 
     # Assign each shift to exactly 5 nurses
-    for timeslot in timeslots:
-        t = timeslot.id
-        model.Add(
-            sum(
-                shift_vars[(nurse.id, role.id, timeslot.date, t)]
-                for nurse in nurses
-                for role in nurse.roles.all()
-            )
-            == 5
-        )
+    # for timeslot in timeslots:
+    #     t = timeslot.id
+    #     model.Add(
+    #         sum(
+    #             shift_vars[(nurse.id, role.id, timeslot.date, t)]
+    #             for nurse in nurses
+    #             for role in nurse.roles.all()
+    #         )
+    #         == 5
+    #     )
 
     # Collect shift rules into friendly structure
     shift_rules = {}
