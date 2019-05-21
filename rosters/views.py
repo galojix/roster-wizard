@@ -505,7 +505,7 @@ def generate_roster(request):
         print(value, solver.Value(value))
 
     for d, date in enumerate(dates):
-        # print("Day", d)
+        print(f"Day {d}:")
         for n, nurse in enumerate(nurses):
             for role in nurse.roles.all():
                 for s, timeslot in enumerate(
@@ -520,33 +520,36 @@ def generate_roster(request):
                         == 1
                     ):
                         if shift_requests[n][d][s] >= 1:
-                            # print("Nurse", n, "works shift", s, "(requested).")
+                            print(
+                                f"*** Request Successful *** "
+                                f"{nurse.last_name}, {nurse.first_name}"
+                                f" requested shift"
+                                f" {timeslot.shift.shift_type}"
+                                f" and was assigned."
+                            )
                             TimeSlot.objects.get(
                                 date=date, shift=timeslot.shift
                             ).staff.add(nurse)
                         else:
-                            # print(
-                            #     "Nurse",
-                            #     n,
-                            #     "works shift",
-                            #     s,
-                            #     "(not requested).",
-                            # )
+                            print(
+                                f"{nurse.last_name}, {nurse.first_name}"
+                                f" did not request shift"
+                                f" {timeslot.shift.shift_type}"
+                                f" and was assigned."
+                            )
                             TimeSlot.objects.get(
                                 date=date, shift=timeslot.shift
                             ).staff.add(nurse)
-        # print()
-
-    # Statistics.
-    # print()
-    # print("Statistics")
-    # print(
-    #     "  - Number of shift requests met = %i" % solver.ObjectiveValue(),
-    #     "(out of",
-    #     num_nurses * min_shifts_per_nurse,
-    #     ")",
-    # )
-    # print("  - wall time       : %f s" % solver.WallTime())
+                    else:
+                        if shift_requests[n][d][s] >= 1:
+                            print(
+                                f"*** Request Failed *** "
+                                f"{nurse.last_name}, {nurse.first_name}"
+                                f" requested shift"
+                                f" {timeslot.shift.shift_type}"
+                                f" but was not assigned."
+                            )
+        print()
 
     return HttpResponseRedirect(reverse("timeslot_list"))
 
