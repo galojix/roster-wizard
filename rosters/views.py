@@ -355,7 +355,10 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         try:
             self.generate_roster(start_date, num_days)
         except SolutionNotFeasible:
-            messages.error(self.request, 'Could not generate roster, try changing rules or staff availability.')
+            messages.error(
+                self.request,
+                "Could not generate roster, try changing rules or staff availability.",
+            )
         return super().form_valid(form)
 
     def generate_roster(self, start_date, num_days):
@@ -366,7 +369,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         # Delete existing shifts in date range
         date_range = [
             start_date.date(),
-            start_date.date() + datetime.timedelta(days=num_days)
+            start_date.date() + datetime.timedelta(days=num_days),
         ]
         TimeSlot.objects.filter(date__range=date_range).delete()
 
@@ -530,12 +533,14 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
 
         # Create the solver and solve
         solver = cp_model.CpSolver()
+        solver.parameters.max_time_in_seconds = 60
         solution_status = solver.Solve(model)
-        solution_status_name = solver.StatusName(solution_status)
-        print("Solution status:", solution_status, solution_status_name)
-        if solution_status_name == "INFEASIBLE":
-            raise SolutionNotFeasible("No feasible solutions.") 
-        
+        if (
+            solution_status != cp_model.FEASIBLE
+            and solution_status != cp_model.OPTIMAL
+        ):
+            raise SolutionNotFeasible("No feasible solutions.")
+
         # for value in intermediate_vars.values():
         #     print(value, solver.Value(value))
 
