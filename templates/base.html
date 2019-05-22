@@ -48,6 +48,14 @@
       </div>
     </nav>
     <div class="container">
+      {% if messages %}
+      <div class="messages alert alert-danger">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {% for message in messages %}
+          <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+          {% endfor %}
+      </div>
+      {% endif %}
       {% block content %}
       {% endblock content %}
     </div>

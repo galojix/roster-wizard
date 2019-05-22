@@ -12,6 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from ortools.sat.python import cp_model
 from django.contrib.auth import get_user_model
+from django.contrib import messages
 import datetime
 from rosters.forms import GenerateRosterForm
 
@@ -337,6 +338,10 @@ class TimeSlotCreateView(LoginRequiredMixin, CreateView):
     login_url = "login"
 
 
+class SolutionNotFeasible(Exception):
+    pass
+
+
 class GenerateRosterView(LoginRequiredMixin, FormView):
     template_name = "generate_roster.html"
     form_class = GenerateRosterForm
@@ -347,7 +352,10 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         # It should return an HttpResponse.
         start_date = form.cleaned_data["start_date"]
         num_days = form.cleaned_data["num_days"]
-        self.generate_roster(start_date, num_days)
+        try:
+            self.generate_roster(start_date, num_days)
+        except SolutionNotFeasible:
+            messages.error(self.request, 'Could not generate roster, try changing rules or staff availability.')
         return super().form_valid(form)
 
     def generate_roster(self, start_date, num_days):
@@ -522,9 +530,14 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
 
         # Create the solver and solve
         solver = cp_model.CpSolver()
-        solver.Solve(model)
-        for value in intermediate_vars.values():
-            print(value, solver.Value(value))
+        solution_status = solver.Solve(model)
+        solution_status_name = solver.StatusName(solution_status)
+        print("Solution status:", solution_status, solution_status_name)
+        if solution_status_name == "INFEASIBLE":
+            raise SolutionNotFeasible("No feasible solutions.") 
+        
+        # for value in intermediate_vars.values():
+        #     print(value, solver.Value(value))
 
         for d, date in enumerate(dates):
             print(f"Day {d}:")
