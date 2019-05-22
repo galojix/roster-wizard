@@ -34,3 +34,8 @@ class TimeSlotUpdateForm(ModelForm):
         model = TimeSlot
         fields = ("date", "shift", "staff")
         widgets = {"date": DateInput()}
+
+
+class GenerateRosterForm(forms.Form):
+    start_date = forms.DateTimeField(widget=DateInput())
+    num_days = forms.IntegerField(initial=14)

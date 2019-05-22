@@ -41,7 +41,7 @@ from .views import (
     TimeSlotDetailView,
     TimeSlotDeleteView,
     TimeSlotCreateView,
-    generate_roster,
+    GenerateRosterView,
     PreferenceListView,
     PreferenceUpdateView,
     PreferenceDetailView,
@@ -180,7 +180,11 @@ urlpatterns = [
     ),
     path("timeslot/new/", TimeSlotCreateView.as_view(), name="timeslot_new"),
     path("timeslot/", TimeSlotListView.as_view(), name="timeslot_list"),
-    path("timeslot/generate", generate_roster, name="generate_roster"),
+    path(
+        "timeslot/generate",
+        GenerateRosterView.as_view(),
+        name="generate_roster",
+    ),
     path(
         "preference/<int:pk>/edit/",
         PreferenceUpdateView.as_view(),
