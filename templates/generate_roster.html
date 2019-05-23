@@ -4,6 +4,9 @@
     <h3>Select Roster Date Period:</h3>
     <form action="" method="post">{% csrf_token %}
       {{ form.as_p }}
-    <button class="btn btn-info ml-2" type="submit">Submit</button>
+    <button class="btn btn-info ml-2 btn-process" type="submit">Submit</button>
 </form>
+<div class="processing alert alert-success mt-3">
+  <p>Processing, please wait...</p>
+</div>
 {% endblock content %}
