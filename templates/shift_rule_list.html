@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Shift Rules</h2>
+<h2>Skill Mix Rules</h2>
 <table class="table table-striped table-bordered table-hover">
     <thead>
         <tr>
             <th>Shift</th>
-            <th>Shift Rule Name</th>
+            <th>Skill Mix Rule Name</th>
             <th>Action</th>
             <th>Roles</th>
         </tr>
@@ -26,5 +26,5 @@
     </tr>
   {% endfor %}
 </table>
-<a href="{% url 'shift_rule_new' %}">Create New Shift Rule</a>
+<a href="{% url 'shift_rule_new' %}">Create New Skill Mix Rule</a>
 {% endblock content %}
