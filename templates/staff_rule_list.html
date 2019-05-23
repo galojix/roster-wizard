@@ -3,14 +3,13 @@
 {% block content %}
 <h2>Staff Rules</h2>
 <table class="table table-striped table-bordered table-hover">
-    <thead>
-        <tr>
-            <th>Staff Rule Name</th>
-            <th>Staff</th>
-            <th>Action</th>
-            <th>Shifts and Positions</th>
+    <tr>
+        <th>Staff Rule Name</th>
+        <th>Staff</th>
+        <th>Action</th>
+        <th>Shifts and Positions</th>
 
-        </tr>
+    </tr>
     {% for staff_rule in staffrule_list %}
     <tr>
         <td>{{ staff_rule.staff_rule_name }}</td>

@@ -3,14 +3,13 @@
 {% block content %}
 <h2>Staff Requests</h2>
 <table class="table table-striped table-bordered table-hover">
-    <thead>
-        <tr>
-            <th>Staff Member</th>
-            <th>Day</th>
-            <th>Shift</th>
-            <th>Priority</th>
-            <th>Action</th>
-        </tr>
+    <tr>
+        <th>Staff Member</th>
+        <th>Day</th>
+        <th>Shift</th>
+        <th>Priority</th>
+        <th>Action</th>
+    </tr>
     {% for preference in preference_list %}
     <tr>
         <td>{{ preference.staff_member.last_name }}, {{ preference.staff_member.first_name }}</td>

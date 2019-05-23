@@ -3,13 +3,12 @@
 {% block content %}
 <h2>Skill Mix Rules</h2>
 <table class="table table-striped table-bordered table-hover">
-    <thead>
-        <tr>
-            <th>Shift</th>
-            <th>Skill Mix Rule Name</th>
-            <th>Action</th>
-            <th>Roles</th>
-        </tr>
+    <tr>
+        <th>Shift</th>
+        <th>Skill Mix Rule Name</th>
+        <th>Action</th>
+        <th>Roles</th>
+    </tr>
     {% for shift_rule in shiftrule_list %}
     <tr>
         <td>{{ shift_rule.shift }}

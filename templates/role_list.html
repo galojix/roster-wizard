@@ -3,11 +3,10 @@
 {% block content %}
 <h2>Roles</h2>
 <table class="table table-striped table-bordered table-hover">
-    <thead>
-        <tr>
-            <th>Role</th>
-            <th>Action</th>
-        </tr>
+    <tr>
+        <th>Role</th>
+        <th>Action</th>
+    </tr>
     {% for role in role_list %}
     <tr>
         <td>{{ role.role_name }}</td>
