@@ -260,7 +260,7 @@ class StaffRuleDeleteView(LoginRequiredMixin, DeleteView):
 class StaffRuleCreateView(LoginRequiredMixin, CreateView):
     model = StaffRule
     template_name = "staff_rule_new.html"
-    fields = ("staff_rule_name", "staff",)
+    fields = ("staff_rule_name", "staff")
     login_url = "login"
 
 
@@ -380,8 +380,18 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         date = start_date.date()
         for day in range(num_days):
             dates.append(date)
+            day_of_week = date.weekday()
             for shift in shifts:
-                TimeSlot.objects.create(date=date, shift=shift)
+                if (
+                    (shift.monday and day_of_week == 0)
+                    or (shift.tuesday and day_of_week == 1)
+                    or (shift.wednesday and day_of_week == 2)
+                    or (shift.thursday and day_of_week == 3)
+                    or (shift.friday and day_of_week == 4)
+                    or (shift.saturday and day_of_week == 5)
+                    or (shift.sunday and day_of_week == 6)
+                ):
+                    TimeSlot.objects.create(date=date, shift=shift)
             date += datetime.timedelta(days=1)
         timeslots = TimeSlot.objects.filter(date__range=date_range)
 
