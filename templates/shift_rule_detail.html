@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="shift_rule-entry">
-  <h2>Shift Rule Name: {{ shiftrule.shift_rule_name }}</h2>
+  <h2>Skill Mix Rule Name: {{ shiftrule.shift_rule_name }}</h2>
     <p>Shift: {{ shiftrule.shift }}</p>
     <p>Roles: {% for shift_rule_role in shiftrule.shiftrulerole_set.all %}
        {{ shift_rule_role.role.role_name }}:{{ shift_rule_role.count }}
@@ -11,5 +11,5 @@
 </div>
 
   <p><a href="{% url 'shift_rule_edit' shiftrule.pk %}">Edit</a> | <a href="{% url 'shift_rule_delete' shiftrule.pk %}">Delete</a></p>
-  <p>Back to <a href="{% url 'shift_rule_list' %}">All Shift Rules</a>.</p>
+  <p>Back to <a href="{% url 'shift_rule_list' %}">All Skill Mix Rules</a>.</p>
 {% endblock content %}
