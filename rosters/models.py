@@ -126,6 +126,9 @@ class StaffRuleShift(models.Model):
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
     position = models.IntegerField(null=False, blank=False)
 
+    class Meta:
+        ordering = ('position',)
+
     def __str__(self):
         """String."""
         return (

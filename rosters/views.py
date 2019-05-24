@@ -260,7 +260,7 @@ class StaffRuleDeleteView(LoginRequiredMixin, DeleteView):
 class StaffRuleCreateView(LoginRequiredMixin, CreateView):
     model = StaffRule
     template_name = "staff_rule_new.html"
-    fields = ("staff_rule_name",)
+    fields = ("staff_rule_name", "staff",)
     login_url = "login"
 
 
@@ -273,6 +273,7 @@ class StaffRuleShiftListView(LoginRequiredMixin, ListView):
 class StaffRuleShiftDetailView(LoginRequiredMixin, DetailView):
     model = StaffRuleShift
     template_name = "staff_rule_shift_detail.html"
+    success_url = reverse_lazy("staff_rule_list")
     login_url = "login"
 
 
@@ -280,13 +281,14 @@ class StaffRuleShiftUpdateView(LoginRequiredMixin, UpdateView):
     model = StaffRuleShift
     fields = ("shift", "position")
     template_name = "staff_rule_shift_edit.html"
+    success_url = reverse_lazy("staff_rule_list")
     login_url = "login"
 
 
 class StaffRuleShiftDeleteView(LoginRequiredMixin, DeleteView):
     model = StaffRuleShift
     template_name = "staff_rule_shift_delete.html"
-    success_url = reverse_lazy("staff_rule_shift_list")
+    success_url = reverse_lazy("staff_rule_list")
     login_url = "login"
 
 
