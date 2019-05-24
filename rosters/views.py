@@ -444,29 +444,27 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         #         == 5
         #     )
 
-        # Forbid Early after Night
-        for nurse in nurses:
-            for role in nurse.roles.all():
-                for date in dates:
-                    for timeslot in TimeSlot.objects.filter(
-                        date=date
-                    ):
-                        if timeslot.shift.shift_type == "Night":
-                            night_shift_var = shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
-                            try:
-                                next_timeslot = TimeSlot.objects.get(date=date + datetime.timedelta(days=1), shift__shift_type="Early")
-                            except TimeSlot.DoesNotExist:
-                                continue
-                            for role in nurse.roles.all():
-                                early_shift_var = shift_vars[(nurse.id, role.id, next_timeslot.date, next_timeslot.id)]
-                                model.AddForbiddenAssignments([night_shift_var, early_shift_var], [(1, 1)])
-                                print("Added forbidden assignment", night_shift_var, early_shift_var)
-
-            #                 early_shifts[(n, r, d, t)] = shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
-            #             if timeslot.shift.shift_type == "Night":
-            #                 night_shifts[(n, r, d, t)] = shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
-            # early_shifts = {}
-            # night_shifts = {}
+        # Enforce staff rules
+        staff_rules = StaffRule.objects.all()
+        for staff_rule in staff_rules:
+            first_shift = staff_rule.staffruleshift_set.all().get(position=1).shift
+            second_shift = staff_rule.staffruleshift_set.all().get(position=2).shift
+            for nurse in staff_rule.staff.all():
+                for role in nurse.roles.all():
+                    for date in dates:
+                        for timeslot in TimeSlot.objects.filter(
+                            date=date
+                        ):
+                            if timeslot.shift == first_shift:
+                                first_shift_var = shift_vars[(nurse.id, role.id, timeslot.date, timeslot.id)]
+                                try:
+                                    next_timeslot = TimeSlot.objects.get(date=date + datetime.timedelta(days=1), shift=second_shift)
+                                except TimeSlot.DoesNotExist:
+                                    continue
+                                for role in nurse.roles.all():
+                                    second_shift_var = shift_vars[(nurse.id, role.id, next_timeslot.date, next_timeslot.id)]
+                                    model.AddForbiddenAssignments([first_shift_var, second_shift_var], [(1, 1)])
+                                    print("Added forbidden assignment", first_shift_var, second_shift_var)
 
         # Collect shift rules into friendly structure
         shift_rules = {}
