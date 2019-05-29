@@ -375,6 +375,8 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         ]
         TimeSlot.objects.filter(date__range=date_range).delete()
 
+        leaves = Leave.objects.filter(date__range=date_range)
+
         # Create dates and timeslots
         dates = []
         date = start_date.date()
@@ -443,6 +445,23 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         #         )
         #         == 5
         #     )
+
+        # Exclude leave dates from roster
+        for timeslot in timeslots:
+            for leave in leaves:
+                if timeslot.date == leave.date:
+                    for role in leave.staff_member.roles.all():
+                        model.Add(
+                            shift_vars[
+                                (
+                                    leave.staff_member.id,
+                                    role.id,
+                                    timeslot.date,
+                                    timeslot.id,
+                                )
+                            ]
+                            == 0
+                        )
 
         # Enforce staff rules
         staff_rules = StaffRule.objects.all()
