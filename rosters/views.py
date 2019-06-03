@@ -359,7 +359,10 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         except SolutionNotFeasible:
             messages.error(
                 self.request,
-                "Could not generate roster, try changing rules or staff availability.",
+                (
+                    "Could not generate roster,"
+                    " try changing rules or staff availability."
+                ),
             )
         return super().form_valid(form)
 
@@ -434,6 +437,24 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                             f"shift_n{n}r{r}d{d}t{t}"
                         )
 
+        # Create shift variables and fixed constraints
+        # for previous roster period
+        date_range = [
+            start_date.date() - datetime.timedelta(days=num_days),
+            start_date.date() - datetime.timedelta(days=1),
+        ]
+        previous_timeslots = TimeSlot.objects.filter(date__range=date_range)
+        for timeslot in previous_timeslots:
+            for nurse in timeslot.staff.all():
+                n = nurse.id
+                r = nurse.roles.all()[0]
+                d = timeslot.date
+                t = timeslot.id
+                shift_vars[(n, r, d, t)] = model.NewBoolVar(
+                    f"shift_n{n}r{r}d{d}t{t}"
+                )
+                model.Add(shift_vars[(n, r, d, t)] == 1)
+
         # Assign each shift to exactly 5 nurses
         # for timeslot in timeslots:
         #     t = timeslot.id
@@ -463,53 +484,49 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                             == 0
                         )
 
-        # Enforce staff rules
-        staff_rules = StaffRule.objects.all()
-        for staff_rule in staff_rules:
-            first_shift = (
-                staff_rule.staffruleshift_set.all().get(position=1).shift
-            )
-            second_shift = (
-                staff_rule.staffruleshift_set.all().get(position=2).shift
-            )
-            for nurse in staff_rule.staff.all():
-                for role in nurse.roles.all():
-                    for date in dates:
-                        for timeslot in TimeSlot.objects.filter(date=date):
-                            if timeslot.shift == first_shift:
-                                first_shift_var = shift_vars[
+        # Enforce shift sequences / staff rules
+        # Need to look at previous roster period also
+        for nurse in nurses:
+            for staff_rule in nurse.staffrule_set.all():
+                invalid_shift_sequence = []
+                staff_rule_shifts = staff_rule.staffruleshift_set.all().order_by(
+                    "position"
+                )
+                for staff_rule_shift in staff_rule_shifts:
+                    invalid_shift_sequence.append(staff_rule_shift.shift)
+                sequence_size = len(invalid_shift_sequence)
+                shift_vars_in_seq = []
+                for date in dates:
+                    shift_vars_in_seq = []
+                    for day_num, invalid_shift in enumerate(
+                        invalid_shift_sequence
+                    ):
+                        try:
+                            day_to_test = date + datetime.timedelta(
+                                days=day_num
+                            )
+                            timeslot_to_check = TimeSlot.objects.get(
+                                date=day_to_test, shift=invalid_shift
+                            )
+                        except TimeSlot.DoesNotExist:
+                            break
+                        for role in nurse.roles.all():
+                            shift_vars_in_seq.append(
+                                shift_vars[
                                     (
                                         nurse.id,
                                         role.id,
-                                        timeslot.date,
-                                        timeslot.id,
+                                        day_to_test,
+                                        timeslot_to_check.id,
                                     )
                                 ]
-                                try:
-                                    next_timeslot = TimeSlot.objects.get(
-                                        date=date + datetime.timedelta(days=1),
-                                        shift=second_shift,
-                                    )
-                                except TimeSlot.DoesNotExist:
-                                    continue
-                                for role in nurse.roles.all():
-                                    second_shift_var = shift_vars[
-                                        (
-                                            nurse.id,
-                                            role.id,
-                                            next_timeslot.date,
-                                            next_timeslot.id,
-                                        )
-                                    ]
-                                    model.AddForbiddenAssignments(
-                                        [first_shift_var, second_shift_var],
-                                        [(1, 1)],
-                                    )
-                                    print(
-                                        "Added forbidden assignment",
-                                        first_shift_var,
-                                        second_shift_var,
-                                    )
+                            )
+                    print(
+                        "Shift vars in seq:",
+                        invalid_shift_sequence,
+                        shift_vars_in_seq,
+                    )
+                    model.Add(sum(shift_vars_in_seq) < sequence_size)
 
         # Collect shift rules into friendly structure
         shift_rules = {}
