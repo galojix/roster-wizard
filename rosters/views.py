@@ -504,7 +504,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                     ).append(staff_rule_shift.shift)
                     # invalid_shift_sequence.append(staff_rule_shift.shift)
                 sequence_size = len(invalid_shift_sequence)
-                print(invalid_shift_sequence)
+                # print(invalid_shift_sequence)
                 shift_vars_in_seq = []
                 for date in extended_dates:
                     shift_vars_in_seq = []
