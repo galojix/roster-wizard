@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import (
     UpdateView,
@@ -493,47 +494,53 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
             date += datetime.timedelta(days=1)
         for nurse in nurses:
             for staff_rule in nurse.staffrule_set.all():
-                invalid_shift_sequence = []
+                invalid_shift_sequence = OrderedDict()
                 staff_rule_shifts = staff_rule.staffruleshift_set.all().order_by(
                     "position"
                 )
                 for staff_rule_shift in staff_rule_shifts:
-                    invalid_shift_sequence.append(staff_rule_shift.shift)
+                    invalid_shift_sequence.setdefault(
+                        staff_rule_shift.position, []
+                    ).append(staff_rule_shift.shift)
+                    # invalid_shift_sequence.append(staff_rule_shift.shift)
                 sequence_size = len(invalid_shift_sequence)
+                print(invalid_shift_sequence)
                 shift_vars_in_seq = []
                 for date in extended_dates:
                     shift_vars_in_seq = []
-                    for day_num, invalid_shift in enumerate(
-                        invalid_shift_sequence
-                    ):
-                        try:
-                            day_to_test = date + datetime.timedelta(
-                                days=day_num
-                            )
-                            timeslot_to_check = TimeSlot.objects.get(
-                                date=day_to_test, shift=invalid_shift
-                            )
-                        except TimeSlot.DoesNotExist:
-                            break
-                        for role in nurse.roles.all():
+                    for day_num in invalid_shift_sequence:
+                        # for day_num, invalid_shift in enumerate(
+                        #     invalid_shift_sequence
+                        # ):
+                        for invalid_shift in invalid_shift_sequence[day_num]:
                             try:
-                                shift_vars_in_seq.append(
-                                    shift_vars[
-                                        (
-                                            nurse.id,
-                                            role.id,
-                                            day_to_test,
-                                            timeslot_to_check.id,
-                                        )
-                                    ]
+                                day_to_test = date + datetime.timedelta(
+                                    days=day_num
                                 )
-                            except KeyError:
-                                continue
-                    # print(
-                    #     "Shift vars in seq:",
-                    #     invalid_shift_sequence,
-                    #     shift_vars_in_seq,
-                    # )
+                                timeslot_to_check = TimeSlot.objects.get(
+                                    date=day_to_test, shift=invalid_shift
+                                )
+                            except TimeSlot.DoesNotExist:
+                                break
+                            for role in nurse.roles.all():
+                                try:
+                                    shift_vars_in_seq.append(
+                                        shift_vars[
+                                            (
+                                                nurse.id,
+                                                role.id,
+                                                day_to_test,
+                                                timeslot_to_check.id,
+                                            )
+                                        ]
+                                    )
+                                except KeyError:
+                                    continue
+                        # print(
+                        #     "Shift vars in seq:",
+                        #     invalid_shift_sequence,
+                        #     shift_vars_in_seq,
+                        # )
                     model.Add(sum(shift_vars_in_seq) < sequence_size)
 
         # Collect shift rules into friendly structure
