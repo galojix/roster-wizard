@@ -15,7 +15,7 @@ from ortools.sat.python import cp_model
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 import datetime
-from rosters.forms import GenerateRosterForm
+from rosters.forms import GenerateRosterForm, SelectRosterForm
 
 
 from .models import (
@@ -311,7 +311,20 @@ class TimeSlotListView(LoginRequiredMixin, ListView):
     login_url = "login"
 
     def get_queryset(self):
-        return TimeSlot.objects.order_by("date", "shift__shift_type")
+        print(self.request.session)
+        if (
+            "start_date" in self.request.session
+            and "num_days" in self.request.session
+        ):
+            start_date = datetime.datetime.strptime(self.request.session["start_date"], "%d-%b-%Y")
+            num_days = datetime.timedelta(days=self.request.session["num_days"])
+            end_date = start_date + num_days
+            date_range = [start_date, end_date]
+            return TimeSlot.objects.filter(date__range=date_range).order_by(
+                "date", "shift__shift_type"
+            )
+        else:
+            return TimeSlot.objects.order_by("date", "shift__shift_type")
 
 
 class TimeSlotDetailView(LoginRequiredMixin, DetailView):
@@ -343,6 +356,21 @@ class TimeSlotCreateView(LoginRequiredMixin, CreateView):
 
 class SolutionNotFeasible(Exception):
     pass
+
+
+class SelectRosterView(LoginRequiredMixin, FormView):
+    template_name = "select_roster.html"
+    form_class = SelectRosterForm
+    success_url = reverse_lazy("timeslot_list")
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        start_date = form.cleaned_data["start_date"]
+        num_days = form.cleaned_data["num_days"]
+        self.request.session["start_date"] = start_date.date().strftime("%d-%b-%Y")
+        self.request.session["num_days"] = num_days
+        return super().form_valid(form)
 
 
 class GenerateRosterView(LoginRequiredMixin, FormView):

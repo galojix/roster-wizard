@@ -42,6 +42,7 @@ from .views import (
     TimeSlotDeleteView,
     TimeSlotCreateView,
     GenerateRosterView,
+    SelectRosterView,
     PreferenceListView,
     PreferenceUpdateView,
     PreferenceDetailView,
@@ -184,6 +185,11 @@ urlpatterns = [
         "timeslot/generate",
         GenerateRosterView.as_view(),
         name="generate_roster",
+    ),
+    path(
+        "timeslot/select",
+        SelectRosterView.as_view(),
+        name="select_roster",
     ),
     path(
         "preference/<int:pk>/edit/",
