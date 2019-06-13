@@ -316,8 +316,12 @@ class TimeSlotListView(LoginRequiredMixin, ListView):
             "start_date" in self.request.session
             and "num_days" in self.request.session
         ):
-            start_date = datetime.datetime.strptime(self.request.session["start_date"], "%d-%b-%Y")
-            num_days = datetime.timedelta(days=self.request.session["num_days"])
+            start_date = datetime.datetime.strptime(
+                self.request.session["start_date"], "%d-%b-%Y"
+            )
+            num_days = datetime.timedelta(
+                days=self.request.session["num_days"]
+            )
             end_date = start_date + num_days
             date_range = [start_date, end_date]
             return TimeSlot.objects.filter(date__range=date_range).order_by(
@@ -368,7 +372,9 @@ class SelectRosterView(LoginRequiredMixin, FormView):
         # It should return an HttpResponse.
         start_date = form.cleaned_data["start_date"]
         num_days = form.cleaned_data["num_days"]
-        self.request.session["start_date"] = start_date.date().strftime("%d-%b-%Y")
+        self.request.session["start_date"] = start_date.date().strftime(
+            "%d-%b-%Y"
+        )
         self.request.session["num_days"] = num_days
         return super().form_valid(form)
 
