@@ -1,3 +1,4 @@
+import datetime
 from collections import OrderedDict
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import (
@@ -14,7 +15,6 @@ from django.shortcuts import get_object_or_404
 from ortools.sat.python import cp_model
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-import datetime
 from rosters.forms import GenerateRosterForm, SelectRosterForm
 
 
