@@ -23,14 +23,106 @@
       <div class="collapse navbar-collapse" id="navbarCollapse">
         {% if user.is_authenticated %}
           <ul class="navbar-nav">
-            <li class="nav-item"><a class="nav-link" href="{% url 'user_list' %}" class="list-group-item list-group-item-action">Staff</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'role_list' %}" class="list-group-item list-group-item-action">Roles</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'shift_list' %}" class="list-group-item list-group-item-action">Shifts</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'shift_rule_list' %}" class="list-group-item list-group-item-action">Skill Mix</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'staff_rule_list' %}" class="list-group-item list-group-item-action">Shift Sequences</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'leave_list' %}" class="list-group-item list-group-item-action">Leave</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'preference_list' %}" class="list-group-item list-group-item-action">Staff Requests</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'timeslot_list' %}" class="list-group-item list-group-item-action">Rosters</a></li>
+            <li class="nav-item">
+              <div class="dropdown">
+                  <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                      Staff
+                  </button>  
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'user_list' %}">Display Staff</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'user_new' %}">Create New Staff</a>
+                  </div>
+              </div>
+            </li>
+            <li class="nav-item">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                        Roles
+                    </button>  
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'role_list' %}">Display Roles</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'role_new' %}">Create New Role</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+              <div class="dropdown">
+                  <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                      Shifts
+                  </button>  
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'shift_list' %}">Display Shifts</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'shift_new' %}">Create New Shift</a>
+                  </div>
+              </div>
+            </li>
+            <li class="nav-item">
+              <div class="dropdown">
+                  <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                      Skill Mix
+                  </button>  
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'shift_rule_list' %}">Display Skill Mix Rules</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'shift_rule_new' %}">Create New Skill Mix Rule</a>
+                  </div>
+              </div>
+            </li>
+            <li class="nav-item">
+              <div class="dropdown">
+                  <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                      Shift Sequences
+                  </button>  
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'staff_rule_list' %}">Display Shift Sequences</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'staff_rule_new' %}">Create New Shift Sequence</a>
+                  </div>
+              </div>
+            </li>
+            <li class="nav-item">
+              <div class="dropdown">
+                  <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                      Leave
+                  </button>  
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'leave_list' %}">Display Leave</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'leave_new' %}">Create New Leave</a>
+                  </div>
+              </div>
+            </li>
+            <li class="nav-item">
+              <div class="dropdown">
+                  <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                      Staff Requests
+                  </button>  
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'preference_list' %}">List Staff Requests</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'preference_new' %}">Create New Staff Request</a>
+                  </div>
+              </div>
+            </li>
+            <li class="nav-item">
+              <div class="dropdown">
+                  <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                      Rosters
+                  </button>  
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'timeslot_list' %}">Display Roster</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'select_roster' %}">Select Roster Date Range</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'generate_roster' %}">Generate New Roster</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'timeslot_new' %}">Manually Add a Shift to Roster</a>
+                  </div>
+              </div>
+            </li>
           </ul>
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">

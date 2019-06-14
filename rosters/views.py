@@ -100,7 +100,7 @@ class RoleDeleteView(LoginRequiredMixin, DeleteView):
 class RoleCreateView(LoginRequiredMixin, CreateView):
     model = Role
     template_name = "role_new.html"
-    fields = ("role_name", "staff")
+    fields = ("role_name",)
     login_url = "login"
 
 
