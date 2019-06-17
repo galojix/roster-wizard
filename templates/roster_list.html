@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Rosters</h2>
+<table class="table table-striped table-bordered table-hover">
+  <tr>
+    <th>Staff Member</th>
+    {% for date in dates %}  
+    <th>{{ date }}</th>
+    {% endfor %}
+  </tr>
+  {% for staff_member, shifts in staff_shifts.items %}
+  <tr>
+    <td>{{ staff_member }}</td>
+    {% for date, shift in shifts.items %}
+    <td>{{ shift }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+{% endblock content %}

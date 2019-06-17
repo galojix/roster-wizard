@@ -10,7 +10,6 @@ from django.views.generic.edit import (
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-# from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from ortools.sat.python import cp_model
 from django.contrib.auth import get_user_model
@@ -329,6 +328,51 @@ class TimeSlotListView(LoginRequiredMixin, ListView):
             )
         else:
             return TimeSlot.objects.order_by("date", "shift__shift_type")
+
+
+class RosterListView(LoginRequiredMixin, ListView):
+    model = TimeSlot
+    template_name = "roster_list.html"
+    login_url = "login"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if (
+            "start_date" in self.request.session
+            and "num_days" in self.request.session
+        ):
+            start_date = datetime.datetime.strptime(
+                self.request.session["start_date"], "%d-%b-%Y"
+            )
+            num_days = datetime.timedelta(
+                days=self.request.session["num_days"]
+            )
+            num_days = self.request.session["num_days"]
+            dates = []
+            staff_shifts = OrderedDict()
+            nurses = get_user_model().objects.all().order_by('last_name')
+            for nurse in nurses:
+                staff_shifts[
+                    nurse.last_name + ", " + nurse.first_name
+                ] = OrderedDict()
+                dates = []
+                for day in range(num_days):
+                    date = start_date + datetime.timedelta(days=day)
+                    date = date.date()
+                    dates.append(date)
+                    try:
+                        staff_shifts[
+                            nurse.last_name + ", " + nurse.first_name
+                        ][date] = TimeSlot.objects.get(
+                            date=date, staff=nurse.id
+                        ).shift.shift_type
+                    except TimeSlot.DoesNotExist:
+                        staff_shifts[
+                            nurse.last_name + ", " + nurse.first_name
+                        ][date] = "X"
+            context["dates"] = dates
+            context["staff_shifts"] = staff_shifts
+            return context
 
 
 class TimeSlotDetailView(LoginRequiredMixin, DetailView):
