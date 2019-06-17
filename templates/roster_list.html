@@ -6,7 +6,7 @@
   <tr>
     <th>Staff Member</th>
     {% for date in dates %}  
-    <th>{{ date }}</th>
+    <th>{{ date|date:"D" }}<br/>{{ date|date:"d_M" }}<br/>{{ date|date:"Y" }}</th>
     {% endfor %}
   </tr>
   {% for staff_member, shifts in staff_shifts.items %}
