@@ -348,7 +348,7 @@ class RosterListView(LoginRequiredMixin, ListView):
             )
             num_days = self.request.session["num_days"]
         else:
-            start_date = datetime.datetime.now().date()
+            start_date = datetime.datetime.now()
             num_days = 14
         dates = []
         staff_shifts = OrderedDict()
@@ -828,7 +828,7 @@ def download_csv(request):
         )
         num_days = request.session["num_days"]
     else:
-        start_date = datetime.datetime.now().date()
+        start_date = datetime.datetime.now()
         num_days = 14
 
     dates = []
