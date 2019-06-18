@@ -158,8 +158,12 @@
           {% endfor %}
       </div>
       {% endif %}
-      {% block content %}
-      {% endblock content %}
+      {% block content-wide %}
+      <div class="container">
+        {% block content %}
+        {% endblock content %}
+      </div>
+      {% endblock content-wide %}
     </div>
 
     <!-- Optional JavaScript -->

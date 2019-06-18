@@ -1,19 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
 <h2>Roles</h2>
-  <table class="table table-striped table-bordered table-hover">
-  <tr>
-      <th>Role</th>
-      <th>Action</th>
-  </tr>
-      {% for role in role_list %}
-  <tr>
-      <td>{{ role.role_name }}</td>
-      <td><a href="{% url 'role_edit' role.pk %}">Edit</a> | <a href="{% url 'role_delete' role.pk %}">Delete</a></td>
-  </tr>
-  {% endfor %}
-  </table>
-</div>
+<table class="table table-striped table-bordered table-hover">
+<tr>
+    <th>Role</th>
+    <th>Action</th>
+</tr>
+    {% for role in role_list %}
+<tr>
+    <td>{{ role.role_name }}</td>
+    <td><a href="{% url 'role_edit' role.pk %}">Edit</a> | <a href="{% url 'role_delete' role.pk %}">Delete</a></td>
+</tr>
+{% endfor %}
+</table>
 {% endblock content %}
