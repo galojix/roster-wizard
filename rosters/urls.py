@@ -49,6 +49,7 @@ from .views import (
     PreferenceDetailView,
     PreferenceDeleteView,
     PreferenceCreateView,
+    download_csv,
 )
 
 urlpatterns = [
@@ -214,4 +215,5 @@ urlpatterns = [
         name="preference_new",
     ),
     path("preference/", PreferenceListView.as_view(), name="preference_list"),
+    path("roster/download", download_csv, name="download_csv"),
 ]

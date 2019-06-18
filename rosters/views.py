@@ -1,4 +1,5 @@
 import datetime
+import csv
 from collections import OrderedDict
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import (
@@ -9,13 +10,14 @@ from django.views.generic.edit import (
 )
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from ortools.sat.python import cp_model
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-from rosters.forms import GenerateRosterForm, SelectRosterForm
+from django.contrib.auth.decorators import login_required
 
+from rosters.forms import GenerateRosterForm, SelectRosterForm
 
 from .models import (
     Leave,
@@ -344,35 +346,35 @@ class RosterListView(LoginRequiredMixin, ListView):
             start_date = datetime.datetime.strptime(
                 self.request.session["start_date"], "%d-%b-%Y"
             )
-            num_days = datetime.timedelta(
-                days=self.request.session["num_days"]
-            )
             num_days = self.request.session["num_days"]
+        else:
+            start_date = datetime.datetime.now().date()
+            num_days = 14
+        dates = []
+        staff_shifts = OrderedDict()
+        nurses = get_user_model().objects.all().order_by("last_name")
+        for nurse in nurses:
+            staff_shifts[
+                nurse.last_name + ", " + nurse.first_name
+            ] = OrderedDict()
             dates = []
-            staff_shifts = OrderedDict()
-            nurses = get_user_model().objects.all().order_by('last_name')
-            for nurse in nurses:
-                staff_shifts[
-                    nurse.last_name + ", " + nurse.first_name
-                ] = OrderedDict()
-                dates = []
-                for day in range(num_days):
-                    date = start_date + datetime.timedelta(days=day)
-                    date = date.date()
-                    dates.append(date)
-                    try:
-                        staff_shifts[
-                            nurse.last_name + ", " + nurse.first_name
-                        ][date] = TimeSlot.objects.get(
-                            date=date, staff=nurse.id
-                        ).shift.shift_type
-                    except TimeSlot.DoesNotExist:
-                        staff_shifts[
-                            nurse.last_name + ", " + nurse.first_name
-                        ][date] = "X"
-            context["dates"] = dates
-            context["staff_shifts"] = staff_shifts
-            return context
+            for day in range(num_days):
+                date = start_date + datetime.timedelta(days=day)
+                date = date.date()
+                dates.append(date)
+                try:
+                    staff_shifts[nurse.last_name + ", " + nurse.first_name][
+                        date
+                    ] = TimeSlot.objects.get(
+                        date=date, staff=nurse.id
+                    ).shift.shift_type
+                except TimeSlot.DoesNotExist:
+                    staff_shifts[nurse.last_name + ", " + nurse.first_name][
+                        date
+                    ] = "X"
+        context["dates"] = dates
+        context["staff_shifts"] = staff_shifts
+        return context
 
 
 class TimeSlotDetailView(LoginRequiredMixin, DetailView):
@@ -816,3 +818,50 @@ class PreferenceCreateView(LoginRequiredMixin, CreateView):
     # form_class = PreferenceCreateForm
     fields = ("staff_member", "day", "shift", "priority")
     login_url = "login"
+
+
+@login_required
+def download_csv(request):
+    if "start_date" in request.session and "num_days" in request.session:
+        start_date = datetime.datetime.strptime(
+            request.session["start_date"], "%d-%b-%Y"
+        )
+        num_days = request.session["num_days"]
+    else:
+        start_date = datetime.datetime.now().date()
+        num_days = 14
+
+    dates = []
+    staff_shifts = OrderedDict()
+    nurses = get_user_model().objects.all().order_by("last_name")
+    for nurse in nurses:
+        staff_shifts[nurse.last_name + ", " + nurse.first_name] = OrderedDict()
+        dates = []
+        for day in range(num_days):
+            date = start_date + datetime.timedelta(days=day)
+            date = date.date()
+            dates.append(date)
+            try:
+                staff_shifts[nurse.last_name + ", " + nurse.first_name][
+                    date
+                ] = TimeSlot.objects.get(
+                    date=date, staff=nurse.id
+                ).shift.shift_type
+            except TimeSlot.DoesNotExist:
+                staff_shifts[nurse.last_name + ", " + nurse.first_name][
+                    date
+                ] = "X"
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="roster.csv"'
+
+    writer = csv.writer(response)
+    dates = [date.strftime("%a %d-%b-%Y") for date in dates]
+    row = ["Staff Member"] + dates
+    writer.writerow(row)
+    for staff_member in staff_shifts:
+        row = [staff_member]
+        for date in staff_shifts[staff_member]:
+            row.append(staff_shifts[staff_member][date])
+        writer.writerow(row)
+    return response
