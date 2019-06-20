@@ -372,6 +372,17 @@ class RosterListView(LoginRequiredMixin, ListView):
                     staff_shifts[nurse.last_name + ", " + nurse.first_name][
                         date
                     ] = "X"
+                except TimeSlot.MultipleObjectsReturned:
+                    timeslots = TimeSlot.objects.filter(
+                        date=date, staff=nurse.id
+                    )
+                    staff_shifts[nurse.last_name + ", " + nurse.first_name][
+                        date
+                    ] = []
+                    for timeslot in timeslots:
+                        staff_shifts[nurse.last_name + ", " + nurse.first_name][
+                        date
+                    ].append(timeslot.shift.shift_type)
         context["dates"] = dates
         context["staff_shifts"] = staff_shifts
         return context
@@ -682,16 +693,17 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         # Assign at most one shift per day per nurse
         for nurse in nurses:
             for date in dates:
-                model.Add(
-                    sum(
-                        shift_vars[(nurse.id, role.id, date, timeslot.id)]
-                        for role in nurse.roles.all()
-                        for timeslot in TimeSlot.objects.filter(
-                            date=date
-                        ).order_by("shift__shift_type")
+                if nurse.shifts_per_roster != 0:
+                    model.Add(
+                        sum(
+                            shift_vars[(nurse.id, role.id, date, timeslot.id)]
+                            for role in nurse.roles.all()
+                            for timeslot in TimeSlot.objects.filter(
+                                date=date
+                            ).order_by("shift__shift_type")
+                        )
+                        <= 1
                     )
-                    <= 1
-                )
 
         # Enforce shifts per roster for each nurse
         for nurse in nurses:
