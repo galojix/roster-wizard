@@ -378,11 +378,11 @@ class RosterListView(LoginRequiredMixin, ListView):
                     )
                     staff_shifts[nurse.last_name + ", " + nurse.first_name][
                         date
-                    ] = []
+                    ] = ""
                     for timeslot in timeslots:
-                        staff_shifts[nurse.last_name + ", " + nurse.first_name][
-                        date
-                    ].append(timeslot.shift.shift_type)
+                        staff_shifts[
+                            nurse.last_name + ", " + nurse.first_name
+                        ][date] += (timeslot.shift.shift_type + " ")
         context["dates"] = dates
         context["staff_shifts"] = staff_shifts
         return context
@@ -693,7 +693,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         # Assign at most one shift per day per nurse
         for nurse in nurses:
             for date in dates:
-                if nurse.shifts_per_roster != 0:
+                if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
                     model.Add(
                         sum(
                             shift_vars[(nurse.id, role.id, date, timeslot.id)]
@@ -715,7 +715,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                     "shift__shift_type"
                 )
             )
-            if nurse.shifts_per_roster != 0:
+            if nurse.shifts_per_roster != 0:  # Zero means unlimited shiftsS
                 model.Add(nurse.shifts_per_roster == num_shifts_worked)
 
         # Maximise the number of satisfied shift requests
