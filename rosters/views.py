@@ -460,7 +460,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
 
     def generate_roster(self, start_date, num_days):
 
-        nurses = get_user_model().objects.all()
+        nurses = get_user_model().objects.filter(available=True)
         shifts = Shift.objects.all().order_by("shift_type")
 
         # Delete existing shifts in date range

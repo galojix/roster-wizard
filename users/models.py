@@ -7,6 +7,7 @@ from django.urls import reverse
 class CustomUser(AbstractUser):
     """Custom user model."""
 
+    available = models.BooleanField(null=False, blank=False, default=True)
     shifts_per_roster = models.IntegerField(null=False, blank=False)
     roles = models.ManyToManyField('rosters.Role')
 

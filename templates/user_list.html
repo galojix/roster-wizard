@@ -9,6 +9,7 @@
         <th>First Name</th>
         <th>Email Address</th>
         <th>Shifts Per Roster</th>
+        <th>Available for Shifts</th>
         <th>Roles</th>
         <th>Action</th>
     </tr>
@@ -19,6 +20,7 @@
         <td>{{ user.first_name }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.shifts_per_roster }}</td>
+        <td>{{ user.available }}</td>
         <td>{% for role in user.roles.all %}
             {{ role.role_name }}
             {% endfor %}
