@@ -238,6 +238,9 @@ class StaffRuleListView(LoginRequiredMixin, ListView):
     template_name = "staff_rule_list.html"
     login_url = "login"
 
+    def get_queryset(self):
+        return StaffRule.objects.order_by("staff_rule_name")
+
 
 class StaffRuleDetailView(LoginRequiredMixin, DetailView):
     model = StaffRule
