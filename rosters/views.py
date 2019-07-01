@@ -736,7 +736,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
 
         # Create the solver and solve
         solver = cp_model.CpSolver()
-        solver.parameters.max_time_in_seconds = 100
+        solver.parameters.max_time_in_seconds = 90
         solution_status = solver.Solve(model)
         if (
             solution_status != cp_model.FEASIBLE
