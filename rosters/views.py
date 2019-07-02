@@ -866,6 +866,17 @@ def download_csv(request):
                 staff_shifts[nurse.last_name + ", " + nurse.first_name][
                     date
                 ] = "X"
+            except TimeSlot.MultipleObjectsReturned:
+                timeslots = TimeSlot.objects.filter(
+                    date=date, staff=nurse.id
+                )
+                staff_shifts[nurse.last_name + ", " + nurse.first_name][
+                    date
+                ] = ""
+                for timeslot in timeslots:
+                    staff_shifts[
+                        nurse.last_name + ", " + nurse.first_name
+                    ][date] += (timeslot.shift.shift_type + " ")
 
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="roster.csv"'
