@@ -77,6 +77,10 @@ class RoleListView(LoginRequiredMixin, ListView):
     template_name = "role_list.html"
     login_url = "login"
 
+    def get_queryset(self):
+        return Role.objects.order_by("role_name")
+
+
 
 class RoleDetailView(LoginRequiredMixin, DetailView):
     model = Role
