@@ -649,6 +649,8 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
             for shiftrule in shiftrules:
                 shiftruleroles = shiftrule.shiftrulerole_set.all()
                 role_count = {}
+                for role in Role.objects.all():
+                    role_count[role.id] = 0
                 for shiftrulerole in shiftruleroles:
                     role_count[shiftrulerole.role.id] = shiftrulerole.count
                 shift_rules[shift.id].append(role_count)
