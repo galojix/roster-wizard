@@ -17,7 +17,7 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-xl navbar-dark bg-dark mb-4">
+    <nav class="navbar fixed-top navbar-expand-xl navbar-dark bg-dark mb-4">
       <a class="navbar-brand" href="{% url 'home' %}">Roster Wizard</a>
       {% if user.is_authenticated %}
       {% endif %}
@@ -153,7 +153,7 @@
         {% endif %}
       </div>
     </nav>
-    <div class="container-fluid">
+    <div class="container-fluid" style="margin-top:55px">
       {% if messages %}
       <div class="messages alert alert-danger">
           <button type="button" class="close" data-dismiss="alert">&times;</button>
