@@ -724,7 +724,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                     "shift__shift_type"
                 )
             )
-            if nurse.shifts_per_roster != 0:  # Zero means unlimited shiftsS
+            if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
                 model.Add(nurse.shifts_per_roster == num_shifts_worked)
 
         # Maximise the number of satisfied shift requests
