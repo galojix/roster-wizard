@@ -668,7 +668,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                 shift_rules[shift.id].append(role_count)
 
         log.debug("Skill Mix Rules")
-        log.debug(shift_rules)
+        # log.debug(shift_rules)
 
         # Intermediate shift rule variables
         intermediate_vars = {
@@ -678,7 +678,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         }
 
         log.debug("Intermediate Vars")
-        log.debug(intermediate_vars)
+        # log.debug(intermediate_vars)
 
         # Only one shift rule at a time can be satisfied
         for shift_id in shift_rules:
@@ -767,7 +767,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
 
         # Create the solver and solve
         solver = cp_model.CpSolver()
-        solver.parameters.max_time_in_seconds = 90
+        solver.parameters.max_time_in_seconds = 60
         log.debug("Solver started...")
         solution_status = solver.Solve(model)
         log.debug("Solver finished.")
@@ -782,6 +782,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
             solution_status != cp_model.FEASIBLE
             and solution_status != cp_model.OPTIMAL
         ):
+            log.debug("Raising exception")
             raise SolutionNotFeasible("No feasible solutions.")
 
         # for value in intermediate_vars.values():
@@ -789,7 +790,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
 
         log.debug("Populating roster...")
         for d, date in enumerate(dates):
-            print(f"Day {d}:")
+            # log.debug(f"Day {d}:")
             for n, nurse in enumerate(nurses):
                 for role in nurse.roles.all():
                     for s, timeslot in enumerate(
@@ -806,35 +807,35 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                             == 1
                         ):
                             if shift_requests[n][d][s] >= 1:
-                                log.debug(
-                                    f"*** Request Successful *** "
-                                    f"{nurse.last_name}, {nurse.first_name}"
-                                    f" requested shift"
-                                    f" {timeslot.shift.shift_type}"
-                                    f" and was assigned."
-                                )
+                                # log.debug(
+                                #     f"*** Request Successful *** "
+                                #     f"{nurse.last_name}, {nurse.first_name}"
+                                #     f" requested shift"
+                                #     f" {timeslot.shift.shift_type}"
+                                #     f" and was assigned."
+                                # )
                                 TimeSlot.objects.get(
                                     date=date, shift=timeslot.shift
                                 ).staff.add(nurse)
                             else:
-                                log.debug(
-                                    f"{nurse.last_name}, {nurse.first_name}"
-                                    f" did not request shift"
-                                    f" {timeslot.shift.shift_type}"
-                                    f" and was assigned."
-                                )
+                                # log.debug(
+                                #     f"{nurse.last_name}, {nurse.first_name}"
+                                #     f" did not request shift"
+                                #     f" {timeslot.shift.shift_type}"
+                                #     f" and was assigned."
+                                # )
                                 TimeSlot.objects.get(
                                     date=date, shift=timeslot.shift
                                 ).staff.add(nurse)
-                        else:
-                            if shift_requests[n][d][s] >= 1:
-                                log.debug(
-                                    f"*** Request Failed *** "
-                                    f"{nurse.last_name}, {nurse.first_name}"
-                                    f" requested shift"
-                                    f" {timeslot.shift.shift_type}"
-                                    f" but was not assigned."
-                                )
+                        # else:
+                        #     if shift_requests[n][d][s] >= 1:
+                        #         log.debug(
+                        #             f"*** Request Failed *** "
+                        #             f"{nurse.last_name}, {nurse.first_name}"
+                        #             f" requested shift"
+                        #             f" {timeslot.shift.shift_type}"
+                        #             f" but was not assigned."
+                        #         )
         log.debug("Roster complete...")
 
 
