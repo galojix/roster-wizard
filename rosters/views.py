@@ -1,5 +1,6 @@
 import datetime
 import csv
+import logging
 from collections import OrderedDict
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import (
@@ -36,6 +37,12 @@ from .forms import (
     TimeSlotUpdateForm,
     TimeSlotCreateForm,
 )
+
+
+logging.basicConfig(
+    level=logging.DEBUG, format='%(asctime)s %(levelname)5s: %(message)s'
+)
+log = logging.getLogger(__name__)
 
 
 class LeaveListView(LoginRequiredMixin, ListView):
@@ -535,6 +542,8 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                         shift_vars[(n, r, d, t)] = model.NewBoolVar(
                             f"shift_n{n}r{r}d{d}t{t}"
                         )
+        log.debug("Shift variables created.")
+        # log.debug(shift_vars.keys())
 
         # Create shift variables and fixed constraints
         # for previous roster period
@@ -553,6 +562,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                     f"shift_n{n}r{r}d{d}t{t}"
                 )
                 model.Add(shift_vars[(n, r, d, t)] == 1)
+        log.debug("Shift variables for previous period created.")
 
         # Assign each shift to exactly 5 nurses
         # for timeslot in timeslots:
@@ -582,64 +592,66 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                             ]
                             == 0
                         )
+        log.debug("Excluded leave dates.")
 
         # Enforce shift sequences / staff rules
         # Need to look at previous roster period also
-        extended_dates = []
-        date = start_date.date() - datetime.timedelta(days=num_days)
-        for day in range(2 * num_days):
-            extended_dates.append(date)
-            date += datetime.timedelta(days=1)
-        for nurse in nurses:
-            for staff_rule in nurse.staffrule_set.all():
-                invalid_shift_sequence = OrderedDict()
-                staff_rule_shifts = staff_rule.staffruleshift_set.all().order_by(
-                    "position"
-                )
-                for staff_rule_shift in staff_rule_shifts:
-                    invalid_shift_sequence.setdefault(
-                        staff_rule_shift.position, []
-                    ).append(staff_rule_shift.shift)
-                    # invalid_shift_sequence.append(staff_rule_shift.shift)
-                sequence_size = len(invalid_shift_sequence)
-                # print(invalid_shift_sequence)
-                shift_vars_in_seq = []
-                for date in extended_dates:
-                    shift_vars_in_seq = []
-                    for day_num in invalid_shift_sequence:
-                        # for day_num, invalid_shift in enumerate(
-                        #     invalid_shift_sequence
-                        # ):
-                        for invalid_shift in invalid_shift_sequence[day_num]:
-                            try:
-                                day_to_test = date + datetime.timedelta(
-                                    days=day_num
-                                )
-                                timeslot_to_check = TimeSlot.objects.get(
-                                    date=day_to_test, shift=invalid_shift
-                                )
-                            except TimeSlot.DoesNotExist:
-                                break
-                            for role in nurse.roles.all():
-                                try:
-                                    shift_vars_in_seq.append(
-                                        shift_vars[
-                                            (
-                                                nurse.id,
-                                                role.id,
-                                                day_to_test,
-                                                timeslot_to_check.id,
-                                            )
-                                        ]
-                                    )
-                                except KeyError:
-                                    continue
-                        # print(
-                        #     "Shift vars in seq:",
-                        #     invalid_shift_sequence,
-                        #     shift_vars_in_seq,
-                        # )
-                    model.Add(sum(shift_vars_in_seq) < sequence_size)
+        # extended_dates = []
+        # date = start_date.date() - datetime.timedelta(days=num_days)
+        # for day in range(2 * num_days):
+        #     extended_dates.append(date)
+        #     date += datetime.timedelta(days=1)
+        # for nurse in nurses:
+        #     for staff_rule in nurse.staffrule_set.all():
+        #         invalid_shift_sequence = OrderedDict()
+        #         staff_rule_shifts = staff_rule.staffruleshift_set.all().order_by(
+        #             "position"
+        #         )
+        #         for staff_rule_shift in staff_rule_shifts:
+        #             invalid_shift_sequence.setdefault(
+        #                 staff_rule_shift.position, []
+        #             ).append(staff_rule_shift.shift)
+        #             # invalid_shift_sequence.append(staff_rule_shift.shift)
+        #         sequence_size = len(invalid_shift_sequence)
+        #         # print(invalid_shift_sequence)
+        #         shift_vars_in_seq = []
+        #         for date in extended_dates:
+        #             shift_vars_in_seq = []
+        #             for day_num in invalid_shift_sequence:
+        #                 # for day_num, invalid_shift in enumerate(
+        #                 #     invalid_shift_sequence
+        #                 # ):
+        #                 for invalid_shift in invalid_shift_sequence[day_num]:
+        #                     try:
+        #                         day_to_test = date + datetime.timedelta(
+        #                             days=day_num
+        #                         )
+        #                         timeslot_to_check = TimeSlot.objects.get(
+        #                             date=day_to_test, shift=invalid_shift
+        #                         )
+        #                     except TimeSlot.DoesNotExist:
+        #                         break
+        #                     for role in nurse.roles.all():
+        #                         try:
+        #                             shift_vars_in_seq.append(
+        #                                 shift_vars[
+        #                                     (
+        #                                         nurse.id,
+        #                                         role.id,
+        #                                         day_to_test,
+        #                                         timeslot_to_check.id,
+        #                                     )
+        #                                 ]
+        #                             )
+        #                         except KeyError:
+        #                             continue
+        #                 # print(
+        #                 #     "Shift vars in seq:",
+        #                 #     invalid_shift_sequence,
+        #                 #     shift_vars_in_seq,
+        #                 # )
+        #             model.Add(sum(shift_vars_in_seq) < sequence_size)
+        log.debug("Added shift sequence constraints.")
 
         # Collect shift rules into friendly structure
         shift_rules = {}
@@ -655,12 +667,18 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                     role_count[shiftrulerole.role.id] = shiftrulerole.count
                 shift_rules[shift.id].append(role_count)
 
+        log.debug("Skill Mix Rules")
+        log.debug(shift_rules)
+
         # Intermediate shift rule variables
         intermediate_vars = {
             (shift_id, rule_num): model.NewBoolVar(f"s{shift_id}r{rule_num}")
             for shift_id in shift_rules
             for rule_num, rule in enumerate(shift_rules[shift_id])
         }
+
+        log.debug("Intermediate Vars")
+        log.debug(intermediate_vars)
 
         # Only one shift rule at a time can be satisfied
         for shift_id in shift_rules:
@@ -698,6 +716,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                             ).OnlyEnforceIf(
                                 intermediate_vars[(shift_id, rule_num)]
                             )
+        log.debug("Added skill mix constraints.")
 
         # Assign at most one shift per day per nurse
         for nurse in nurses:
@@ -713,6 +732,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                         )
                         <= 1
                     )
+        log.debug("Restrict to one shift per day.")
 
         # Enforce shifts per roster for each nurse
         for nurse in nurses:
@@ -726,6 +746,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
             )
             if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
                 model.Add(nurse.shifts_per_roster == num_shifts_worked)
+        log.debug("Enforce shifts per roster.")
 
         # Maximise the number of satisfied shift requests
         model.Maximize(
@@ -742,11 +763,21 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                 )
             )
         )
+        log.debug("Maximise shift requests.")
 
         # Create the solver and solve
         solver = cp_model.CpSolver()
-        solver.parameters.max_time_in_seconds = 300
+        solver.parameters.max_time_in_seconds = 90
+        log.debug("Solver started...")
         solution_status = solver.Solve(model)
+        log.debug("Solver finished.")
+        if solution_status == cp_model.INFEASIBLE:
+            log.debug("INFEASIBLE")
+        if solution_status == cp_model.MODEL_INVALID:
+            log.debug("MODEL_INVALID")
+        if solution_status == cp_model.UNKNOWN:
+            log.debug("UNKNOWN")
+
         if (
             solution_status != cp_model.FEASIBLE
             and solution_status != cp_model.OPTIMAL
@@ -756,6 +787,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         # for value in intermediate_vars.values():
         #     print(value, solver.Value(value))
 
+        log.debug("Populating roster...")
         for d, date in enumerate(dates):
             print(f"Day {d}:")
             for n, nurse in enumerate(nurses):
@@ -774,7 +806,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                             == 1
                         ):
                             if shift_requests[n][d][s] >= 1:
-                                print(
+                                log.debug(
                                     f"*** Request Successful *** "
                                     f"{nurse.last_name}, {nurse.first_name}"
                                     f" requested shift"
@@ -785,7 +817,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                                     date=date, shift=timeslot.shift
                                 ).staff.add(nurse)
                             else:
-                                print(
+                                log.debug(
                                     f"{nurse.last_name}, {nurse.first_name}"
                                     f" did not request shift"
                                     f" {timeslot.shift.shift_type}"
@@ -796,14 +828,14 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                                 ).staff.add(nurse)
                         else:
                             if shift_requests[n][d][s] >= 1:
-                                print(
+                                log.debug(
                                     f"*** Request Failed *** "
                                     f"{nurse.last_name}, {nurse.first_name}"
                                     f" requested shift"
                                     f" {timeslot.shift.shift_type}"
                                     f" but was not assigned."
                                 )
-            print()
+        log.debug("Roster complete...")
 
 
 class PreferenceListView(LoginRequiredMixin, ListView):
