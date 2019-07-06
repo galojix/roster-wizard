@@ -778,16 +778,16 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         solution_status = solver.Solve(model)
         log.info("Solver finished...")
         if solution_status == cp_model.INFEASIBLE:
-            log.info("INFEASIBLE")
+            log.info("Solution is INFEASIBLE")
         if solution_status == cp_model.MODEL_INVALID:
-            log.info("MODEL_INVALID")
+            log.info("Solution is MODEL_INVALID")
         if solution_status == cp_model.UNKNOWN:
-            log.info("UNKNOWN")
+            log.info("Solution is UNKNOWN")
         if (
             solution_status != cp_model.FEASIBLE
             and solution_status != cp_model.OPTIMAL
         ):
-            log.info("Raising exception")
+            log.info("No feasible solution, raising exception...")
             raise SolutionNotFeasible("No feasible solutions.")
 
         # for value in intermediate_vars.values():
