@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from .models import Leave, TimeSlot
+from .models import Leave, TimeSlot, StaffRule
 
 
 class DateInput(forms.DateInput):
@@ -44,3 +44,10 @@ class GenerateRosterForm(forms.Form):
 class SelectRosterForm(forms.Form):
     start_date = forms.DateTimeField(widget=DateInput())
     num_days = forms.IntegerField(initial=28)
+
+
+class StaffRuleUpdateForm(ModelForm):
+    class Meta:
+        model = StaffRule
+        fields = ("staff_rule_name", "staff")
+        widgets = {"staff": forms.CheckboxSelectMultiple()}

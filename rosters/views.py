@@ -36,6 +36,7 @@ from .forms import (
     LeaveUpdateForm,
     TimeSlotUpdateForm,
     TimeSlotCreateForm,
+    StaffRuleUpdateForm,
 )
 
 log = logging.getLogger('django')
@@ -256,7 +257,8 @@ class StaffRuleDetailView(LoginRequiredMixin, DetailView):
 
 class StaffRuleUpdateView(LoginRequiredMixin, UpdateView):
     model = StaffRule
-    fields = ("staff_rule_name", "staff")
+    # fields = ("staff_rule_name", "staff")
+    form_class = StaffRuleUpdateForm
     template_name = "staff_rule_edit.html"
     login_url = "login"
 
