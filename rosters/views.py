@@ -38,11 +38,7 @@ from .forms import (
     TimeSlotCreateForm,
 )
 
-
-logging.basicConfig(
-    level=logging.DEBUG, format='%(asctime)s %(levelname)5s: %(message)s'
-)
-log = logging.getLogger(__name__)
+log = logging.getLogger('django')
 
 
 class LeaveListView(LoginRequiredMixin, ListView):
@@ -86,7 +82,6 @@ class RoleListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Role.objects.order_by("role_name")
-
 
 
 class RoleDetailView(LoginRequiredMixin, DetailView):
@@ -528,6 +523,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         # Create shift variables
         # shifts[(n, r, d, t)]:
         # nurse 'n' with role 'r' works on date 'd' in timeslot 't'
+        log.info("Creating shift variables...")
         shift_vars = {}
         for nurse in nurses:
             for role in nurse.roles.all():
@@ -542,11 +538,12 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                         shift_vars[(n, r, d, t)] = model.NewBoolVar(
                             f"shift_n{n}r{r}d{d}t{t}"
                         )
-        log.debug("Shift variables created.")
-        # log.debug(shift_vars.keys())
+        log.info("Shift variables created...")
+        log.debug(shift_vars.keys())
 
         # Create shift variables and fixed constraints
         # for previous roster period
+        log.info("Creating shift variables for previous period...")
         date_range = [
             start_date.date() - datetime.timedelta(days=num_days),
             start_date.date() - datetime.timedelta(days=1),
@@ -562,7 +559,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                     f"shift_n{n}r{r}d{d}t{t}"
                 )
                 model.Add(shift_vars[(n, r, d, t)] == 1)
-        log.debug("Shift variables for previous period created.")
+        log.info("Shift variables for previous period created...")
 
         # Assign each shift to exactly 5 nurses
         # for timeslot in timeslots:
@@ -577,6 +574,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         #     )
 
         # Exclude leave dates from roster
+        log.info("Excluding leave dates...")
         for timeslot in timeslots:
             for leave in leaves:
                 if timeslot.date == leave.date:
@@ -592,10 +590,11 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                             ]
                             == 0
                         )
-        log.debug("Excluded leave dates.")
+        log.info("Leave dates excluded...")
 
         # Enforce shift sequences / staff rules
         # Need to look at previous roster period also
+        log.info("Adding shift sequences...")
         # extended_dates = []
         # date = start_date.date() - datetime.timedelta(days=num_days)
         # for day in range(2 * num_days):
@@ -651,9 +650,10 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         #                 #     shift_vars_in_seq,
         #                 # )
         #             model.Add(sum(shift_vars_in_seq) < sequence_size)
-        log.debug("Added shift sequence constraints.")
+        log.info("Shift sequences added...")
 
         # Collect shift rules into friendly structure
+        log.info("Collecting skill mix rules...")
         shift_rules = {}
         for shift in shifts:
             shift_rules[shift.id] = []
@@ -667,20 +667,21 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                     role_count[shiftrulerole.role.id] = shiftrulerole.count
                 shift_rules[shift.id].append(role_count)
 
-        log.debug("Skill Mix Rules")
-        # log.debug(shift_rules)
+        log.info("Skill mix rules collected...")
+        log.debug(shift_rules)
 
         # Intermediate shift rule variables
+        log.info("Creating intermediate variables...")
         intermediate_vars = {
             (shift_id, rule_num): model.NewBoolVar(f"s{shift_id}r{rule_num}")
             for shift_id in shift_rules
             for rule_num, rule in enumerate(shift_rules[shift_id])
         }
-
-        log.debug("Intermediate Vars")
-        # log.debug(intermediate_vars)
+        log.info("Intermediate vars created...")
+        log.debug(intermediate_vars)
 
         # Only one shift rule at a time can be satisfied
+        log.info("Adding intermediate variable constraints...")
         for shift_id in shift_rules:
             if len(shift_rules[shift_id]) >= 1:
                 model.Add(
@@ -690,8 +691,10 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                     )
                     == 1
                 )
-
+        log.info("Intermediate variable constraints added...")
+        
         # Enforce one shift rule per shift per timeslot
+        log.info("Enforcing skill mix constraints...")
         for shift_id in shift_rules:
             if len(shift_rules[shift_id]) >= 1:
                 for rule_num, rule in enumerate(shift_rules[shift_id]):
@@ -716,9 +719,10 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                             ).OnlyEnforceIf(
                                 intermediate_vars[(shift_id, rule_num)]
                             )
-        log.debug("Added skill mix constraints.")
+        log.info("Skill mix constraints enforced...")
 
         # Assign at most one shift per day per nurse
+        log.info("Restrict staff to one shift per day...")
         for nurse in nurses:
             for date in dates:
                 if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
@@ -732,9 +736,10 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                         )
                         <= 1
                     )
-        log.debug("Restrict to one shift per day.")
+        log.info("Staff restricted to one shift per day...")
 
         # Enforce shifts per roster for each nurse
+        log.info("Enforce shifts per roster...")
         for nurse in nurses:
             num_shifts_worked = sum(
                 shift_vars[(nurse.id, role.id, date, timeslot.id)]
@@ -746,9 +751,10 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
             )
             if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
                 model.Add(nurse.shifts_per_roster == num_shifts_worked)
-        log.debug("Enforce shifts per roster.")
+        log.info("Shifts per roster enforced...")
 
         # Maximise the number of satisfied shift requests
+        log.info("Maximising shift requests...")
         model.Maximize(
             sum(
                 shift_requests[n][d][s]
@@ -763,34 +769,33 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                 )
             )
         )
-        log.debug("Maximise shift requests.")
+        log.info("Shift requests maximised.")
 
         # Create the solver and solve
         solver = cp_model.CpSolver()
         solver.parameters.max_time_in_seconds = 60
-        log.debug("Solver started...")
+        log.info("Solver started...")
         solution_status = solver.Solve(model)
-        log.debug("Solver finished.")
+        log.info("Solver finished...")
         if solution_status == cp_model.INFEASIBLE:
-            log.debug("INFEASIBLE")
+            log.info("INFEASIBLE")
         if solution_status == cp_model.MODEL_INVALID:
-            log.debug("MODEL_INVALID")
+            log.info("MODEL_INVALID")
         if solution_status == cp_model.UNKNOWN:
-            log.debug("UNKNOWN")
-
+            log.info("UNKNOWN")
         if (
             solution_status != cp_model.FEASIBLE
             and solution_status != cp_model.OPTIMAL
         ):
-            log.debug("Raising exception")
+            log.info("Raising exception")
             raise SolutionNotFeasible("No feasible solutions.")
 
         # for value in intermediate_vars.values():
         #     print(value, solver.Value(value))
 
-        log.debug("Populating roster...")
+        log.info("Populating roster...")
         for d, date in enumerate(dates):
-            # log.debug(f"Day {d}:")
+            # log.info(f"Day {d}:")
             for n, nurse in enumerate(nurses):
                 for role in nurse.roles.all():
                     for s, timeslot in enumerate(
@@ -807,7 +812,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                             == 1
                         ):
                             if shift_requests[n][d][s] >= 1:
-                                # log.debug(
+                                # log.info(
                                 #     f"*** Request Successful *** "
                                 #     f"{nurse.last_name}, {nurse.first_name}"
                                 #     f" requested shift"
@@ -818,7 +823,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                                     date=date, shift=timeslot.shift
                                 ).staff.add(nurse)
                             else:
-                                # log.debug(
+                                # log.info(
                                 #     f"{nurse.last_name}, {nurse.first_name}"
                                 #     f" did not request shift"
                                 #     f" {timeslot.shift.shift_type}"
@@ -829,14 +834,14 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                                 ).staff.add(nurse)
                         # else:
                         #     if shift_requests[n][d][s] >= 1:
-                        #         log.debug(
+                        #         log.info(
                         #             f"*** Request Failed *** "
                         #             f"{nurse.last_name}, {nurse.first_name}"
                         #             f" requested shift"
                         #             f" {timeslot.shift.shift_type}"
                         #             f" but was not assigned."
                         #         )
-        log.debug("Roster complete...")
+        log.info("Roster populated...")
 
 
 class PreferenceListView(LoginRequiredMixin, ListView):

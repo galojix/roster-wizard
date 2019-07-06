@@ -3,3 +3,4 @@
 *.db
 .env
 .vscode
+django.log
