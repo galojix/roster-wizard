@@ -22,7 +22,7 @@
     </td>
     <td>
       {% for staff_member in timeslot.staff.all %}
-        {% for role in staff_member.roles.all %}
+        {% for role in staff_member.roles.all|dictsort:"role_name" %}
           {{ role.role_name }} {% endfor %}
         <br/>
       {% endfor %}
