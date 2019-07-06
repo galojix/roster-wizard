@@ -675,21 +675,21 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         # Intermediate shift rule variables
         log.info("Creating intermediate variables...")
         intermediate_vars = {
-            (shift_id, rule_num): model.NewBoolVar(f"s{shift_id}r{rule_num}")
-            for shift_id in shift_rules
-            for rule_num, rule in enumerate(shift_rules[shift_id])
+            (timeslot.id, rule_num): model.NewBoolVar(f"t{timeslot.id}r{rule_num}")
+            for timeslot in timeslots
+            for rule_num, rule in enumerate(shift_rules[timeslot.shift.id])
         }
         log.info("Intermediate vars created...")
         log.debug(intermediate_vars)
 
         # Only one shift rule at a time can be satisfied
         log.info("Adding intermediate variable constraints...")
-        for shift_id in shift_rules:
-            if len(shift_rules[shift_id]) >= 1:
+        for timeslot in timeslots:
+            if len(shift_rules[timeslot.shift.id]) >= 1:
                 model.Add(
                     sum(
-                        intermediate_vars[(shift_id, rule_num)]
-                        for rule_num, rule in enumerate(shift_rules[shift_id])
+                        intermediate_vars[(timeslot.id, rule_num)]
+                        for rule_num, rule in enumerate(shift_rules[timeslot.shift.id])
                     )
                     == 1
                 )
@@ -719,7 +719,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                                 )
                                 == role_count
                             ).OnlyEnforceIf(
-                                intermediate_vars[(shift_id, rule_num)]
+                                intermediate_vars[(timeslot.id, rule_num)]
                             )
         log.info("Skill mix constraints enforced...")
 
