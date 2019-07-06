@@ -21,7 +21,7 @@
         <td>{{ user.email }}</td>
         <td>{{ user.shifts_per_roster }}</td>
         <td>{{ user.available }}</td>
-        <td>{% for role in user.roles.all %}
+        <td>{% for role in user.roles.all|dictsort:"role_name" %}
             {{ role.role_name }}
             {% endfor %}
         </td>
