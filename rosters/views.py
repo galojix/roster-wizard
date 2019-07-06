@@ -597,61 +597,51 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         # Enforce shift sequences / staff rules
         # Need to look at previous roster period also
         log.info("Adding shift sequences...")
-        # extended_dates = []
-        # date = start_date.date() - datetime.timedelta(days=num_days)
-        # for day in range(2 * num_days):
-        #     extended_dates.append(date)
-        #     date += datetime.timedelta(days=1)
-        # for nurse in nurses:
-        #     for staff_rule in nurse.staffrule_set.all():
-        #         invalid_shift_sequence = OrderedDict()
-        #         staff_rule_shifts = staff_rule.staffruleshift_set.all().order_by(
-        #             "position"
-        #         )
-        #         for staff_rule_shift in staff_rule_shifts:
-        #             invalid_shift_sequence.setdefault(
-        #                 staff_rule_shift.position, []
-        #             ).append(staff_rule_shift.shift)
-        #             # invalid_shift_sequence.append(staff_rule_shift.shift)
-        #         sequence_size = len(invalid_shift_sequence)
-        #         # print(invalid_shift_sequence)
-        #         shift_vars_in_seq = []
-        #         for date in extended_dates:
-        #             shift_vars_in_seq = []
-        #             for day_num in invalid_shift_sequence:
-        #                 # for day_num, invalid_shift in enumerate(
-        #                 #     invalid_shift_sequence
-        #                 # ):
-        #                 for invalid_shift in invalid_shift_sequence[day_num]:
-        #                     try:
-        #                         day_to_test = date + datetime.timedelta(
-        #                             days=day_num
-        #                         )
-        #                         timeslot_to_check = TimeSlot.objects.get(
-        #                             date=day_to_test, shift=invalid_shift
-        #                         )
-        #                     except TimeSlot.DoesNotExist:
-        #                         break
-        #                     for role in nurse.roles.all():
-        #                         try:
-        #                             shift_vars_in_seq.append(
-        #                                 shift_vars[
-        #                                     (
-        #                                         nurse.id,
-        #                                         role.id,
-        #                                         day_to_test,
-        #                                         timeslot_to_check.id,
-        #                                     )
-        #                                 ]
-        #                             )
-        #                         except KeyError:
-        #                             continue
-        #                 # print(
-        #                 #     "Shift vars in seq:",
-        #                 #     invalid_shift_sequence,
-        #                 #     shift_vars_in_seq,
-        #                 # )
-        #             model.Add(sum(shift_vars_in_seq) < sequence_size)
+        extended_dates = []
+        date = start_date.date() - datetime.timedelta(days=num_days)
+        for day in range(2 * num_days):
+            extended_dates.append(date)
+            date += datetime.timedelta(days=1)
+        for nurse in nurses:
+            for staff_rule in nurse.staffrule_set.all():
+                invalid_shift_sequence = OrderedDict()
+                staff_rule_shifts = staff_rule.staffruleshift_set.all().order_by(
+                    "position"
+                )
+                for staff_rule_shift in staff_rule_shifts:
+                    invalid_shift_sequence.setdefault(
+                        staff_rule_shift.position, []
+                    ).append(staff_rule_shift.shift)
+                sequence_size = len(invalid_shift_sequence)
+                shift_vars_in_seq = []
+                for date in extended_dates:
+                    shift_vars_in_seq = []
+                    for day_num in invalid_shift_sequence:
+                        for invalid_shift in invalid_shift_sequence[day_num]:
+                            try:
+                                day_to_test = date + datetime.timedelta(
+                                    days=day_num
+                                )
+                                timeslot_to_check = TimeSlot.objects.get(
+                                    date=day_to_test, shift=invalid_shift
+                                )
+                            except TimeSlot.DoesNotExist:
+                                break
+                            for role in nurse.roles.all():
+                                try:
+                                    shift_vars_in_seq.append(
+                                        shift_vars[
+                                            (
+                                                nurse.id,
+                                                role.id,
+                                                day_to_test,
+                                                timeslot_to_check.id,
+                                            )
+                                        ]
+                                    )
+                                except KeyError:
+                                    continue
+                    model.Add(sum(shift_vars_in_seq) < sequence_size)
         log.info("Shift sequences added...")
 
         # Collect shift rules into friendly structure
