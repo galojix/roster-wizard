@@ -136,7 +136,18 @@ def generate_roster(start_date, num_days):
     for day in range(2 * num_days):
         extended_dates.append(date)
         date += datetime.timedelta(days=1)
+    timeslot_ids = {}
+    for date in extended_dates:
+        timeslot_ids[date] = {}
+        for shift in shifts:
+            try:
+                timeslot_ids[date][shift] = TimeSlot.objects.get(
+                    date=date, shift=shift
+                ).id
+            except TimeSlot.DoesNotExist:
+                continue
     for nurse in nurses:
+        roles = nurse.roles.all()
         for staff_rule in nurse.staffrule_set.all():
             invalid_shift_sequence = OrderedDict()
             staff_rule_shifts = staff_rule.staffruleshift_set.all().order_by(
@@ -152,16 +163,8 @@ def generate_roster(start_date, num_days):
                 shift_vars_in_seq = []
                 for day_num in invalid_shift_sequence:
                     for invalid_shift in invalid_shift_sequence[day_num]:
-                        try:
-                            day_to_test = date + datetime.timedelta(
-                                days=day_num
-                            )
-                            timeslot_to_check = TimeSlot.objects.get(
-                                date=day_to_test, shift=invalid_shift
-                            )
-                        except TimeSlot.DoesNotExist:
-                            break
-                        for role in nurse.roles.all():
+                        day_to_test = date + datetime.timedelta(days=day_num)
+                        for role in roles:
                             try:
                                 shift_vars_in_seq.append(
                                     shift_vars[
@@ -169,7 +172,9 @@ def generate_roster(start_date, num_days):
                                             nurse.id,
                                             role.id,
                                             day_to_test,
-                                            timeslot_to_check.id,
+                                            timeslot_ids[day_to_test][
+                                                invalid_shift
+                                            ],
                                         )
                                     ]
                                 )
