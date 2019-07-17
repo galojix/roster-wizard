@@ -1,3 +1,5 @@
+"""Business logic."""
+
 import datetime
 import logging
 from collections import OrderedDict
@@ -12,11 +14,13 @@ log = logging.getLogger("django")
 
 
 class SolutionNotFeasible(Exception):
+    """Exception for when there is no feasible solution."""
+
     pass
 
 
 def generate_roster(start_date, num_days):
-
+    """Generate roster as per constraints."""
     nurses = get_user_model().objects.filter(available=True)
     shifts = Shift.objects.all().order_by("shift_type")
 
@@ -371,3 +375,43 @@ def generate_roster(start_date, num_days):
                     #             f" but was not assigned."
                     #         )
     log.info("Roster populated...")
+
+
+def get_roster_by_staff(start_date, num_days):
+    """Create data structures for roster grouped by staff."""
+    dates = []
+    roster = OrderedDict()
+    nurses = get_user_model().objects.all().order_by("last_name")
+    for nurse in nurses.order_by("roles__role_name", "last_name", "first_name"):
+        roster[nurse.last_name + ", " + nurse.first_name] = OrderedDict()
+        staff_roles = ""
+        for role in nurse.roles.all().order_by("role_name"):
+            staff_roles += role.role_name + " "
+        roster[nurse.last_name + ", " + nurse.first_name][
+            "roles"
+        ] = staff_roles
+        dates = []
+        for day in range(num_days):
+            date = start_date + datetime.timedelta(days=day)
+            date = date.date()
+            dates.append(date)
+            try:
+                roster[nurse.last_name + ", " + nurse.first_name][
+                    date
+                ] = TimeSlot.objects.get(
+                    date=date, staff=nurse.id
+                ).shift.shift_type
+            except TimeSlot.DoesNotExist:
+                roster[nurse.last_name + ", " + nurse.first_name][
+                    date
+                ] = "X"
+            except TimeSlot.MultipleObjectsReturned:
+                timeslots = TimeSlot.objects.filter(date=date, staff=nurse.id)
+                roster[nurse.last_name + ", " + nurse.first_name][
+                    date
+                ] = ""
+                for timeslot in timeslots:
+                    roster[nurse.last_name + ", " + nurse.first_name][
+                        date
+                    ] += (timeslot.shift.shift_type + " ")
+    return dates, roster
