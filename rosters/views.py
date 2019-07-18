@@ -36,6 +36,7 @@ from .forms import (
     TimeSlotUpdateForm,
     TimeSlotCreateForm,
     StaffRuleUpdateForm,
+    StaffRuleCreateForm,
     DaySetCreateForm,
 )
 from .logic import SolutionNotFeasible, generate_roster, get_roster_by_staff
@@ -244,7 +245,6 @@ class StaffRuleDetailView(LoginRequiredMixin, DetailView):
 
 class StaffRuleUpdateView(LoginRequiredMixin, UpdateView):
     model = StaffRule
-    # fields = ("staff_rule_name", "staff")
     form_class = StaffRuleUpdateForm
     template_name = "staff_rule_edit.html"
     login_url = "login"
@@ -259,8 +259,8 @@ class StaffRuleDeleteView(LoginRequiredMixin, DeleteView):
 
 class StaffRuleCreateView(LoginRequiredMixin, CreateView):
     model = StaffRule
+    form_class = StaffRuleCreateForm
     template_name = "staff_rule_new.html"
-    fields = ("staff_rule_name", "staff", "day_group")
     login_url = "login"
 
 
