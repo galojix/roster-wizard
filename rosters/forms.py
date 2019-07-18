@@ -51,3 +51,7 @@ class StaffRuleUpdateForm(ModelForm):
         model = StaffRule
         fields = ("staff_rule_name", "day_group", "staff")
         widgets = {"staff": forms.CheckboxSelectMultiple()}
+
+
+class DaySetCreateForm(forms.Form):
+    number_of_days = forms.IntegerField(initial=28)

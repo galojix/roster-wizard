@@ -65,6 +65,7 @@ from .views import (
     DayDetailView,
     DayDeleteView,
     DayCreateView,
+    DaySetCreateView,
 )
 
 urlpatterns = [
@@ -277,4 +278,5 @@ urlpatterns = [
     ),
     path("day/new/", DayCreateView.as_view(), name="day_new"),
     path("day/", DayListView.as_view(), name="day_list"),
+    path("dayset/new", DaySetCreateView.as_view(), name="day_set_new"),
 ]

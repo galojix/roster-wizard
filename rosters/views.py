@@ -36,6 +36,7 @@ from .forms import (
     TimeSlotUpdateForm,
     TimeSlotCreateForm,
     StaffRuleUpdateForm,
+    DaySetCreateForm,
 )
 from .logic import SolutionNotFeasible, generate_roster, get_roster_by_staff
 
@@ -593,3 +594,18 @@ class DayCreateView(LoginRequiredMixin, CreateView):
     template_name = "day_new.html"
     fields = ("number",)
     login_url = "login"
+
+
+class DaySetCreateView(LoginRequiredMixin, FormView):
+    template_name = "day_set_new.html"
+    form_class = DaySetCreateForm
+    success_url = reverse_lazy("day_list")
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        number_of_days = form.cleaned_data["number_of_days"]
+        for day in range(1, number_of_days + 1):
+            Day.objects.get_or_create(number=day)
+        self.request.session["num_days"] = number_of_days
+        return super().form_valid(form)
