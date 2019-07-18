@@ -519,6 +519,12 @@ class DayGroupCreateView(LoginRequiredMixin, CreateView):
     fields = ("name",)
     login_url = "login"
 
+    def form_valid(self, form):
+        days = Day.objects.all()
+        for day in days:
+            DayGroupDay.objects.get_or_create(day_group=self.object, day=day)
+        return super().form_valid(form)
+
 
 class DayGroupDayListView(LoginRequiredMixin, ListView):
     model = DayGroupDay

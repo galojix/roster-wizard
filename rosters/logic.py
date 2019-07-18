@@ -7,7 +7,7 @@ from collections import OrderedDict
 from ortools.sat.python import cp_model
 from django.contrib.auth import get_user_model
 
-from .models import Leave, Role, Shift, ShiftRule, TimeSlot
+from .models import Leave, Role, Shift, ShiftRule, TimeSlot, Day
 
 
 log = logging.getLogger("django")
@@ -23,6 +23,7 @@ def generate_roster(start_date, num_days):
     """Generate roster as per constraints."""
     nurses = get_user_model().objects.filter(available=True)
     shifts = Shift.objects.all().order_by("shift_type")
+    num_days = Day.objects.count()
 
     # Delete existing shifts in date range
     date_range = [
@@ -36,20 +37,13 @@ def generate_roster(start_date, num_days):
     # Create dates and timeslots
     dates = []
     date = start_date.date()
-    for day in range(num_days):
+    for day in range(1, num_days + 1):
         dates.append(date)
-        day_of_week = date.weekday()
         for shift in shifts:
-            if (
-                (shift.monday and day_of_week == 0)
-                or (shift.tuesday and day_of_week == 1)
-                or (shift.wednesday and day_of_week == 2)
-                or (shift.thursday and day_of_week == 3)
-                or (shift.friday and day_of_week == 4)
-                or (shift.saturday and day_of_week == 5)
-                or (shift.sunday and day_of_week == 6)
-            ):
-                TimeSlot.objects.create(date=date, shift=shift)
+            day_group_days = shift.day_group.day_group_day.all
+            for day_group_day in day_group_days:
+                if day_group_day.day == day:
+                    TimeSlot.objects.create(date=date, shift=shift)
         date += datetime.timedelta(days=1)
     timeslots = TimeSlot.objects.filter(date__range=date_range)
 
