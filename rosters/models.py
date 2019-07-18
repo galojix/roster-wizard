@@ -86,7 +86,9 @@ class Shift(models.Model):
     """Shift."""
 
     shift_type = models.CharField(max_length=20, null=False, blank=False)
-    day_group = models.ForeignKey(DayGroup, on_delete=models.CASCADE, default=1)
+    day_group = models.ForeignKey(
+        DayGroup, null=True, blank=False, on_delete=models.SET_NULL
+    )
 
     def __str__(self):
         """String."""
@@ -143,7 +145,9 @@ class StaffRule(models.Model):
     staff_rule_name = models.CharField(max_length=20, null=False, blank=False)
     staff = models.ManyToManyField(get_user_model())
     shifts = models.ManyToManyField(Shift, through="StaffRuleShift")
-    day_group = models.ForeignKey(DayGroup, on_delete=models.CASCADE, default=1)
+    day_group = models.ForeignKey(
+        DayGroup, null=True, blank=False, on_delete=models.SET_NULL
+    )
 
     def __str__(self):
         """String."""
@@ -162,7 +166,7 @@ class StaffRuleShift(models.Model):
     position = models.IntegerField(null=False, blank=False)
 
     class Meta:
-        ordering = ('position', 'shift')
+        ordering = ("position", "shift")
 
     def __str__(self):
         """String."""
