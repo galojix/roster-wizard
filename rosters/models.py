@@ -75,7 +75,7 @@ class DayGroupDay(models.Model):
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.day_group.name) + str(self.day.number)
 
     def get_absolute_url(self):
         """URL."""

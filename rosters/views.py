@@ -520,9 +520,12 @@ class DayGroupCreateView(LoginRequiredMixin, CreateView):
     login_url = "login"
 
     def form_valid(self, form):
+        """Add all days to day group by default."""
         days = Day.objects.all()
+        day_group = form.save(commit=False)
+        day_group.save()
         for day in days:
-            DayGroupDay.objects.get_or_create(day_group=self.object, day=day)
+            DayGroupDay.objects.get_or_create(day_group=day_group, day=day)
         return super().form_valid(form)
 
 

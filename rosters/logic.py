@@ -40,9 +40,9 @@ def generate_roster(start_date, num_days):
     for day in range(1, num_days + 1):
         dates.append(date)
         for shift in shifts:
-            day_group_days = shift.day_group.day_group_day.all
+            day_group_days = shift.day_group.daygroupday_set.all()
             for day_group_day in day_group_days:
-                if day_group_day.day == day:
+                if day_group_day.day.number == day:
                     TimeSlot.objects.create(date=date, shift=shift)
         date += datetime.timedelta(days=1)
     timeslots = TimeSlot.objects.filter(date__range=date_range)

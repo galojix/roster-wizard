@@ -19,7 +19,7 @@
             {% endfor %}
             <a href="{% url 'day_group_day_new' day_group.pk %}">Add Day</a>
         </td>
-        <td><a href="{% url 'day_group_day_edit' day_group.pk %}">Edit</a> | <a href="{% url 'day_group_delete' day_group.pk %}">Delete</a></td>
+        <td><a href="{% url 'day_group_edit' day_group.pk %}">Edit</a> | <a href="{% url 'day_group_delete' day_group.pk %}">Delete</a></td>
     </tr>
   {% endfor %}
 </table>
