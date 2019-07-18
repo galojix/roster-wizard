@@ -49,5 +49,5 @@ class SelectRosterForm(forms.Form):
 class StaffRuleUpdateForm(ModelForm):
     class Meta:
         model = StaffRule
-        fields = ("staff_rule_name", "staff")
+        fields = ("staff_rule_name", "day_group", "staff")
         widgets = {"staff": forms.CheckboxSelectMultiple()}

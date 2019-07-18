@@ -42,17 +42,51 @@ class Role(models.Model):
         return reverse("role_detail", args=[str(self.id)])
 
 
+class DayGroup(models.Model):
+    """Day Group."""
+
+    name = models.CharField(max_length=20, null=False, blank=False)
+
+    def __str__(self):
+        return str(self.name)
+
+    def get_absolute_url(self):
+        """URL."""
+        return reverse("daygroup_detail", args=[str(self.id)])
+
+
+class Day(models.Model):
+    """Day."""
+
+    number = models.IntegerField(null=False, blank=False)
+
+    def __str__(self):
+        return str(self.number)
+
+    def get_absolute_url(self):
+        """URL."""
+        return reverse("day_detail", args=[str(self.id)])
+
+
+class DayGroupDay(models.Model):
+    """Day Group."""
+
+    day_group = models.ForeignKey(DayGroup, on_delete=models.CASCADE)
+    day = models.ForeignKey(Day, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.id)
+
+    def get_absolute_url(self):
+        """URL."""
+        return reverse("daygroupday_detail", args=[str(self.id)])()
+
+
 class Shift(models.Model):
     """Shift."""
 
     shift_type = models.CharField(max_length=20, null=False, blank=False)
-    monday = models.BooleanField(null=False, blank=False, default=True)
-    tuesday = models.BooleanField(null=False, blank=False, default=True)
-    wednesday = models.BooleanField(null=False, blank=False, default=True)
-    thursday = models.BooleanField(null=False, blank=False, default=True)
-    friday = models.BooleanField(null=False, blank=False, default=True)
-    saturday = models.BooleanField(null=False, blank=False, default=True)
-    sunday = models.BooleanField(null=False, blank=False, default=True)
+    day_group = models.ForeignKey(DayGroup, on_delete=models.CASCADE, default=1)
 
     def __str__(self):
         """String."""
@@ -109,6 +143,7 @@ class StaffRule(models.Model):
     staff_rule_name = models.CharField(max_length=20, null=False, blank=False)
     staff = models.ManyToManyField(get_user_model())
     shifts = models.ManyToManyField(Shift, through="StaffRuleShift")
+    day_group = models.ForeignKey(DayGroup, on_delete=models.CASCADE, default=1)
 
     def __str__(self):
         """String."""

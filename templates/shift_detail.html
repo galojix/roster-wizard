@@ -3,15 +3,7 @@
 {% block content %}
 <div class="shift-entry">
   <h2>{{ shift.shift_type }}</h2>
-    <ul>
-        <li>Monday: {{ shift.monday }}</li>
-        <li>Tuesday: {{ shift.tuesday }}</li>
-        <li>Wednesday: {{ shift.wednesday }}</li>
-        <li>Thursday: {{ shift.thursday }}</li>
-        <li>Friday: {{ shift.friday }}</li>
-        <li>Saturday: {{ shift.saturday }}</li>
-        <li>Sunday: {{ shift.sunday }}</li>
-    </ul>
+  <p>{{ shift.day_group.name }}</p>
 </div>
 
   <p><a href="{% url 'shift_edit' shift.pk %}">Edit</a> | <a href="{% url 'shift_delete' shift.pk %}">Delete</a></p>

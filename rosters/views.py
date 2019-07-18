@@ -123,13 +123,7 @@ class ShiftUpdateView(LoginRequiredMixin, UpdateView):
     model = Shift
     fields = (
         "shift_type",
-        "monday",
-        "tuesday",
-        "wednesday",
-        "thursday",
-        "friday",
-        "saturday",
-        "sunday",
+        "day_group",
     )
     template_name = "shift_edit.html"
     login_url = "login"
@@ -147,13 +141,7 @@ class ShiftCreateView(LoginRequiredMixin, CreateView):
     template_name = "shift_new.html"
     fields = (
         "shift_type",
-        "monday",
-        "tuesday",
-        "wednesday",
-        "thursday",
-        "friday",
-        "saturday",
-        "sunday",
+        "day_group",
     )
     login_url = "login"
 
@@ -268,7 +256,7 @@ class StaffRuleDeleteView(LoginRequiredMixin, DeleteView):
 class StaffRuleCreateView(LoginRequiredMixin, CreateView):
     model = StaffRule
     template_name = "staff_rule_new.html"
-    fields = ("staff_rule_name", "staff")
+    fields = ("staff_rule_name", "staff", "day_group")
     login_url = "login"
 
 

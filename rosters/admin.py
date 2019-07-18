@@ -10,6 +10,9 @@ from .models import (
     StaffRule,
     StaffRuleShift,
     TimeSlot,
+    DayGroup,
+    Day,
+    DayGroupDay,
 )
 
 admin.site.register(Leave)
@@ -20,7 +23,9 @@ admin.site.register(ShiftRuleRole)
 admin.site.register(StaffRule)
 admin.site.register(StaffRuleShift)
 admin.site.register(TimeSlot)
-
+admin.site.register(DayGroup)
+admin.site.register(Day)
+admin.site.register(DayGroupDay)
 
 # class CommentInLine(admin.TabularInline):
 #     model = Comment
