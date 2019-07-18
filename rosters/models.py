@@ -166,7 +166,7 @@ class StaffRuleShift(models.Model):
     position = models.IntegerField(null=False, blank=False)
 
     class Meta:
-        ordering = ("position", "shift")
+        ordering = ("position", "shift__shift_type")
 
     def __str__(self):
         """String."""
