@@ -26,6 +26,9 @@ from .models import (
     StaffRuleShift,
     TimeSlot,
     Preference,
+    DayGroup,
+    Day,
+    DayGroupDay,
 )
 from .forms import (
     LeaveCreateForm,
@@ -478,3 +481,115 @@ def download_csv(request):
             row.append(roster[staff_member][key])
         writer.writerow(row)
     return response
+
+
+class DayGroupListView(LoginRequiredMixin, ListView):
+    model = DayGroup
+    template_name = "day_group_list.html"
+    login_url = "login"
+
+    def get_queryset(self):
+        return DayGroup.objects.order_by("name")
+
+
+class DayGroupDetailView(LoginRequiredMixin, DetailView):
+    model = DayGroup
+    template_name = "day_group_detail.html"
+    login_url = "login"
+
+
+class DayGroupUpdateView(LoginRequiredMixin, UpdateView):
+    model = DayGroup
+    fields = ("name",)
+    template_name = "day_group_edit.html"
+    login_url = "login"
+
+
+class DayGroupDeleteView(LoginRequiredMixin, DeleteView):
+    model = DayGroup
+    template_name = "day_group_delete.html"
+    success_url = reverse_lazy("day_group_list")
+    login_url = "login"
+
+
+class DayGroupCreateView(LoginRequiredMixin, CreateView):
+    model = DayGroup
+    template_name = "day_group_new.html"
+    fields = ("name",)
+    login_url = "login"
+
+
+class DayGroupDayListView(LoginRequiredMixin, ListView):
+    model = DayGroupDay
+    template_name = "day_group_day_list.html"
+    login_url = "login"
+
+
+class DayGroupDayDetailView(LoginRequiredMixin, DetailView):
+    model = DayGroupDay
+    template_name = "day_group_day_detail.html"
+    success_url = reverse_lazy("day_group_list")
+    login_url = "login"
+
+
+class DayGroupDayUpdateView(LoginRequiredMixin, UpdateView):
+    model = DayGroupDay
+    fields = ("day_group", "day")
+    template_name = "day_group_day_edit.html"
+    success_url = reverse_lazy("day_group_list")
+    login_url = "login"
+
+
+class DayGroupDayDeleteView(LoginRequiredMixin, DeleteView):
+    model = DayGroupDay
+    template_name = "day_group_day_delete.html"
+    success_url = reverse_lazy("day_group_list")
+    login_url = "login"
+
+
+class DayGroupDayCreateView(LoginRequiredMixin, CreateView):
+    model = DayGroupDay
+    template_name = "day_group_day_new.html"
+    fields = ("day",)
+    login_url = "login"
+
+    def form_valid(self, form):
+        day_group = get_object_or_404(DayGroup, id=self.kwargs["daygroup"])
+        form.instance.day_group = day_group
+        return super().form_valid(form)
+
+
+class DayListView(LoginRequiredMixin, ListView):
+    model = Day
+    template_name = "day_list.html"
+    login_url = "login"
+
+    def get_queryset(self):
+        return Day.objects.order_by("number")
+
+
+class DayDetailView(LoginRequiredMixin, DetailView):
+    model = Day
+    template_name = "day_detail.html"
+    login_url = "login"
+
+
+class DayUpdateView(LoginRequiredMixin, UpdateView):
+    model = Day
+    fields = ("number",)
+    template_name = "day_edit.html"
+    login_url = "login"
+
+
+class DayDeleteView(LoginRequiredMixin, DeleteView):
+    model = Day
+    template_name = "day_delete.html"
+    success_url = reverse_lazy("day_list")
+    login_url = "login"
+
+
+class DayCreateView(LoginRequiredMixin, CreateView):
+    model = Day
+    template_name = "day_new.html"
+    fields = ("number",)
+    login_url = "login"

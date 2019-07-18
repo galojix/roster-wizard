@@ -50,6 +50,21 @@ from .views import (
     PreferenceDeleteView,
     PreferenceCreateView,
     download_csv,
+    DayGroupListView,
+    DayGroupUpdateView,
+    DayGroupDetailView,
+    DayGroupDeleteView,
+    DayGroupCreateView,
+    DayGroupDayListView,
+    DayGroupDayUpdateView,
+    DayGroupDayDetailView,
+    DayGroupDayDeleteView,
+    DayGroupDayCreateView,
+    DayListView,
+    DayUpdateView,
+    DayDetailView,
+    DayDeleteView,
+    DayCreateView,
 )
 
 urlpatterns = [
@@ -216,4 +231,50 @@ urlpatterns = [
     ),
     path("preference/", PreferenceListView.as_view(), name="preference_list"),
     path("roster/download", download_csv, name="download_csv"),
+    path("daygroup/", DayGroupListView.as_view(), name="day_group_list"),
+    path(
+        "daygroup/<int:pk>/edit/",
+        DayGroupUpdateView.as_view(),
+        name="day_group_edit",
+    ),
+    path(
+        "daygroup/<int:pk>/",
+        DayGroupDetailView.as_view(),
+        name="day_group_detail",
+    ),
+    path(
+        "daygroup/<int:pk>/delete/",
+        DayGroupDeleteView.as_view(),
+        name="day_group_delete",
+    ),
+    path(
+        "daygroup/new/", DayGroupCreateView.as_view(), name="day_group_new"
+    ),
+    path("daygroupday/", DayGroupDayListView.as_view(), name="day_group_day_list"),
+    path(
+        "daygroupday/<int:pk>/edit/",
+        DayGroupDayUpdateView.as_view(),
+        name="day_group_day_edit",
+    ),
+    path(
+        "daygroupday/<int:pk>/",
+        DayGroupDayDetailView.as_view(),
+        name="day_group_day_detail",
+    ),
+    path(
+        "daygroupday/<int:pk>/delete/",
+        DayGroupDayDeleteView.as_view(),
+        name="day_group_day_delete",
+    ),
+    path(
+        "daygroupday/<slug:daygroup>/new/", DayGroupDayCreateView.as_view(), name="day_group_day_new"
+    ),
+    path("daygroupday/", DayGroupDayListView.as_view(), name="day_group_day_list"),
+    path("day/<int:pk>/edit/", DayUpdateView.as_view(), name="day_edit"),
+    path("day/<int:pk>/", DayDetailView.as_view(), name="day_detail"),
+    path(
+        "day/<int:pk>/delete/", DayDeleteView.as_view(), name="day_delete"
+    ),
+    path("day/new/", DayCreateView.as_view(), name="day_new"),
+    path("day/", DayListView.as_view(), name="day_list"),
 ]

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="day-entry">
+  <h2>Day: {{ day.number }}</h2>
+</div>
+
+  <p><a href="{% url 'day_edit' day.pk %}">Edit</a> | <a href="{% url 'day_delete' day.pk %}">Delete</a></p>
+  <p>Back to <a href="{% url 'day_list' %}">All Days</a>.</p>
+{% endblock content %}

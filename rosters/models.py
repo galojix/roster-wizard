@@ -52,7 +52,7 @@ class DayGroup(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("daygroup_detail", args=[str(self.id)])
+        return reverse("day_group_detail", args=[str(self.id)])
 
 
 class Day(models.Model):
@@ -79,7 +79,7 @@ class DayGroupDay(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("daygroupday_detail", args=[str(self.id)])()
+        return reverse("day_group_day_detail", args=[str(self.id)])
 
 
 class Shift(models.Model):

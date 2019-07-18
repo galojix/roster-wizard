@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Day Groups</h2>
+<table class="table table-striped table-bordered table-hover">
+    <tr>
+        <th>Day Group Name</th>
+        <th>Days</th>
+        <th>Action</th>
+
+    </tr>
+    {% for day_group in daygroup_list %}
+    <tr>
+        <td>{{ day_group.name }}</td>
+        <td>{% for day_group_day in day_group.daygroupday_set.all %}
+            {{ day_group_day.day.number }}
+            <a href="{% url 'day_group_day_edit' day_group_day.pk %}">Edit</a> | <a href="{% url 'day_group_day_delete' day_group_day.pk %}">Delete</a>
+            <br/>
+            {% endfor %}
+            <a href="{% url 'day_group_day_new' day_group.pk %}">Add Day</a>
+        </td>
+        <td><a href="{% url 'day_group_day_edit' day_group.pk %}">Edit</a> | <a href="{% url 'day_group_delete' day_group.pk %}">Delete</a></td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock content %}
