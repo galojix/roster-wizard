@@ -607,5 +607,9 @@ class DaySetCreateView(LoginRequiredMixin, FormView):
         number_of_days = form.cleaned_data["number_of_days"]
         for day in range(1, number_of_days + 1):
             Day.objects.get_or_create(number=day)
+        actual_number_of_days = Day.objects.count()
+        if actual_number_of_days > number_of_days:
+            for day in range(number_of_days + 1, actual_number_of_days + 1):
+                Day.objects.get(number=day).delete()
         self.request.session["num_days"] = number_of_days
         return super().form_valid(form)
