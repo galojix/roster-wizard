@@ -74,6 +74,9 @@ class DayGroupDay(models.Model):
     day_group = models.ForeignKey(DayGroup, on_delete=models.CASCADE)
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ("day",)
+
     def __str__(self):
         return str(self.day_group.name) + str(self.day.number)
 
