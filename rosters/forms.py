@@ -38,12 +38,10 @@ class TimeSlotUpdateForm(ModelForm):
 
 class GenerateRosterForm(forms.Form):
     start_date = forms.DateTimeField(widget=DateInput())
-    num_days = forms.IntegerField(initial=28)
 
 
 class SelectRosterForm(forms.Form):
     start_date = forms.DateTimeField(widget=DateInput())
-    num_days = forms.IntegerField(initial=28)
 
 
 class StaffRuleUpdateForm(ModelForm):

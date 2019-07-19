@@ -311,16 +311,11 @@ class TimeSlotListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         print(self.request.session)
-        if (
-            "start_date" in self.request.session
-            and "num_days" in self.request.session
-        ):
+        if "start_date" in self.request.session:
             start_date = datetime.datetime.strptime(
                 self.request.session["start_date"], "%d-%b-%Y"
             )
-            num_days = datetime.timedelta(
-                days=self.request.session["num_days"]
-            )
+            num_days = datetime.timedelta(days=Day.objects.count() - 1)
             end_date = start_date + num_days
             date_range = [start_date, end_date]
             return TimeSlot.objects.filter(date__range=date_range).order_by(
@@ -337,18 +332,13 @@ class RosterListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if (
-            "start_date" in self.request.session
-            and "num_days" in self.request.session
-        ):
+        if "start_date" in self.request.session:
             start_date = datetime.datetime.strptime(
                 self.request.session["start_date"], "%d-%b-%Y"
             )
-            num_days = self.request.session["num_days"]
         else:
             start_date = datetime.datetime.now()
-            num_days = 14
-        dates, roster = get_roster_by_staff(start_date, num_days)
+        dates, roster = get_roster_by_staff(start_date)
         context["dates"] = dates
         context["roster"] = roster
         return context
@@ -390,11 +380,9 @@ class SelectRosterView(LoginRequiredMixin, FormView):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
         start_date = form.cleaned_data["start_date"]
-        num_days = form.cleaned_data["num_days"]
         self.request.session["start_date"] = start_date.date().strftime(
             "%d-%b-%Y"
         )
-        self.request.session["num_days"] = num_days
         return super().form_valid(form)
 
 
@@ -407,9 +395,8 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
         start_date = form.cleaned_data["start_date"]
-        num_days = form.cleaned_data["num_days"]
         try:
-            generate_roster(start_date, num_days)
+            generate_roster(start_date)
         except SolutionNotFeasible:
             messages.error(
                 self.request,
@@ -458,16 +445,14 @@ class PreferenceCreateView(LoginRequiredMixin, CreateView):
 
 @login_required
 def download_csv(request):
-    if "start_date" in request.session and "num_days" in request.session:
+    if "start_date" in request.session:
         start_date = datetime.datetime.strptime(
             request.session["start_date"], "%d-%b-%Y"
         )
-        num_days = request.session["num_days"]
     else:
         start_date = datetime.datetime.now()
-        num_days = 14
 
-    dates, roster = get_roster_by_staff(start_date, num_days)
+    dates, roster = get_roster_by_staff(start_date)
 
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="roster.csv"'
@@ -620,5 +605,4 @@ class DaySetCreateView(LoginRequiredMixin, FormView):
         if actual_number_of_days > number_of_days:
             for day in range(number_of_days + 1, actual_number_of_days + 1):
                 Day.objects.get(number=day).delete()
-        self.request.session["num_days"] = number_of_days
         return super().form_valid(form)

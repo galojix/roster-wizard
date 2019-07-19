@@ -19,7 +19,7 @@ class SolutionNotFeasible(Exception):
     pass
 
 
-def generate_roster(start_date, num_days):
+def generate_roster(start_date):
     """Generate roster as per constraints."""
     nurses = get_user_model().objects.filter(available=True)
     shifts = Shift.objects.all().order_by("shift_type")
@@ -371,12 +371,15 @@ def generate_roster(start_date, num_days):
     log.info("Roster populated...")
 
 
-def get_roster_by_staff(start_date, num_days):
+def get_roster_by_staff(start_date):
     """Create data structures for roster grouped by staff."""
     dates = []
     roster = OrderedDict()
     nurses = get_user_model().objects.all().order_by("last_name")
-    for nurse in nurses.order_by("roles__role_name", "last_name", "first_name"):
+    num_days = Day.objects.count()
+    for nurse in nurses.order_by(
+        "roles__role_name", "last_name", "first_name"
+    ):
         roster[nurse.last_name + ", " + nurse.first_name] = OrderedDict()
         staff_roles = ""
         for role in nurse.roles.all().order_by("role_name"):
@@ -396,14 +399,10 @@ def get_roster_by_staff(start_date, num_days):
                     date=date, staff=nurse.id
                 ).shift.shift_type
             except TimeSlot.DoesNotExist:
-                roster[nurse.last_name + ", " + nurse.first_name][
-                    date
-                ] = "X"
+                roster[nurse.last_name + ", " + nurse.first_name][date] = "X"
             except TimeSlot.MultipleObjectsReturned:
                 timeslots = TimeSlot.objects.filter(date=date, staff=nurse.id)
-                roster[nurse.last_name + ", " + nurse.first_name][
-                    date
-                ] = ""
+                roster[nurse.last_name + ", " + nurse.first_name][date] = ""
                 for timeslot in timeslots:
                     roster[nurse.last_name + ", " + nurse.first_name][
                         date
