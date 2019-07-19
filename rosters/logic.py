@@ -318,7 +318,7 @@ def generate_roster(start_date):
 
     # Create the solver and solve
     solver = cp_model.CpSolver()
-    solver.parameters.max_time_in_seconds = 60
+    solver.parameters.max_time_in_seconds = 90
     log.info("Solver started...")
     solution_status = solver.Solve(model)
     log.info("Solver finished...")
