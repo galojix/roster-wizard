@@ -33,7 +33,10 @@ class TimeSlotUpdateForm(ModelForm):
     class Meta:
         model = TimeSlot
         fields = ("date", "shift", "staff")
-        widgets = {"date": DateInput()}
+        widgets = {
+            "date": DateInput(),
+            "staff": forms.CheckboxSelectMultiple(),
+            }
 
 
 class GenerateRosterForm(forms.Form):
