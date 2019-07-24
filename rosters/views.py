@@ -402,7 +402,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                 self.request,
                 (
                     "Could not generate roster,"
-                    " try changing rules or staff availability."
+                    " try putting more staff on leave or changing rules."
                 ),
             )
         return super().form_valid(form)
