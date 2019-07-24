@@ -315,14 +315,14 @@ class TimeSlotListView(LoginRequiredMixin, ListView):
             start_date = datetime.datetime.strptime(
                 self.request.session["start_date"], "%d-%b-%Y"
             )
-            num_days = datetime.timedelta(days=Day.objects.count() - 1)
-            end_date = start_date + num_days
-            date_range = [start_date, end_date]
-            return TimeSlot.objects.filter(date__range=date_range).order_by(
-                "date", "shift__shift_type"
-            )
         else:
-            return TimeSlot.objects.order_by("date", "shift__shift_type")
+            start_date = datetime.datetime.now()
+        num_days = datetime.timedelta(days=Day.objects.count() - 1)
+        end_date = start_date + num_days
+        date_range = [start_date, end_date]
+        return TimeSlot.objects.filter(date__range=date_range).order_by(
+            "date", "shift__shift_type"
+        )
 
 
 class RosterListView(LoginRequiredMixin, ListView):
