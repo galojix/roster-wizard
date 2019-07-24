@@ -6,12 +6,14 @@
     <tr>
         <th>Shift Type</th>
         <th>Day Group</th>
+        <th>Maximum Staff</th>
         <th>Action</th>
     </tr>
     {% for shift in shift_list %}
     <tr>
         <td>{{ shift.shift_type }}</td>
         <td>{{ shift.day_group.name }}</td>
+        <td>{{ shift.max_staff }}</td>
         <td><a href="{% url 'shift_edit' shift.pk %}">Edit</a> | <a href="{% url 'shift_delete' shift.pk %}">Delete</a></td>
     </tr>
   {% endfor %}

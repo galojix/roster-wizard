@@ -39,7 +39,12 @@ from .forms import (
     StaffRuleCreateForm,
     DaySetCreateForm,
 )
-from .logic import SolutionNotFeasible, generate_roster, get_roster_by_staff
+from .logic import (
+    SolutionNotFeasible,
+    TooManyStaff,
+    generate_roster,
+    get_roster_by_staff
+)
 
 
 class LeaveListView(LoginRequiredMixin, ListView):
@@ -129,6 +134,7 @@ class ShiftUpdateView(LoginRequiredMixin, UpdateView):
     fields = (
         "shift_type",
         "day_group",
+        "max_staff",
     )
     template_name = "shift_edit.html"
     login_url = "login"
@@ -147,6 +153,7 @@ class ShiftCreateView(LoginRequiredMixin, CreateView):
     fields = (
         "shift_type",
         "day_group",
+        "max_staff",
     )
     login_url = "login"
 
@@ -403,7 +410,15 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                 (
                     "Could not generate roster,"
                     " try putting more staff on leave or changing rules."
-                ),
+                )
+            )
+        except TooManyStaff:
+            messages.error(
+                self.request,
+                (
+                    "There are too many staff available,"
+                    " put more staff on leave."
+                )
             )
         return super().form_valid(form)
 

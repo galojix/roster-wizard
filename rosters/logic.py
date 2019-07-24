@@ -19,6 +19,12 @@ class SolutionNotFeasible(Exception):
     pass
 
 
+class TooManyStaff(Exception):
+    """Exception for when there are too many staff."""
+
+    pass
+
+
 def generate_roster(start_date):
     """Generate roster as per constraints."""
     nurses = get_user_model().objects.filter(available=True)
@@ -214,6 +220,21 @@ def generate_roster(start_date):
 
     log.info("Skill mix rules collected...")
     log.debug(shift_rules)
+
+    # Compare number of shifts with staff availability
+    log.info("Comparing number of shifts with staff availability...")
+    total_staff_shifts = 0
+    for nurse in nurses:
+        total_staff_shifts += nurse.shifts_per_roster
+    total_shifts = 0
+    for timeslot in timeslots:
+        total_shifts += timeslot.shift.max_staff
+    log.info("Total staff shifts: " + str(total_staff_shifts))
+    log.info("Total shifts: " + str(total_shifts))
+    if total_staff_shifts > total_shifts:
+        raise TooManyStaff("Too many staff.")
+    log.info("Number of shifts and staff availability compared...")
+
 
     # Intermediate shift rule variables
     log.info("Creating intermediate variables...")
