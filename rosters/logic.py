@@ -423,11 +423,11 @@ def get_roster_by_staff(start_date):
     """Create data structures for roster grouped by staff."""
     dates = []
     roster = OrderedDict()
-    nurses = get_user_model().objects.all().order_by("last_name")
-    num_days = Day.objects.count()
-    for nurse in nurses.order_by(
+    nurses = get_user_model().objects.all().order_by(
         "roles__role_name", "last_name", "first_name"
-    ):
+    )
+    num_days = Day.objects.count()
+    for nurse in nurses:
         roster[nurse.last_name + ", " + nurse.first_name] = OrderedDict()
         staff_roles = ""
         for role in nurse.roles.all().order_by("role_name"):
@@ -435,6 +435,9 @@ def get_roster_by_staff(start_date):
         roster[nurse.last_name + ", " + nurse.first_name][
             "roles"
         ] = staff_roles
+        roster[nurse.last_name + ", " + nurse.first_name][
+            "shifts_per_roster"
+        ] = nurse.shifts_per_roster
         leaves = Leave.objects.filter(staff_member=nurse)
         dates = []
         for day in range(num_days):

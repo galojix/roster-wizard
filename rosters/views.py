@@ -483,7 +483,7 @@ def download_csv(request):
 
     writer = csv.writer(response)
     dates = [date.strftime("%a %d-%b-%Y") for date in dates]
-    row = ["Staff Member", "Roles"] + dates
+    row = ["Staff Member", "Roles", "Shifts"] + dates
     writer.writerow(row)
     for staff_member in roster:
         row = [staff_member]
