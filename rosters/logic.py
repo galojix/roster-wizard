@@ -427,6 +427,7 @@ def get_roster_by_staff(start_date):
         roster[nurse.last_name + ", " + nurse.first_name][
             "roles"
         ] = staff_roles
+        leaves = Leave.objects.filter(staff_member=nurse)
         dates = []
         for day in range(num_days):
             date = start_date + datetime.timedelta(days=day)
@@ -439,9 +440,7 @@ def get_roster_by_staff(start_date):
                     date=date, staff=nurse.id
                 ).shift.shift_type
             except TimeSlot.DoesNotExist:
-                leave = Leave.objects.filter(
-                    staff_member=nurse, date=date
-                ).count()
+                leave = leaves.filter(date=date).count()
                 if leave == 0:
                     roster[nurse.last_name + ", " + nurse.first_name][
                         date
