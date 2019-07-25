@@ -1,4 +1,6 @@
 """Models."""
+import datetime
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -210,7 +212,7 @@ class Preference(models.Model):
     """Preference."""
 
     priority = models.IntegerField(null=False, blank=False)
-    day = models.IntegerField(null=False, blank=False)
+    date = models.DateField(null=False, blank=False)
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
     staff_member = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE

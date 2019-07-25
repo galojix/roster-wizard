@@ -14,8 +14,6 @@ from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from rosters.forms import GenerateRosterForm, SelectRosterForm
-
 from .models import (
     Leave,
     Role,
@@ -38,6 +36,10 @@ from .forms import (
     StaffRuleUpdateForm,
     StaffRuleCreateForm,
     DaySetCreateForm,
+    GenerateRosterForm, 
+    SelectRosterForm,
+    PreferenceCreateForm,
+    PreferenceUpdateForm,
 )
 from .logic import (
     SolutionNotFeasible,
@@ -437,8 +439,8 @@ class PreferenceDetailView(LoginRequiredMixin, DetailView):
 
 class PreferenceUpdateView(LoginRequiredMixin, UpdateView):
     model = Preference
-    # form_class = PreferenceUpdateForm
-    fields = ("day", "shift", "priority")
+    form_class = PreferenceUpdateForm
+    # fields = ("date", "shift", "priority")
     template_name = "preference_edit.html"
     login_url = "login"
 
@@ -453,8 +455,8 @@ class PreferenceDeleteView(LoginRequiredMixin, DeleteView):
 class PreferenceCreateView(LoginRequiredMixin, CreateView):
     model = Preference
     template_name = "preference_new.html"
-    # form_class = PreferenceCreateForm
-    fields = ("staff_member", "day", "shift", "priority")
+    form_class = PreferenceCreateForm
+    # fields = ("staff_member", "date", "shift", "priority")
     login_url = "login"
 
 

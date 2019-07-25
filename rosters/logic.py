@@ -72,12 +72,12 @@ def generate_roster(start_date):
     for nurse in nurses:
         nurse_shift_requests = []
         preferences = nurse.preference_set.all()
-        for day in range(num_days):
+        for day, date in enumerate(dates):
             nurse_shift_requests_for_day = []
             for shift in shifts:
                 priority = 0
                 for preference in preferences:
-                    if preference.day == day and preference.shift == shift:
+                    if preference.date == date and preference.shift == shift:
                         priority = preference.priority
                 nurse_shift_requests_for_day.append(priority)
             nurse_shift_requests.append(nurse_shift_requests_for_day)
@@ -375,13 +375,13 @@ def generate_roster(start_date):
                         == 1
                     ):
                         if shift_requests[n][d][s] >= 1:
-                            # log.info(
-                            #     f"*** Request Successful *** "
-                            #     f"{nurse.last_name}, {nurse.first_name}"
-                            #     f" requested shift"
-                            #     f" {timeslot.shift.shift_type}"
-                            #     f" and was assigned."
-                            # )
+                            log.info(
+                                f"*** Request Successful *** "
+                                f"{nurse.last_name}, {nurse.first_name}"
+                                f" requested shift"
+                                f" {timeslot.shift.shift_type}"
+                                f" and was assigned."
+                            )
                             TimeSlot.objects.get(
                                 date=date, shift=timeslot.shift
                             ).staff.add(nurse)
@@ -395,15 +395,15 @@ def generate_roster(start_date):
                             TimeSlot.objects.get(
                                 date=date, shift=timeslot.shift
                             ).staff.add(nurse)
-                    # else:
-                    #     if shift_requests[n][d][s] >= 1:
-                    #         log.info(
-                    #             f"*** Request Failed *** "
-                    #             f"{nurse.last_name}, {nurse.first_name}"
-                    #             f" requested shift"
-                    #             f" {timeslot.shift.shift_type}"
-                    #             f" but was not assigned."
-                    #         )
+                    else:
+                        if shift_requests[n][d][s] >= 1:
+                            log.info(
+                                f"*** Request Failed *** "
+                                f"{nurse.last_name}, {nurse.first_name}"
+                                f" requested shift"
+                                f" {timeslot.shift.shift_type}"
+                                f" but was not assigned."
+                            )
     log.info("Roster populated...")
 
 

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from .models import Leave, TimeSlot, StaffRule
+from .models import Leave, TimeSlot, StaffRule, Preference
 
 
 class DateInput(forms.DateInput):
@@ -19,6 +19,20 @@ class LeaveUpdateForm(ModelForm):
     class Meta:
         model = Leave
         fields = ("date", "staff_member")
+        widgets = {"date": DateInput()}
+
+
+class PreferenceCreateForm(ModelForm):
+    class Meta:
+        model = Preference
+        fields = ("staff_member", "date", "shift", "priority")
+        widgets = {"date": DateInput()}
+
+
+class PreferenceUpdateForm(ModelForm):
+    class Meta:
+        model = Preference
+        fields = ("date", "shift", "priority")
         widgets = {"date": DateInput()}
 
 
