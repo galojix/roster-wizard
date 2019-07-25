@@ -411,6 +411,9 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
         start_date = form.cleaned_data["start_date"]
+        self.request.session["start_date"] = start_date.date().strftime(
+            "%d-%b-%Y"
+        )
         try:
             generate_roster(start_date)
         except SolutionNotFeasible:
