@@ -110,11 +110,11 @@ def generate_roster(start_date):
     # Create shift variables and fixed constraints
     # for previous roster period
     log.info("Creating shift variables for previous period...")
-    date_range = [
+    ext_date_range = [
         start_date.date() - datetime.timedelta(days=num_days),
         start_date.date() - datetime.timedelta(days=1),
     ]
-    previous_timeslots = TimeSlot.objects.filter(date__range=date_range)
+    previous_timeslots = TimeSlot.objects.filter(date__range=ext_date_range)
     for timeslot in previous_timeslots:
         for nurse in timeslot.staff.all():
             n = nurse.id
@@ -315,7 +315,11 @@ def generate_roster(start_date):
             )
         )
         if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
-            model.Add(nurse.shifts_per_roster == num_shifts_worked)
+            leave_days = Leave.objects.filter(
+                staff_member=nurse, date__range=date_range
+            ).count()
+            shifts_per_roster = nurse.shifts_per_roster - leave_days
+            model.Add(shifts_per_roster == num_shifts_worked)
     log.info("Shifts per roster enforced...")
 
     # Maximise the number of satisfied shift requests
@@ -376,7 +380,7 @@ def generate_roster(start_date):
                     ):
                         if shift_requests[n][d][s] >= 1:
                             log.info(
-                                f"*** Request Successful *** "
+                                f"Request Successful: "
                                 f"{nurse.last_name}, {nurse.first_name}"
                                 f" requested shift"
                                 f" {timeslot.shift.shift_type}"
@@ -398,7 +402,7 @@ def generate_roster(start_date):
                     else:
                         if shift_requests[n][d][s] >= 1:
                             log.info(
-                                f"*** Request Failed *** "
+                                f"Request Failed: "
                                 f"{nurse.last_name}, {nurse.first_name}"
                                 f" requested shift"
                                 f" {timeslot.shift.shift_type}"
@@ -435,7 +439,17 @@ def get_roster_by_staff(start_date):
                     date=date, staff=nurse.id
                 ).shift.shift_type
             except TimeSlot.DoesNotExist:
-                roster[nurse.last_name + ", " + nurse.first_name][date] = "X"
+                leave = Leave.objects.filter(
+                    staff_member=nurse, date=date
+                ).count()
+                if leave == 0:
+                    roster[nurse.last_name + ", " + nurse.first_name][
+                        date
+                    ] = "X"
+                else:
+                    roster[nurse.last_name + ", " + nurse.first_name][
+                        date
+                    ] = "Leave"
             except TimeSlot.MultipleObjectsReturned:
                 timeslots = TimeSlot.objects.filter(date=date, staff=nurse.id)
                 roster[nurse.last_name + ", " + nurse.first_name][date] = ""
