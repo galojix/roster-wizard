@@ -1,5 +1,4 @@
 """Models."""
-import datetime
 
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -13,6 +12,9 @@ class Leave(models.Model):
     staff_member = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE
     )
+
+    class Meta:
+        ordering = ("staff_member", "date")
 
     def __str__(self):
         """How a leave object is displayed."""

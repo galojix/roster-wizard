@@ -57,7 +57,13 @@ def generate_roster(start_date):
     log.info("Comparing number of shifts with staff availability...")
     total_staff_shifts = 0
     for nurse in nurses:
-        total_staff_shifts += nurse.shifts_per_roster
+        leave_days = Leave.objects.filter(
+                staff_member=nurse, date__range=date_range
+            ).count()
+        if leave_days > nurse.shifts_per_roster:
+            total_staff_shifts += 0
+        else:
+            total_staff_shifts += nurse.shifts_per_roster - leave_days
     total_shifts = 0
     for timeslot in timeslots:
         total_shifts += timeslot.shift.max_staff
@@ -319,6 +325,8 @@ def generate_roster(start_date):
                 staff_member=nurse, date__range=date_range
             ).count()
             shifts_per_roster = nurse.shifts_per_roster - leave_days
+            if shifts_per_roster < 0:
+                shifts_per_roster = 0
             model.Add(shifts_per_roster == num_shifts_worked)
     log.info("Shifts per roster enforced...")
 

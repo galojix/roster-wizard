@@ -1,5 +1,6 @@
 import datetime
 import csv
+
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import (
     UpdateView,
@@ -10,7 +11,7 @@ from django.views.generic.edit import (
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
@@ -36,7 +37,7 @@ from .forms import (
     StaffRuleUpdateForm,
     StaffRuleCreateForm,
     DaySetCreateForm,
-    GenerateRosterForm, 
+    GenerateRosterForm,
     SelectRosterForm,
     PreferenceCreateForm,
     PreferenceUpdateForm,
@@ -45,7 +46,7 @@ from .logic import (
     SolutionNotFeasible,
     TooManyStaff,
     generate_roster,
-    get_roster_by_staff
+    get_roster_by_staff,
 )
 
 
@@ -81,6 +82,20 @@ class LeaveCreateView(LoginRequiredMixin, CreateView):
     form_class = LeaveCreateForm
     # fields = ('date', 'staff_member')
     login_url = "login"
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        start_date = form.cleaned_data["start_date"]
+        end_date = form.cleaned_data["end_date"]
+        staff_member = form.cleaned_data["staff_member"]
+        dates = [
+            start_date + datetime.timedelta(n)
+            for n in range(int((end_date - start_date).days + 1))
+        ]
+        for date in dates:
+            Leave.objects.create(staff_member=staff_member, date=date)
+        return redirect(reverse_lazy("leave_list"))
 
 
 class RoleListView(LoginRequiredMixin, ListView):
@@ -133,11 +148,7 @@ class ShiftDetailView(LoginRequiredMixin, DetailView):
 
 class ShiftUpdateView(LoginRequiredMixin, UpdateView):
     model = Shift
-    fields = (
-        "shift_type",
-        "day_group",
-        "max_staff",
-    )
+    fields = ("shift_type", "day_group", "max_staff")
     template_name = "shift_edit.html"
     login_url = "login"
 
@@ -152,11 +163,7 @@ class ShiftDeleteView(LoginRequiredMixin, DeleteView):
 class ShiftCreateView(LoginRequiredMixin, CreateView):
     model = Shift
     template_name = "shift_new.html"
-    fields = (
-        "shift_type",
-        "day_group",
-        "max_staff",
-    )
+    fields = ("shift_type", "day_group", "max_staff")
     login_url = "login"
 
 
@@ -412,7 +419,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                 (
                     "Could not generate roster,"
                     " try putting more staff on leave or changing rules."
-                )
+                ),
             )
         except TooManyStaff:
             messages.error(
@@ -420,7 +427,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                 (
                     "There are too many staff available,"
                     " put more staff on leave."
-                )
+                ),
             )
         return super().form_valid(form)
 

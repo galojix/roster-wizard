@@ -9,9 +9,12 @@ class DateInput(forms.DateInput):
 
 
 class LeaveCreateForm(ModelForm):
+    start_date = forms.DateTimeField(widget=DateInput())
+    end_date = forms.DateTimeField(widget=DateInput())
+
     class Meta:
         model = Leave
-        fields = ("date", "staff_member")
+        fields = ("staff_member",)
         widgets = {"date": DateInput()}
 
 
