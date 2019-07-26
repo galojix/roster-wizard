@@ -14,14 +14,14 @@ class LeaveCreateForm(ModelForm):
 
     class Meta:
         model = Leave
-        fields = ("staff_member",)
+        fields = ("staff_member", "description")
         widgets = {"date": DateInput()}
 
 
 class LeaveUpdateForm(ModelForm):
     class Meta:
         model = Leave
-        fields = ("date", "staff_member")
+        fields = ("date", "staff_member", "description")
         widgets = {"date": DateInput()}
 
 

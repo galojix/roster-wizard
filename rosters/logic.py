@@ -484,7 +484,7 @@ def get_roster_by_staff(start_date):
                 else:
                     roster[nurse.last_name + ", " + nurse.first_name][
                         date
-                    ] = "Leave"
+                    ] = leaves.get(date=date).description
             except TimeSlot.MultipleObjectsReturned:
                 timeslots = TimeSlot.objects.filter(date=date, staff=nurse.id)
                 roster[nurse.last_name + ", " + nurse.first_name][date] = ""

@@ -6,12 +6,14 @@
     <tr>
         <th>Staff Member</th>
         <th>Date</th>
+        <th>Description</th>
         <th>Action</th>
     </tr>
     {% for leave in leave_list %}
     <tr>
         <td>{{ leave.staff_member.last_name }}, {{ leave.staff_member.first_name }}</td>
         <td>{{ leave.date }}</td>
+        <td>{{ leave.description }}</td>
         <td><a href="{% url 'leave_edit' leave.pk %}">Edit</a> | <a href="{% url 'leave_delete' leave.pk %}">Delete</a></td>
     </tr>
   {% endfor %}

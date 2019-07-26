@@ -9,6 +9,9 @@ class Leave(models.Model):
     """Leave."""
 
     date = models.DateField(null=False, blank=False)
+    description = models.CharField(
+        max_length=15, null=False, blank=False, default="Leave"
+    )
     staff_member = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE
     )
