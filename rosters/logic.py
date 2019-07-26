@@ -58,8 +58,8 @@ def generate_roster(start_date):
     total_staff_shifts = 0
     for nurse in nurses:
         leave_days = Leave.objects.filter(
-                staff_member=nurse, date__range=date_range
-            ).count()
+            staff_member=nurse, date__range=date_range
+        ).count()
         if leave_days > nurse.shifts_per_roster:
             total_staff_shifts += 0
         else:
@@ -73,21 +73,30 @@ def generate_roster(start_date):
         raise TooManyStaff("Too many staff.")
     log.info("Number of shifts and staff availability compared...")
 
-    # Create shift requests
+    # Create shift requests in friendly data structure
     shift_requests = []
     for nurse in nurses:
         nurse_shift_requests = []
         preferences = nurse.preference_set.all()
-        for day, date in enumerate(dates):
+        for date in dates:
             nurse_shift_requests_for_day = []
-            for shift in shifts:
+            for timeslot in TimeSlot.objects.filter(date=date).order_by(
+                "shift__shift_type"
+            ):
                 priority = 0
                 for preference in preferences:
-                    if preference.date == date and preference.shift == shift:
-                        priority = preference.priority
+                    if (
+                        preference.date == date
+                        and preference.shift == timeslot.shift
+                    ):
+                        if preference.like:
+                            priority = preference.priority
+                        else:
+                            priority = -preference.priority
                 nurse_shift_requests_for_day.append(priority)
             nurse_shift_requests.append(nurse_shift_requests_for_day)
         shift_requests.append(nurse_shift_requests)
+    log.debug(shift_requests)
 
     # Create the model
     model = cp_model.CpModel()
@@ -386,35 +395,49 @@ def generate_roster(start_date):
                         )
                         == 1
                     ):
-                        if shift_requests[n][d][s] >= 1:
+                        TimeSlot.objects.get(
+                            date=date, shift=timeslot.shift
+                        ).staff.add(nurse)
+                        if shift_requests[n][d][s] > 0:
                             log.info(
                                 f"Request Successful: "
                                 f"{nurse.last_name}, {nurse.first_name}"
                                 f" requested shift"
                                 f" {timeslot.shift.shift_type}"
+                                f" on"
+                                f" {timeslot.date}"
                                 f" and was assigned."
                             )
-                            TimeSlot.objects.get(
-                                date=date, shift=timeslot.shift
-                            ).staff.add(nurse)
-                        else:
-                            # log.info(
-                            #     f"{nurse.last_name}, {nurse.first_name}"
-                            #     f" did not request shift"
-                            #     f" {timeslot.shift.shift_type}"
-                            #     f" and was assigned."
-                            # )
-                            TimeSlot.objects.get(
-                                date=date, shift=timeslot.shift
-                            ).staff.add(nurse)
+                        elif shift_requests[n][d][s] < 0:
+                            log.info(
+                                f"Request Failed: "
+                                f"{nurse.last_name}, {nurse.first_name}"
+                                f" requested not to work shift"
+                                f" {timeslot.shift.shift_type}"
+                                f" on"
+                                f" {timeslot.date}"
+                                f" but was assigned."
+                            )
                     else:
-                        if shift_requests[n][d][s] >= 1:
+                        if shift_requests[n][d][s] > 0:
                             log.info(
                                 f"Request Failed: "
                                 f"{nurse.last_name}, {nurse.first_name}"
                                 f" requested shift"
                                 f" {timeslot.shift.shift_type}"
+                                f" on"
+                                f" {timeslot.date}"
                                 f" but was not assigned."
+                            )
+                        elif shift_requests[n][d][s] < 0:
+                            log.info(
+                                f"Request Succeeded: "
+                                f"{nurse.last_name}, {nurse.first_name}"
+                                f" requested not to work shift"
+                                f" {timeslot.shift.shift_type}"
+                                f" on"
+                                f" {timeslot.date}"
+                                f" and was not assigned."
                             )
     log.info("Roster populated...")
 
@@ -423,8 +446,10 @@ def get_roster_by_staff(start_date):
     """Create data structures for roster grouped by staff."""
     dates = []
     roster = OrderedDict()
-    nurses = get_user_model().objects.all().order_by(
-        "roles__role_name", "last_name", "first_name"
+    nurses = (
+        get_user_model()
+        .objects.all()
+        .order_by("roles__role_name", "last_name", "first_name")
     )
     num_days = Day.objects.count()
     for nurse in nurses:

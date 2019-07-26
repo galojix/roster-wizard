@@ -215,10 +215,15 @@ class Preference(models.Model):
 
     priority = models.IntegerField(null=False, blank=False)
     date = models.DateField(null=False, blank=False)
+    like = models.BooleanField(null=False, blank=False, default=True)
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
+
     staff_member = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE
     )
+
+    class Meta:
+        ordering = ("staff_member", "date", "shift", "like")
 
     def __str__(self):
         """How a preference object is displayed."""

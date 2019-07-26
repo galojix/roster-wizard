@@ -28,14 +28,14 @@ class LeaveUpdateForm(ModelForm):
 class PreferenceCreateForm(ModelForm):
     class Meta:
         model = Preference
-        fields = ("staff_member", "date", "shift", "priority")
+        fields = ("staff_member", "date", "shift", "like", "priority")
         widgets = {"date": DateInput()}
 
 
 class PreferenceUpdateForm(ModelForm):
     class Meta:
         model = Preference
-        fields = ("date", "shift", "priority")
+        fields = ("date", "shift", "like", "priority")
         widgets = {"date": DateInput()}
 
 

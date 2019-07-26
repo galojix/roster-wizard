@@ -7,6 +7,7 @@
         <th>Staff Member</th>
         <th>Day</th>
         <th>Shift</th>
+        <th>Like</th>
         <th>Priority</th>
         <th>Action</th>
     </tr>
@@ -15,6 +16,7 @@
         <td>{{ preference.staff_member.last_name }}, {{ preference.staff_member.first_name }}</td>
         <td>{{ preference.date|date:"D d M Y" }}</td>
         <td>{{ preference.shift.shift_type }}</td>
+        <td>{{ preference.like }}</td>
         <td>{{ preference.priority }}</td>
         <td><a href="{% url 'preference_edit' preference.pk %}">Edit</a> | <a href="{% url 'preference_delete' preference.pk %}">Delete</a></td>
     </tr>
