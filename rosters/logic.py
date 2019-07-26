@@ -402,6 +402,7 @@ def generate_roster(start_date):
                             log.info(
                                 f"Request Successful: "
                                 f"{nurse.last_name}, {nurse.first_name}"
+                                f" {role.role_name}"
                                 f" requested shift"
                                 f" {timeslot.shift.shift_type}"
                                 f" on"
@@ -412,6 +413,7 @@ def generate_roster(start_date):
                             log.info(
                                 f"Request Failed: "
                                 f"{nurse.last_name}, {nurse.first_name}"
+                                f" {role.role_name}"
                                 f" requested not to work shift"
                                 f" {timeslot.shift.shift_type}"
                                 f" on"
@@ -423,6 +425,7 @@ def generate_roster(start_date):
                             log.info(
                                 f"Request Failed: "
                                 f"{nurse.last_name}, {nurse.first_name}"
+                                f" {role.role_name}"
                                 f" requested shift"
                                 f" {timeslot.shift.shift_type}"
                                 f" on"
@@ -433,6 +436,7 @@ def generate_roster(start_date):
                             log.info(
                                 f"Request Succeeded: "
                                 f"{nurse.last_name}, {nurse.first_name}"
+                                f" {role.role_name}"
                                 f" requested not to work shift"
                                 f" {timeslot.shift.shift_type}"
                                 f" on"
