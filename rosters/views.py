@@ -326,7 +326,6 @@ class TimeSlotListView(LoginRequiredMixin, ListView):
     login_url = "login"
 
     def get_queryset(self):
-        print(self.request.session)
         if "start_date" in self.request.session:
             start_date = datetime.datetime.strptime(
                 self.request.session["start_date"], "%d-%b-%Y"
