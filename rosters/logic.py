@@ -201,7 +201,6 @@ def generate_roster(start_date):
                 shift_vars_blank = []
                 last_day_in_sequence = list(invalid_shift_sequence.keys())[-1]
                 all_days = [day for day in range(1, last_day_in_sequence + 1)]
-                log.info(all_days)
                 for day_num in all_days:
                     if day_num not in invalid_shift_sequence.keys():
                         day_to_test = date + datetime.timedelta(
@@ -255,9 +254,14 @@ def generate_roster(start_date):
                                 )
                             except KeyError:
                                 continue
-                model.Add(
-                    sum(shift_vars_in_seq) < sequence_size
-                ).OnlyEnforceIf(sum(shift_vars_blank) == 0)
+                if len(shift_vars_blank) == 0:
+                    model.Add(sum(shift_vars_in_seq) < sequence_size)
+                else:
+                    for item, var in enumerate(shift_vars_blank):
+                        shift_vars_blank[item] = var.Not()
+                    model.Add(
+                        sum(shift_vars_in_seq) < sequence_size
+                    ).OnlyEnforceIf(shift_vars_blank)
     log.info("Shift sequences added...")
 
     # Collect shift rules into friendly structure
