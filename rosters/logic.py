@@ -203,9 +203,9 @@ def generate_roster(start_date):
                         day_to_test = date + datetime.timedelta(
                             days=day_num - 1
                         )
-                        delta = (day_to_test - start_date.date()).days
 
                         # Skip if day not in day group for sequence
+                        delta = (day_to_test - start_date.date()).days
                         if delta < 0:
                             day_group_day_num = delta + num_days + 1
                         else:

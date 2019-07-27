@@ -157,7 +157,7 @@ class StaffRule(models.Model):
     """Staff Rule."""
 
     staff_rule_name = models.CharField(max_length=40, null=False, blank=False)
-    staff = models.ManyToManyField(get_user_model())
+    staff = models.ManyToManyField(get_user_model(), blank=True)
     shifts = models.ManyToManyField(Shift, through="StaffRuleShift")
     day_group = models.ForeignKey(
         DayGroup, null=True, blank=False, on_delete=models.SET_NULL
