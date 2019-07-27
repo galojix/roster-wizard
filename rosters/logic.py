@@ -198,6 +198,32 @@ def generate_roster(start_date):
             shift_vars_in_seq = []
             for date in extended_dates:
                 shift_vars_in_seq = []
+                shift_vars_blank = []
+                last_day_in_sequence = list(invalid_shift_sequence.keys())[-1]
+                all_days = [day for day in range(1, last_day_in_sequence + 1)]
+                log.info(all_days)
+                for day_num in all_days:
+                    if day_num not in invalid_shift_sequence.keys():
+                        day_to_test = date + datetime.timedelta(
+                            days=day_num - 1
+                        )
+                        for role in roles:
+                            try:
+                                for timeslot in timeslots.filter(
+                                    date=day_to_test
+                                ):
+                                    shift_vars_blank.append(
+                                        shift_vars[
+                                            (
+                                                nurse.id,
+                                                role.id,
+                                                day_to_test,
+                                                timeslot.id,
+                                            )
+                                        ]
+                                    )
+                            except KeyError:
+                                continue
                 for day_num in invalid_shift_sequence:
                     for invalid_shift in invalid_shift_sequence[day_num]:
                         day_to_test = date + datetime.timedelta(
@@ -229,7 +255,9 @@ def generate_roster(start_date):
                                 )
                             except KeyError:
                                 continue
-                model.Add(sum(shift_vars_in_seq) < sequence_size)
+                model.Add(
+                    sum(shift_vars_in_seq) < sequence_size
+                ).OnlyEnforceIf(sum(shift_vars_blank) == 0)
     log.info("Shift sequences added...")
 
     # Collect shift rules into friendly structure
