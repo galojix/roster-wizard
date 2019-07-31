@@ -7,7 +7,7 @@ name = "pypi"
 django = "*"
 django-environ = "*"
 "psycopg2-binary" = "*"
-ortools = "==7.0.6546"
+ortools = "*"
 gunicorn = "*"
 
 [dev-packages]
