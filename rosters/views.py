@@ -45,7 +45,7 @@ from .forms import (
 from .logic import (
     SolutionNotFeasible,
     TooManyStaff,
-    generate_roster,
+    RosterGenerator,
     get_roster_by_staff,
 )
 
@@ -414,7 +414,8 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
             "%d-%b-%Y"
         )
         try:
-            generate_roster(start_date)
+            roster = RosterGenerator(start_date=start_date)
+            roster.create()
         except SolutionNotFeasible:
             messages.error(
                 self.request,
