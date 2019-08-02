@@ -88,6 +88,7 @@ class RosterGenerator:
         log.info("Total staff shifts: " + str(total_staff_shifts))
         log.info("Total shifts: " + str(total_shifts))
         if total_staff_shifts > total_shifts:
+            log.info("Error: there are too many staff...")
             raise TooManyStaff("Too many staff.")
         log.info("Too many staff check completed...")
 
@@ -307,9 +308,9 @@ class RosterGenerator:
         log.info("Collection of skill mix rules completed...")
         log.debug(self.shift_rules)
 
-    def _create_intermediate_shift_rule_vars(self):
+    def _create_intermediate_skill_mix_vars(self):
         # Intermediate shift rule variables
-        log.info("Creating intermediate variables...")
+        log.info("Creation of skill mix intermediate variables started...")
         self.intermediate_skill_mix_vars = {
             (timeslot.id, rule_num): self.model.NewBoolVar(
                 f"t{timeslot.id}r{rule_num}"
@@ -319,7 +320,7 @@ class RosterGenerator:
                 self.shift_rules[timeslot.shift.id]
             )
         }
-        log.info("Intermediate vars created...")
+        log.info("Creation of skill mix intermediate variables completed...")
         log.debug(self.intermediate_skill_mix_vars)
 
     def _enforce_one_skill_mix_rule_at_a_time(self):
@@ -534,7 +535,7 @@ class RosterGenerator:
         self._exclude_leave_dates()
         self._enforce_shift_sequences()
         self._collect_skill_mix_rules()
-        self._create_intermediate_shift_rule_vars()
+        self._create_intermediate_skill_mix_vars()
         self._enforce_one_skill_mix_rule_at_a_time()
         self._enforce_skill_mix_rules()
         self._enforce_one_shift_per_day()
