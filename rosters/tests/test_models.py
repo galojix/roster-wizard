@@ -16,10 +16,10 @@ class ModelTests(TestCase):
         self.day = Day.objects.create(number=5)
 
     def test_user_content(self):
-        self.assertEquals(self.user.shifts_per_roster, 10)
+        self.assertEqual(self.user.shifts_per_roster, 10)
 
     def test_day_content(self):
-        self.assertEquals(self.day.number, 5)
+        self.assertEqual(self.day.number, 5)
 
     def test_day_detail_view(self):
         self.client.login(username='temporary', password='temporary')

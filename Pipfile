@@ -15,6 +15,7 @@ pylint = "*"
 pylint-django = "*"
 flake8 = "*"
 pydocstyle = "*"
+pytest-django = "*"
 
 [requires]
 python_version = "3.6"
