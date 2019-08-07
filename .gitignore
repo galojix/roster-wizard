@@ -3,4 +3,5 @@
 *.db
 .env
 .vscode
+.coverage
 django.log
