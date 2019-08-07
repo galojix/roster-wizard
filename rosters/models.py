@@ -17,6 +17,8 @@ class Leave(models.Model):
     )
 
     class Meta:
+        """Meta."""
+
         ordering = ("staff_member", "date")
 
     def __str__(self):
@@ -55,6 +57,7 @@ class DayGroup(models.Model):
     name = models.CharField(max_length=20, null=False, blank=False)
 
     def __str__(self):
+        """String."""
         return str(self.name)
 
     def get_absolute_url(self):
@@ -68,6 +71,7 @@ class Day(models.Model):
     number = models.IntegerField(null=False, blank=False)
 
     def __str__(self):
+        """String."""
         return str(self.number)
 
     def get_absolute_url(self):
@@ -82,9 +86,12 @@ class DayGroupDay(models.Model):
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
 
     class Meta:
+        """Meta."""
+
         ordering = ("day",)
 
     def __str__(self):
+        """String."""
         return str(self.day_group.name) + str(self.day.number)
 
     def get_absolute_url(self):
@@ -102,6 +109,8 @@ class Shift(models.Model):
     max_staff = models.IntegerField(null=False, blank=False, default=5)
 
     class Meta:
+        """Meta."""
+
         ordering = ("shift_type",)
 
     def __str__(self):
@@ -180,6 +189,8 @@ class StaffRuleShift(models.Model):
     position = models.IntegerField(null=False, blank=False)
 
     class Meta:
+        """Meta."""
+
         ordering = ("position", "shift__shift_type")
 
     def __str__(self):
@@ -226,6 +237,8 @@ class Preference(models.Model):
     )
 
     class Meta:
+        """Meta."""
+
         ordering = ("staff_member", "date", "shift", "like")
 
     def __str__(self):

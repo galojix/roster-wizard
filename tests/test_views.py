@@ -1,3 +1,5 @@
+"""View Testing."""
+
 import pytest
 
 from django.urls import reverse
@@ -11,6 +13,7 @@ from rosters.models import Day
 @pytest.fixture()
 @pytest.mark.django_db
 def init_db():
+    """Initialise database."""
     get_user_model().objects.create_user(
         username="temporary",
         password="temporary",
@@ -21,6 +24,7 @@ def init_db():
 
 @pytest.mark.django_db
 def test_day_detail_view(init_db, client):
+    """Test day detail view."""
     day = Day.objects.create(number=5)
     client.login(username="temporary", password="temporary")
     response = client.get(reverse("day_detail", kwargs={"pk": day.id}))
@@ -31,6 +35,7 @@ def test_day_detail_view(init_db, client):
 
 @pytest.mark.django_db
 def test_roster_list_view(init_db, client):
+    """Test roster list view."""
     client.login(username="temporary", password="temporary")
     response = client.get(reverse("roster_list"))
     assert response.status_code == 200

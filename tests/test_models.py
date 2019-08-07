@@ -1,4 +1,5 @@
 """Model testing."""
+
 import pytest
 import datetime
 
