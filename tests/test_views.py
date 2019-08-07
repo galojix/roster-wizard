@@ -4,6 +4,7 @@ import pytest
 
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.test import SimpleTestCase
 
 from rosters.models import Day
 
@@ -40,3 +41,11 @@ def test_roster_list_view(init_db, client):
     assert response.status_code == 200
     assert "Roster:" in response.rendered_content
     assert "roster_list.html" in [t.name for t in response.templates]
+
+
+def test_roster_list_redirect_if_not_logged_in(client):
+    """Test roster list view redirects if not logged in."""
+    response = client.get(reverse("roster_list"))
+    SimpleTestCase().assertRedirects(
+        response, "/users/login/?next=/rosters/roster/"
+    )
