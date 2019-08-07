@@ -55,6 +55,7 @@ class RosterGenerator:
             for n in range(2 * self.num_days)
         ]
         self.model = cp_model.CpModel()
+        self.complete = False
 
     def _clear_existing_timeslots(self):
         # Delete existing timeslots in date range
@@ -543,6 +544,7 @@ class RosterGenerator:
         self._maximise_staff_requests()
         self._solve_roster()
         self._populate_roster()
+        self.complete = True
 
 
 def get_roster_by_staff(start_date):

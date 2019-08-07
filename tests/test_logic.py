@@ -17,6 +17,7 @@ from rosters.models import (
 from rosters.logic import (
     RosterGenerator,
     SolutionNotFeasible,
+    TooManyStaff,
 )
 
 pytestmark = pytest.mark.django_db
@@ -94,14 +95,58 @@ def init_infeasible_db():
     ShiftRuleRole.objects.create(shift_rule=shift_rule, role=role, count=2)
 
 
+@pytest.fixture()
+def init_too_many_staff_db():
+    """Initialise database."""
+    staff_member1 = get_user_model().objects.create_user(
+        username="one",
+        last_name="One",
+        first_name="One",
+        available=True,
+        shifts_per_roster=10,
+    )
+    staff_member2 = get_user_model().objects.create_user(
+        username="two",
+        last_name="Two",
+        first_name="Two",
+        available=True,
+        shifts_per_roster=11,
+    )
+    role = Role.objects.create(role_name="RN")
+    staff_member1.roles.add(role)
+    staff_member2.roles.add(role)
+    day_group = DayGroup.objects.create(name="All Days")
+    for i in range(1, 11):
+        day = Day.objects.create(number=i)
+        DayGroupDay.objects.create(day_group=day_group, day=day)
+    shift = Shift.objects.create(
+        shift_type="Early",
+        day_group=day_group,
+        max_staff=2
+    )
+    shift_rule = ShiftRule.objects.create(
+        shift_rule_name="Early Option A",
+        shift=shift
+    )
+    ShiftRuleRole.objects.create(shift_rule=shift_rule, role=role, count=2)
+
+
 def test_feasible_roster_generation(init_feasible_db):
-    """Test roster generation."""
+    """Test feasible roster generation."""
     roster = RosterGenerator(start_date=datetime.datetime.now())
     roster.create()
+    assert roster.complete
 
 
 def test_infeasible_roster_generation(init_infeasible_db):
-    """Test roster generation."""
+    """Test infeasible roster generation."""
     roster = RosterGenerator(start_date=datetime.datetime.now())
     with pytest.raises(SolutionNotFeasible):
+        roster.create()
+
+
+def test_too_many_staff_roster_generation(init_too_many_staff_db):
+    """Test too many staff roster generation."""
+    roster = RosterGenerator(start_date=datetime.datetime.now())
+    with pytest.raises(TooManyStaff):
         roster.create()
