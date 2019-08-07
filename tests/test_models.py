@@ -1,45 +1,52 @@
+"""Model testing."""
 import pytest
+import datetime
 
-from django.urls import reverse
 from django.contrib.auth import get_user_model
 
-from rosters.models import Day
+from rosters.models import Leave
 
-# pytestmark = pytest.mark.django_db
+pytestmark = pytest.mark.django_db
+
 
 @pytest.fixture()
-@pytest.mark.django_db
 def init_db():
-    get_user_model().objects.create_user(
-            username='temporary',
-            password='temporary',
-            available=True,
-            shifts_per_roster=10,
+    """Initialise database."""
+    staff_member = get_user_model().objects.create_user(
+        username="temporary",
+        password="temporary",
+        last_name="Joey",
+        first_name="Smith",
+        available=True,
+        shifts_per_roster=10,
+    )
+    Leave.objects.create(
+        date=datetime.datetime.now().date(),
+        description="Test leave",
+        staff_member=staff_member,
     )
 
 
-@pytest.mark.django_db
-def test_user(init_db):
-    user = get_user_model().objects.get(id=1)
-    assert user.shifts_per_roster == 10
+def test_leave_description_max_length(init_db):
+    """Test leave description maximum length."""
+    leave = Leave.objects.first()
+    max_length = leave._meta.get_field("description").max_length
+    assert max_length == 15
 
 
-@pytest.mark.django_db
-def test_day_detail_view(init_db, client):
-    day = Day.objects.create(number=5)
-    client.login(username='temporary', password='temporary')
-    response = client.get(
-        reverse("day_detail", kwargs={"pk": day.id})
+def test_leave_object_name(init_db):
+    """Test leave object name."""
+    leave = Leave.objects.first()
+    expected_object_name = (
+        f"{leave.staff_member.last_name}, "
+        f"{leave.staff_member.first_name} "
+        f"{leave.date}"
     )
-    assert response.status_code == 200
-    assert "Day: 5" in response.rendered_content
-    assert 'day_detail.html' in [t.name for t in response.templates]
+    assert expected_object_name == str(leave)
 
 
-@pytest.mark.django_db
-def test_roster_list_view(init_db, client):
-    client.login(username='temporary', password='temporary')
-    response = client.get(reverse("roster_list"))
-    assert response.status_code == 200
-    assert "Roster:" in response.rendered_content
-    assert 'roster_list.html' in [t.name for t in response.templates]
+def test_leave_get_absolute_url(init_db):
+    """Test leave get_absolute_url custom method."""
+    leave = Leave.objects.first()
+    # This will also fail if the urlconf is not defined.
+    assert leave.get_absolute_url() == f"/rosters/leave/{leave.id}/"
