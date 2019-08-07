@@ -7,22 +7,22 @@ from django.contrib.auth import get_user_model
 
 from rosters.models import Day
 
-# pytestmark = pytest.mark.django_db
+pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture()
-@pytest.mark.django_db
 def init_db():
     """Initialise database."""
     get_user_model().objects.create_user(
         username="temporary",
         password="temporary",
+        last_name="Joey",
+        first_name="Smith",
         available=True,
         shifts_per_roster=10,
     )
 
 
-@pytest.mark.django_db
 def test_day_detail_view(init_db, client):
     """Test day detail view."""
     day = Day.objects.create(number=5)
@@ -33,7 +33,6 @@ def test_day_detail_view(init_db, client):
     assert "day_detail.html" in [t.name for t in response.templates]
 
 
-@pytest.mark.django_db
 def test_roster_list_view(init_db, client):
     """Test roster list view."""
     client.login(username="temporary", password="temporary")
