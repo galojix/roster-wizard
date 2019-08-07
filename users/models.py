@@ -8,6 +8,8 @@ class CustomUser(AbstractUser):
     """Custom user model."""
 
     class Meta:
+        """Meta."""
+
         ordering = ('last_name', 'first_name')
 
     available = models.BooleanField(null=False, blank=False, default=True)
