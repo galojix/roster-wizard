@@ -205,17 +205,17 @@ class RosterGenerator:
             roles = nurse.roles.all()
             for staff_rule in nurse.staffrule_set.all():
                 invalid_shift_sequence = OrderedDict()
-                staff_rule_shifts = staff_rule.staffruleshift_set.all().order_by(
-                    "position"
-                )
+                staff_rule_shifts = staff_rule.staffruleshift_set.all()
+                staff_rule_shifts = staff_rule_shifts.order_by("position")
                 for staff_rule_shift in staff_rule_shifts:
                     invalid_shift_sequence.setdefault(
                         staff_rule_shift.position, []
                     ).append(staff_rule_shift.shift)
                 sequence_size = len(invalid_shift_sequence)
+                day_group_day_set = staff_rule.day_group.daygroupday_set.all()
                 sequence_days = [
                     day_group_day.day.number
-                    for day_group_day in staff_rule.day_group.daygroupday_set.all()
+                    for day_group_day in day_group_day_set
                 ]
                 shift_vars_in_seq = []
                 for date in self.extended_dates:
