@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="role-entry">
-  <h2>{{ role.role_name }}</h2>
+  <h4>{{ role.role_name }}:</h4>
 </div>
 
   <p><a href="{% url 'role_edit' role.pk %}">Edit</a> | <a href="{% url 'role_delete' role.pk %}">Delete</a></p>

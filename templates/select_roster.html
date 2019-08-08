@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h3>Select Roster Date Period to Display:</h3>
+    <h3>Select Roster Period:</h3>
     <form action="" method="post">{% csrf_token %}
       {{ form.as_p }}
     <button class="btn btn-info ml-2 btn-process" type="submit">Submit</button>

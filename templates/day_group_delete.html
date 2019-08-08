@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Delete</h1>
+    <h4>Delete Day Group:</h4>
     <form action="" method="post">{% csrf_token %}
       <p>Are you sure you want to delete day group: "{{ daygroup.name }}"?</p>
       <button class="btn btn-danger ml-2" type="submit">Confirm</button>

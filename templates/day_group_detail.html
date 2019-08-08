@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="staff_rule-entry">
-  <h2>Day Group Name: {{ daygroup.name }}</h2>
+  <h4>Day Group Name: {{ daygroup.name }}</h4>
     <p>Days: {% for day_group_day in daygroup.daygroupday_set.all %}
        {{ day_group_day.day.number }}
        {% endfor %}

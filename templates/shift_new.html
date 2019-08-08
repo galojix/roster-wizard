@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>New Shift</h1>
+    <h4>New Shift:</h4>
     <form action="" method="post">{% csrf_token %}
       {{ form.as_p }}
       <button class="btn btn-success ml-2" type="submit">Save</button>
