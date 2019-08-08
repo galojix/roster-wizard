@@ -39,7 +39,7 @@ def test_roster_list_view(init_db, client):
     client.login(username="temporary", password="temporary")
     response = client.get(reverse("roster_list"))
     assert response.status_code == 200
-    assert "Roster:" in response.rendered_content
+    assert "Roster By Staff:" in response.rendered_content
     assert "roster_list.html" in [t.name for t in response.templates]
 
 
