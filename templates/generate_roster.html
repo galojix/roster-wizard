@@ -2,11 +2,12 @@
 
 {% block content %}
     <h3>Generate New Roster:</h3>
-    <form action="" method="post">{% csrf_token %}
+    <form id="generate" action="" method="post">{% csrf_token %}
       {{ form.as_p }}
-    <button class="btn btn-info ml-2 btn-process" type="submit">Submit</button>
+    <button class="btn btn-success ml-2 btn-process" type="submit">Submit</button>
 </form>
-<div class="processing alert alert-success mt-3">
+<div class="processing mt-3">
   <p>Processing, please wait...</p>
+  <div class="spinner-border text-success"></div>
 </div>
 {% endblock content %}
