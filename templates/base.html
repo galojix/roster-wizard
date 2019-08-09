@@ -124,7 +124,7 @@
             <li class="nav-item">
               <div class="dropdown">
                   <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
-                      Roster ({{ request.session.start_date }})
+                      Roster
                   </button>  
                   <div class="dropdown-menu">
                       <a class="dropdown-item" href="{% url 'timeslot_list' %}">Display Roster by Day</a>
@@ -138,6 +138,9 @@
                       <a class="dropdown-item" href="{% url 'download_csv' %}">Download Roster as CSV File</a>
                   </div>
               </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-warning" href="{% url 'select_roster' %}">Period: {{ request.session.start_date }}</a>
             </li>
           </ul>
           <ul class="navbar-nav ml-auto">
