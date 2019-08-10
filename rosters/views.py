@@ -59,6 +59,19 @@ class LeaveListView(LoginRequiredMixin, ListView):
     template_name = "leave_list.html"
     login_url = "login"
 
+    def get_queryset(self):
+        """Get leave in date range."""
+        if "start_date" in self.request.session:
+            start_date = datetime.datetime.strptime(
+                self.request.session["start_date"], "%d-%b-%Y"
+            )
+        else:
+            start_date = datetime.datetime.now()
+        num_days = datetime.timedelta(days=Day.objects.count() - 1)
+        end_date = start_date + num_days
+        date_range = [start_date, end_date]
+        return Leave.objects.filter(date__range=date_range)
+
 
 class LeaveDetailView(LoginRequiredMixin, DetailView):
     """Leave Detail View."""
@@ -534,6 +547,19 @@ class PreferenceListView(LoginRequiredMixin, ListView):
     model = Preference
     template_name = "preference_list.html"
     login_url = "login"
+
+    def get_queryset(self):
+        """Get staff requests in date range."""
+        if "start_date" in self.request.session:
+            start_date = datetime.datetime.strptime(
+                self.request.session["start_date"], "%d-%b-%Y"
+            )
+        else:
+            start_date = datetime.datetime.now()
+        num_days = datetime.timedelta(days=Day.objects.count() - 1)
+        end_date = start_date + num_days
+        date_range = [start_date, end_date]
+        return Preference.objects.filter(date__range=date_range)
 
 
 class PreferenceDetailView(LoginRequiredMixin, DetailView):
