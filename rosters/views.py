@@ -99,13 +99,13 @@ class LeaveDeleteView(LoginRequiredMixin, DeleteView):
     login_url = "login"
 
 
-class LeaveCreateView(LoginRequiredMixin, CreateView):
+class LeaveCreateView(LoginRequiredMixin, FormView):
     """Leave Create View."""
 
     model = Leave
-    template_name = "leave_new.html"
     form_class = LeaveCreateForm
-    # fields = ('date', 'staff_member')
+    template_name = "leave_new.html"
+    success_url = reverse_lazy("leave_list")
     login_url = "login"
 
     def form_valid(self, form):
@@ -113,13 +113,18 @@ class LeaveCreateView(LoginRequiredMixin, CreateView):
         start_date = form.cleaned_data["start_date"]
         end_date = form.cleaned_data["end_date"]
         staff_member = form.cleaned_data["staff_member"]
+        description = form.cleaned_data["description"]
         dates = [
             start_date + datetime.timedelta(n)
             for n in range(int((end_date - start_date).days + 1))
         ]
         for date in dates:
-            Leave.objects.create(staff_member=staff_member, date=date)
-        return redirect(reverse_lazy("leave_list"))
+            Leave.objects.create(
+                staff_member=staff_member,
+                description=description,
+                date=date
+            )
+        return super().form_valid(form)
 
 
 class RoleListView(LoginRequiredMixin, ListView):
