@@ -129,7 +129,7 @@ urlpatterns = [
         name="shift_rule_role_delete",
     ),
     path(
-        "shiftrulerole/<slug:shiftrule>/new/",
+        "shiftrulerole/<int:shiftrule>/new/",
         ShiftRuleRoleCreateView.as_view(),
         name="shift_rule_role_new",
     ),
@@ -173,7 +173,7 @@ urlpatterns = [
         name="staff_rule_shift_delete",
     ),
     path(
-        "staffruleshift/<slug:staffrule>/new/",
+        "staffruleshift/<int:staffrule>/new/",
         StaffRuleShiftCreateView.as_view(),
         name="staff_rule_shift_new",
     ),
@@ -266,7 +266,7 @@ urlpatterns = [
         name="day_group_day_delete",
     ),
     path(
-        "daygroupday/<slug:daygroup>/new/",
+        "daygroupday/<int:daygroup>/new/",
         DayGroupDayCreateView.as_view(),
         name="day_group_day_new",
     ),
