@@ -3,6 +3,8 @@
 import datetime
 import csv
 
+from collections import OrderedDict
+
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import (
     UpdateView,
@@ -122,9 +124,7 @@ class LeaveCreateView(LoginRequiredMixin, FormView):
         ]
         for date in dates:
             Leave.objects.create(
-                staff_member=staff_member,
-                description=description,
-                date=date
+                staff_member=staff_member, description=description, date=date
             )
         return super().form_valid(form)
 
@@ -817,8 +817,7 @@ class StaffRequestsUpdateView(LoginRequiredMixin, FormView):
         """Add dates and roster data to context."""
         context = super().get_context_data(**kwargs)
         staff_member = get_object_or_404(
-            get_user_model(),
-            id=self.kwargs["staffid"]
+            get_user_model(), id=self.kwargs["staffid"]
         )
         if "start_date" in self.request.session:
             start_date = datetime.datetime.strptime(
@@ -826,18 +825,25 @@ class StaffRequestsUpdateView(LoginRequiredMixin, FormView):
             )
         else:
             start_date = datetime.datetime.now()
+        shift_days = OrderedDict()
+        for shift in Shift.objects.all():
+            for day_group_day in shift.day_group.daygroupday_set.all():
+                shift_days.setdefault(shift.shift_type, []).append(
+                    day_group_day.day.number
+                )
         dates = []
         shifts = []
         for day in Day.objects.all():
-            for shift in Shift.objects.all():
-                for day_group_day in shift.day_group.daygroupday_set.all():
-                    if (day == day_group_day.day):
-                        for _ in range(3):
-                            date = start_date
-                            date += datetime.timedelta(days=day.number - 1)
-                            date = date.date()
-                            dates.append(date)
-                            shifts.append(shift.shift_type)
+            for shift in shift_days:
+                if day.number in shift_days[shift]:
+                    date = start_date + datetime.timedelta(days=day.number - 1)
+                    date = date.date()
+                    dates.append(date)
+                    dates.append(date)
+                    dates.append(date)
+                    shifts.append(shift)
+                    shifts.append(shift)
+                    shifts.append(shift)
         context["staff_member"] = staff_member
         context["dates"] = dates
         context["shifts"] = shifts
@@ -846,8 +852,7 @@ class StaffRequestsUpdateView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         """Process staff requests form."""
         staff_member = get_object_or_404(
-            get_user_model(),
-            id=self.kwargs["staffid"]
+            get_user_model(), id=self.kwargs["staffid"]
         )
         print(staff_member, form.cleaned_data)
         return super().form_valid(form)
@@ -859,5 +864,5 @@ class StaffRequestsUpdateView(LoginRequiredMixin, FormView):
         for shift in Shift.objects.all():
             for day in shift.day_group.daygroupday_set.all():
                 num_shifts += 1
-        kwargs['num_shifts'] = num_shifts
+        kwargs["num_shifts"] = num_shifts
         return kwargs

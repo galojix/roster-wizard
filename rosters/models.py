@@ -70,6 +70,11 @@ class Day(models.Model):
 
     number = models.IntegerField(null=False, blank=False)
 
+    class Meta:
+        """Meta."""
+
+        ordering = ("number",)
+
     def __str__(self):
         """String."""
         return str(self.number)
@@ -88,7 +93,7 @@ class DayGroupDay(models.Model):
     class Meta:
         """Meta."""
 
-        ordering = ("day",)
+        ordering = ("day__number",)
 
     def __str__(self):
         """String."""
