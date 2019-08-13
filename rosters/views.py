@@ -839,10 +839,6 @@ class StaffRequestsUpdateView(LoginRequiredMixin, FormView):
                     date = start_date + datetime.timedelta(days=day.number - 1)
                     date = date.date()
                     dates.append(date)
-                    dates.append(date)
-                    dates.append(date)
-                    shifts.append(shift)
-                    shifts.append(shift)
                     shifts.append(shift)
         context["staff_member"] = staff_member
         context["dates"] = dates

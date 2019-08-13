@@ -17,8 +17,8 @@
         {% for field in form %}
           {% if forloop.counter0|divisibleby:3 %}
             <tr>
-              <td>{{ dates|index:forloop.counter0 }}</td>
-              <td>{{ shifts|index:forloop.counter0 }}</td>
+              <td>{{ dates|index_div_by_3:forloop.counter0 }}</td>
+              <td>{{ shifts|index_div_by_3:forloop.counter0 }}</td>
           {% endif %}
               <td>
                 {{ field.errors }}
