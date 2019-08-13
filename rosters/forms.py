@@ -131,5 +131,18 @@ class StaffRequestsUpdateForm(forms.Form):
         """Add fields for each shift."""
         super().__init__(*args, **kwargs)
         for i in range(num_shifts):
-            self.fields[f"like_{i}"] = forms.BooleanField()
-            self.fields[f"priority_{i}"] = forms.IntegerField()
+            self.fields[f"like_{i}"] = forms.BooleanField(
+                label="",
+                initial=True,
+                required=False
+            )
+            self.fields[f"priority_{i}"] = forms.IntegerField(
+                label="",
+                initial=1,
+                required=False
+            )
+            self.fields[f"active_{i}"] = forms.BooleanField(
+                label="",
+                initial=False,
+                required=False,
+            )

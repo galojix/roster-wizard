@@ -285,7 +285,7 @@ urlpatterns = [
     path("day/", DayListView.as_view(), name="day_list"),
     path("dayset/new", DaySetCreateView.as_view(), name="day_set_new"),
     path(
-        "staffrequests/<int:pk>/edit/",
+        "staffrequests/<int:staffid>/edit/",
         StaffRequestsUpdateView.as_view(),
         name="staffrequests_edit",
     ),

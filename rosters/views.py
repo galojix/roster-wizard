@@ -816,21 +816,48 @@ class StaffRequestsUpdateView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         """Add dates and roster data to context."""
         context = super().get_context_data(**kwargs)
-        labels = ["1", "2", "3"]
-        context["labels"] = labels
+        staff_member = get_object_or_404(
+            get_user_model(),
+            id=self.kwargs["staffid"]
+        )
+        if "start_date" in self.request.session:
+            start_date = datetime.datetime.strptime(
+                self.request.session["start_date"], "%d-%b-%Y"
+            )
+        else:
+            start_date = datetime.datetime.now()
+        dates = []
+        shifts = []
+        for day in Day.objects.all():
+            for shift in Shift.objects.all():
+                for day_group_day in shift.day_group.daygroupday_set.all():
+                    if (day == day_group_day.day):
+                        for _ in range(3):
+                            date = start_date
+                            date += datetime.timedelta(days=day.number - 1)
+                            date = date.date()
+                            dates.append(date)
+                            shifts.append(shift.shift_type)
+        context["staff_member"] = staff_member
+        context["dates"] = dates
+        context["shifts"] = shifts
         return context
 
     def form_valid(self, form):
         """Process staff requests form."""
-        staff_id = get_object_or_404(
+        staff_member = get_object_or_404(
             get_user_model(),
             id=self.kwargs["staffid"]
         )
-        print(staff_id)
+        print(staff_member, form.cleaned_data)
         return super().form_valid(form)
 
     def get_form_kwargs(self):
         """Pass number of shifts to form."""
         kwargs = super().get_form_kwargs()
-        kwargs['num_shifts'] = 5
+        num_shifts = 0
+        for shift in Shift.objects.all():
+            for day in shift.day_group.daygroupday_set.all():
+                num_shifts += 1
+        kwargs['num_shifts'] = num_shifts
         return kwargs
