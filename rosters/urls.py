@@ -204,11 +204,7 @@ urlpatterns = [
         GenerateRosterView.as_view(),
         name="generate_roster",
     ),
-    path(
-        "timeslot/select",
-        SelectRosterView.as_view(),
-        name="select_roster",
-    ),
+    path("timeslot/select", SelectRosterView.as_view(), name="select_roster"),
     path("roster/", RosterListView.as_view(), name="roster_list"),
     path(
         "preference/<int:pk>/edit/",
@@ -248,10 +244,12 @@ urlpatterns = [
         DayGroupDeleteView.as_view(),
         name="day_group_delete",
     ),
+    path("daygroup/new/", DayGroupCreateView.as_view(), name="day_group_new"),
     path(
-        "daygroup/new/", DayGroupCreateView.as_view(), name="day_group_new"
+        "daygroupday/",
+        DayGroupDayListView.as_view(),
+        name="day_group_day_list",
     ),
-    path("daygroupday/", DayGroupDayListView.as_view(), name="day_group_day_list"),
     path(
         "daygroupday/<int:pk>/edit/",
         DayGroupDayUpdateView.as_view(),
@@ -268,14 +266,18 @@ urlpatterns = [
         name="day_group_day_delete",
     ),
     path(
-        "daygroupday/<slug:daygroup>/new/", DayGroupDayCreateView.as_view(), name="day_group_day_new"
+        "daygroupday/<slug:daygroup>/new/",
+        DayGroupDayCreateView.as_view(),
+        name="day_group_day_new",
     ),
-    path("daygroupday/", DayGroupDayListView.as_view(), name="day_group_day_list"),
+    path(
+        "daygroupday/",
+        DayGroupDayListView.as_view(),
+        name="day_group_day_list",
+    ),
     path("day/<int:pk>/edit/", DayUpdateView.as_view(), name="day_edit"),
     path("day/<int:pk>/", DayDetailView.as_view(), name="day_detail"),
-    path(
-        "day/<int:pk>/delete/", DayDeleteView.as_view(), name="day_delete"
-    ),
+    path("day/<int:pk>/delete/", DayDeleteView.as_view(), name="day_delete"),
     path("day/new/", DayCreateView.as_view(), name="day_new"),
     path("day/", DayListView.as_view(), name="day_list"),
     path("dayset/new", DaySetCreateView.as_view(), name="day_set_new"),
