@@ -1,3 +1,5 @@
+"""URLs."""
+
 from django.urls import path
 
 from .views import (
@@ -66,6 +68,7 @@ from .views import (
     DayDeleteView,
     DayCreateView,
     DaySetCreateView,
+    StaffRequestsUpdateView,
 )
 
 urlpatterns = [
@@ -281,4 +284,9 @@ urlpatterns = [
     path("day/new/", DayCreateView.as_view(), name="day_new"),
     path("day/", DayListView.as_view(), name="day_list"),
     path("dayset/new", DaySetCreateView.as_view(), name="day_set_new"),
+    path(
+        "staffrequests/<int:pk>/edit/",
+        StaffRequestsUpdateView.as_view(),
+        name="staffrequests_edit",
+    ),
 ]

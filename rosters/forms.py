@@ -122,3 +122,14 @@ class DaySetCreateForm(forms.Form):
     """Day Set Create Form."""
 
     number_of_days = forms.IntegerField(initial=28)
+
+
+class StaffRequestsUpdateForm(forms.Form):
+    """Staff Requests Update Form."""
+
+    def __init__(self, num_shifts, *args, **kwargs):
+        """Add fields for each shift."""
+        super().__init__(*args, **kwargs)
+        for i in range(num_shifts):
+            self.fields[f"like_{i}"] = forms.BooleanField()
+            self.fields[f"priority_{i}"] = forms.IntegerField()

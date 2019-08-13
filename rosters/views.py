@@ -16,6 +16,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 
 from .models import (
     Leave,
@@ -43,6 +44,7 @@ from .forms import (
     SelectRosterForm,
     PreferenceCreateForm,
     PreferenceUpdateForm,
+    StaffRequestsUpdateForm,
 )
 from .logic import (
     SolutionNotFeasible,
@@ -802,3 +804,33 @@ class DaySetCreateView(LoginRequiredMixin, FormView):
             for day in range(number_of_days + 1, actual_number_of_days + 1):
                 Day.objects.get(number=day).delete()
         return super().form_valid(form)
+
+
+class StaffRequestsUpdateView(LoginRequiredMixin, FormView):
+    """Staff Requests Update Form."""
+
+    template_name = "staff_requests_update.html"
+    form_class = StaffRequestsUpdateForm
+    success_url = reverse_lazy("preference_list")
+
+    def get_context_data(self, **kwargs):
+        """Add dates and roster data to context."""
+        context = super().get_context_data(**kwargs)
+        labels = ["1", "2", "3"]
+        context["labels"] = labels
+        return context
+
+    def form_valid(self, form):
+        """Process staff requests form."""
+        staff_id = get_object_or_404(
+            get_user_model(),
+            id=self.kwargs["staffid"]
+        )
+        print(staff_id)
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        """Pass number of shifts to form."""
+        kwargs = super().get_form_kwargs()
+        kwargs['num_shifts'] = 5
+        return kwargs
