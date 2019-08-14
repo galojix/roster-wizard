@@ -127,22 +127,23 @@ class DaySetCreateForm(forms.Form):
 class StaffRequestsUpdateForm(forms.Form):
     """Staff Requests Update Form."""
 
-    def __init__(self, num_shifts, *args, **kwargs):
+    def __init__(self, requests, priorities, *args, **kwargs):
         """Add fields for each shift."""
         super().__init__(*args, **kwargs)
-        for i in range(num_shifts):
-            self.fields[f"like_{i}"] = forms.BooleanField(
+        for i, request in enumerate(requests):
+            choices = (
+                ("Yes", "Yes"),
+                ("No", "No"),
+                ("Don't Care", "Don't Care"),
+            )
+            self.fields[f"request_{i}"] = forms.ChoiceField(
+                choices=choices,
                 label="",
-                initial=True,
-                required=False
+                initial=requests[i],
+                required=False,
             )
             self.fields[f"priority_{i}"] = forms.IntegerField(
                 label="",
-                initial=1,
+                initial=priorities[i],
                 required=False
-            )
-            self.fields[f"active_{i}"] = forms.BooleanField(
-                label="",
-                initial=False,
-                required=False,
             )

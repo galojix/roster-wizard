@@ -813,10 +813,9 @@ class StaffRequestsUpdateView(LoginRequiredMixin, FormView):
     form_class = StaffRequestsUpdateForm
     success_url = reverse_lazy("preference_list")
 
-    def get_context_data(self, **kwargs):
-        """Add dates and roster data to context."""
-        context = super().get_context_data(**kwargs)
-        staff_member = get_object_or_404(
+    def dispatch(self, request, *args, **kwargs):
+        """Collect requests."""
+        self.staff_member = get_object_or_404(
             get_user_model(), id=self.kwargs["staffid"]
         )
         if "start_date" in self.request.session:
@@ -827,22 +826,31 @@ class StaffRequestsUpdateView(LoginRequiredMixin, FormView):
             start_date = datetime.datetime.now()
         shift_days = OrderedDict()
         for shift in Shift.objects.all():
+            shift_days[shift.shift_type] = []
             for day_group_day in shift.day_group.daygroupday_set.all():
-                shift_days.setdefault(shift.shift_type, []).append(
-                    day_group_day.day.number
-                )
-        dates = []
-        shifts = []
+                shift_days[shift.shift_type].append(day_group_day.day.number)
+        self.dates = []
+        self.shifts = []
+        self.requests = []
+        self.priorities = []
         for day in Day.objects.all():
             for shift in shift_days:
                 if day.number in shift_days[shift]:
                     date = start_date + datetime.timedelta(days=day.number - 1)
                     date = date.date()
-                    dates.append(date)
-                    shifts.append(shift)
-        context["staff_member"] = staff_member
-        context["dates"] = dates
-        context["shifts"] = shifts
+                    self.dates.append(date)
+                    self.shifts.append(shift)
+                    # Check for existing preference here
+                    self.requests.append("Don't Care")
+                    self.priorities.append(1)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        """Add dates and roster data to context."""
+        context = super().get_context_data(**kwargs)
+        context["staff_member"] = self.staff_member
+        context["dates"] = self.dates
+        context["shifts"] = self.shifts
         return context
 
     def form_valid(self, form):
@@ -856,9 +864,6 @@ class StaffRequestsUpdateView(LoginRequiredMixin, FormView):
     def get_form_kwargs(self):
         """Pass number of shifts to form."""
         kwargs = super().get_form_kwargs()
-        num_shifts = 0
-        for shift in Shift.objects.all():
-            for day in shift.day_group.daygroupday_set.all():
-                num_shifts += 1
-        kwargs["num_shifts"] = num_shifts
+        kwargs["requests"] = self.requests
+        kwargs["priorities"] = self.priorities
         return kwargs
