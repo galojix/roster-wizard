@@ -417,6 +417,59 @@ class RosterGenerator:
                 self.model.Add(shifts_per_roster == num_shifts_worked)
         log.info("Enforcement of shifts per roster completed...")
 
+    def _split_list(self, alist, wanted_parts=1):
+        length = len(alist)
+        return [alist[i*length // wanted_parts: (i+1)*length // wanted_parts]
+                for i in range(wanted_parts)]
+
+    def _enforce_balanced_shifts(self):
+        """Enforce balanced shifts for each nurse."""
+        log.info("Enforcement of balanced shifts started...")
+        dates1, dates2 = self._split_list(self.dates, wanted_parts=2)
+        for nurse in self.nurses:
+            num_shifts_worked1 = sum(
+                self.shift_vars[(nurse.id, role.id, date, timeslot.id)]
+                for role in nurse.roles.all()
+                for date in dates1
+                for timeslot in TimeSlot.objects.filter(date=date).order_by(
+                    "shift__shift_type"
+                )
+            )
+            num_shifts_worked2 = sum(
+                self.shift_vars[(nurse.id, role.id, date, timeslot.id)]
+                for role in nurse.roles.all()
+                for date in dates2
+                for timeslot in TimeSlot.objects.filter(date=date).order_by(
+                    "shift__shift_type"
+                )
+            )
+            if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
+                leave_days = Leave.objects.filter(
+                    staff_member=nurse, date__range=self.date_range
+                ).count()
+                # shifts_per_roster = nurse.shifts_per_roster - leave_days
+                # if shifts_per_roster < 0:
+                #     shifts_per_roster = 0
+                # self.model.Add(shifts_per_roster == num_shifts_worked)
+                num_shifts = nurse.shifts_per_roster // 2
+                print("****************************")
+                print(num_shifts, nurse.shifts_per_roster)
+                print(num_shifts_worked1)
+                # print(num_shifts_worked2)
+                print("****************************")
+                if (
+                    nurse.shifts_per_roster % 2 == 0
+                    and leave_days == 0
+                ):
+                    self.model.Add(
+                            num_shifts_worked1 == num_shifts
+                    )
+                elif leave_days == 0:
+                    self.model.Add(
+                            num_shifts_worked1 == num_shifts + 1
+                    )
+        log.info("Enforcement of balanced shifts completed...")
+
     def _maximise_staff_requests(self):
         """Maximise the number of satisfied staff requests."""
         log.info("Maximising of staff requests started...")
@@ -541,6 +594,7 @@ class RosterGenerator:
         self._enforce_skill_mix_rules()
         self._enforce_one_shift_per_day()
         self._enforce_shifts_per_roster()
+        self._enforce_balanced_shifts()
         self._maximise_staff_requests()
         self._solve_roster()
         self._populate_roster()
