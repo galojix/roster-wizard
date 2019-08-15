@@ -68,7 +68,8 @@ from .views import (
     DayDeleteView,
     DayCreateView,
     DaySetCreateView,
-    StaffRequestsUpdateView,
+    StaffRequestUpdateView,
+    StaffRequestListView,
 )
 
 urlpatterns = [
@@ -285,8 +286,14 @@ urlpatterns = [
     path("day/", DayListView.as_view(), name="day_list"),
     path("dayset/new", DaySetCreateView.as_view(), name="day_set_new"),
     path(
-        "staffrequests/<int:staffid>/edit/",
-        StaffRequestsUpdateView.as_view(),
-        name="staff_requests_edit",
+        "staffrequest/<int:staffid>/edit/",
+        StaffRequestUpdateView.as_view(),
+        name="staff_request_edit",
     ),
+    path(
+        "staffrequest/",
+        StaffRequestListView.as_view(),
+        name="staff_request_list",
+    ),
+
 ]

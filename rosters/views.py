@@ -806,12 +806,20 @@ class DaySetCreateView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class StaffRequestsUpdateView(LoginRequiredMixin, FormView):
-    """Staff Requests Update Form."""
+class StaffRequestListView(LoginRequiredMixin, ListView):
+    """Staff Request List View."""
 
-    template_name = "staff_requests_update.html"
+    model = get_user_model()
+    template_name = "staff_request_list.html"
+    login_url = "login"
+
+
+class StaffRequestUpdateView(LoginRequiredMixin, FormView):
+    """Staff Request Update Form."""
+
+    template_name = "staff_request_update.html"
     form_class = StaffRequestsUpdateForm
-    success_url = reverse_lazy("preference_list")
+    success_url = reverse_lazy("staff_request_list")
 
     def dispatch(self, request, *args, **kwargs):
         """Collect requests."""

@@ -16,7 +16,7 @@
         {% for field in form %}
           {% if forloop.counter0|divisibleby:2 %}
             <tr>
-              <td>{{ dates|index_div_by_2:forloop.counter0 }}</td>
+              <td>{{ dates|index_div_by_2:forloop.counter0|date:"D d M Y" }}</td>
               <td>{{ shifts|index_div_by_2:forloop.counter0 }}</td>
           {% endif %}
               <td>

@@ -28,7 +28,7 @@
         </tr>
         {% endfor %}
       </table>
-      <a href="{% url 'staff_requests_edit' staff_member.grouper.id %}">Edit Requests</a>
+      <a href="{% url 'staff_request_edit' staff_member.grouper.id %}">Edit Requests</a>
     </div>
   {% endfor %}
 {% endblock content %}
