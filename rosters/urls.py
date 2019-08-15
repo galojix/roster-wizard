@@ -287,6 +287,6 @@ urlpatterns = [
     path(
         "staffrequests/<int:staffid>/edit/",
         StaffRequestsUpdateView.as_view(),
-        name="staffrequests_edit",
+        name="staff_requests_edit",
     ),
 ]

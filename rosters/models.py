@@ -255,7 +255,7 @@ class Preference(models.Model):
             + " "
             + self.shift.shift_type
             + " "
-            + str(self.day)
+            + str(self.date)
         )
         return preference_display
 
