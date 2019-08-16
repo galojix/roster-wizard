@@ -232,12 +232,11 @@ class RosterGenerator:
                     for day_group_day in day_group_day_set
                 ]
 
-                # Find working day shift variables in invalid sequence
-                # Find non-working shift variables in invalid sequence
-                shift_vars_in_seq_on = []
                 for date in self.extended_dates:
                     shift_vars_in_seq_on = []
                     shift_vars_in_seq_off = []
+
+                    # Find non-working shift variables in invalid sequence
                     for day_num in invalid_shift_sequence:
                         if invalid_shift_sequence[day_num][0] is None:
                             day_to_test = date + datetime.timedelta(
@@ -260,6 +259,8 @@ class RosterGenerator:
                                         )
                                 except KeyError:
                                     continue
+
+                    # Find working day shift variables in invalid sequence
                     for day_num in invalid_shift_sequence:
                         for invalid_shift in invalid_shift_sequence[day_num]:
                             day_to_test = date + datetime.timedelta(
@@ -291,8 +292,12 @@ class RosterGenerator:
                                     )
                                 except KeyError:
                                     continue
+
+                    # Apply constraints
                     if len(shift_vars_in_seq_off) == 0:
-                        self.model.Add(sum(shift_vars_in_seq_on) < sequence_size)
+                        self.model.Add(
+                            sum(shift_vars_in_seq_on) < sequence_size
+                        )
                     else:
                         for item, var in enumerate(shift_vars_in_seq_off):
                             shift_vars_in_seq_off[item] = var.Not()
