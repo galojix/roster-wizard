@@ -192,6 +192,8 @@ class RosterGenerator:
         Need to look at previous roster period also
         """
         log.info("Addition of shift sequence rules started...")
+
+        # Map of date and shift to timeslot ID
         timeslot_ids = {}
         for date in self.extended_dates:
             timeslot_ids[date] = {}
@@ -202,9 +204,13 @@ class RosterGenerator:
                     ).id
                 except TimeSlot.DoesNotExist:
                     continue
+
         for nurse in self.nurses:
             roles = nurse.roles.all()
             for staff_rule in nurse.staffrule_set.all():
+
+                # Create invalid shift sequence for each rule
+                # { 1: [E,L,N], 2: [E,L] }
                 invalid_shift_sequence = OrderedDict()
                 staff_rule_shifts = staff_rule.staffruleshift_set.all()
                 staff_rule_shifts = staff_rule_shifts.order_by("position")
@@ -212,24 +218,28 @@ class RosterGenerator:
                     invalid_shift_sequence.setdefault(
                         staff_rule_shift.position, []
                     ).append(staff_rule_shift.shift)
-                sequence_size = len(invalid_shift_sequence)
+
+                # Number of working days specified in invalid shift sequence
+                sequence_size = 0
+                for position in invalid_shift_sequence:
+                    if invalid_shift_sequence[position][0] is not None:
+                        sequence_size += 1
+
+                # List of days relevant to rule
                 day_group_day_set = staff_rule.day_group.daygroupday_set.all()
                 sequence_days = [
                     day_group_day.day.number
                     for day_group_day in day_group_day_set
                 ]
-                shift_vars_in_seq = []
+
+                # Find working day shift variables in invalid sequence
+                # Find non-working shift variables in invalid sequence
+                shift_vars_in_seq_on = []
                 for date in self.extended_dates:
-                    shift_vars_in_seq = []
-                    shift_vars_blank = []
-                    last_day_in_sequence = list(invalid_shift_sequence.keys())[
-                        -1
-                    ]
-                    all_days = [
-                        day for day in range(1, last_day_in_sequence + 1)
-                    ]
-                    for day_num in all_days:
-                        if day_num not in invalid_shift_sequence.keys():
+                    shift_vars_in_seq_on = []
+                    shift_vars_in_seq_off = []
+                    for day_num in invalid_shift_sequence:
+                        if invalid_shift_sequence[day_num][0] is None:
                             day_to_test = date + datetime.timedelta(
                                 days=day_num - 1
                             )
@@ -238,7 +248,7 @@ class RosterGenerator:
                                     for timeslot in self.timeslots.filter(
                                         date=day_to_test
                                     ):
-                                        shift_vars_blank.append(
+                                        shift_vars_in_seq_off.append(
                                             self.shift_vars[
                                                 (
                                                     nurse.id,
@@ -267,7 +277,7 @@ class RosterGenerator:
 
                             for role in roles:
                                 try:
-                                    shift_vars_in_seq.append(
+                                    shift_vars_in_seq_on.append(
                                         self.shift_vars[
                                             (
                                                 nurse.id,
@@ -281,14 +291,14 @@ class RosterGenerator:
                                     )
                                 except KeyError:
                                     continue
-                    if len(shift_vars_blank) == 0:
-                        self.model.Add(sum(shift_vars_in_seq) < sequence_size)
+                    if len(shift_vars_in_seq_off) == 0:
+                        self.model.Add(sum(shift_vars_in_seq_on) < sequence_size)
                     else:
-                        for item, var in enumerate(shift_vars_blank):
-                            shift_vars_blank[item] = var.Not()
+                        for item, var in enumerate(shift_vars_in_seq_off):
+                            shift_vars_in_seq_off[item] = var.Not()
                         self.model.Add(
-                            sum(shift_vars_in_seq) < sequence_size
-                        ).OnlyEnforceIf(shift_vars_blank)
+                            sum(shift_vars_in_seq_on) < sequence_size
+                        ).OnlyEnforceIf(shift_vars_in_seq_off)
         log.info("Addition of shift sequence rules completed...")
 
     def _collect_skill_mix_rules(self):
@@ -435,28 +445,19 @@ class RosterGenerator:
                     "shift__shift_type"
                 )
             )
-            num_shifts_worked2 = sum(
-                self.shift_vars[(nurse.id, role.id, date, timeslot.id)]
-                for role in nurse.roles.all()
-                for date in dates2
-                for timeslot in TimeSlot.objects.filter(date=date).order_by(
-                    "shift__shift_type"
-                )
-            )
+            # num_shifts_worked2 = sum(
+            #     self.shift_vars[(nurse.id, role.id, date, timeslot.id)]
+            #     for role in nurse.roles.all()
+            #     for date in dates2
+            #     for timeslot in TimeSlot.objects.filter(date=date).order_by(
+            #         "shift__shift_type"
+            #     )
+            # )
             if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
                 leave_days = Leave.objects.filter(
                     staff_member=nurse, date__range=self.date_range
                 ).count()
-                # shifts_per_roster = nurse.shifts_per_roster - leave_days
-                # if shifts_per_roster < 0:
-                #     shifts_per_roster = 0
-                # self.model.Add(shifts_per_roster == num_shifts_worked)
                 num_shifts = nurse.shifts_per_roster // 2
-                print("****************************")
-                print(num_shifts, nurse.shifts_per_roster)
-                print(num_shifts_worked1)
-                # print(num_shifts_worked2)
-                print("****************************")
                 if (
                     nurse.shifts_per_roster % 2 == 0
                     and leave_days == 0

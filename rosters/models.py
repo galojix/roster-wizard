@@ -190,7 +190,9 @@ class StaffRuleShift(models.Model):
     """StaffRuleShift."""
 
     staff_rule = models.ForeignKey(StaffRule, on_delete=models.CASCADE)
-    shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
+    shift = models.ForeignKey(
+        Shift, on_delete=models.CASCADE, null=True, blank=True
+    )
     position = models.IntegerField(null=False, blank=False)
 
     class Meta:
