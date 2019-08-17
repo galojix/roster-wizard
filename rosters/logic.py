@@ -186,14 +186,8 @@ class RosterGenerator:
                         )
         log.info("Exclusion of leave dates completed...")
 
-    def _enforce_shift_sequences(self):
-        """Enforce shift sequences / staff rules.
-
-        Need to look at previous roster period also
-        """
-        log.info("Addition of shift sequence rules started...")
-
-        # Map of date and shift to timeslot ID
+    def _get_timeslot_ids(self):
+        """Map date and shift to timeslot ID."""
         timeslot_ids = {}
         for date in self.extended_dates:
             timeslot_ids[date] = {}
@@ -204,105 +198,160 @@ class RosterGenerator:
                     ).id
                 except TimeSlot.DoesNotExist:
                     continue
+        return timeslot_ids
+
+    def _get_invalid_shift_seq(self, staff_rule):
+        """Create invalid shift sequence for each rule.
+
+        Example: { 1: [ "E", "L", "N"], 2: ["E", "L"] }
+        """
+        invalid_shift_sequence = OrderedDict()
+        staff_rule_shifts = staff_rule.staffruleshift_set.all()
+        staff_rule_shifts = staff_rule_shifts.order_by("position")
+        for staff_rule_shift in staff_rule_shifts:
+            invalid_shift_sequence.setdefault(
+                staff_rule_shift.position, []
+            ).append(staff_rule_shift.shift)
+        return invalid_shift_sequence
+
+    def _get_work_days_in_seq(self, invalid_shift_seq):
+        """Get number of working days in invalid shift sequence."""
+        work_days_in_seq = 0
+        for position in invalid_shift_seq:
+            if invalid_shift_seq[position][0] is not None:
+                work_days_in_seq += 1
+        return work_days_in_seq
+
+    def _get_all_days_in_seq(self, staff_rule):
+        """Get number of days in staff rule."""
+        day_group_day_set = staff_rule.day_group.daygroupday_set.all()
+        all_days_in_seq = [
+            day_group_day.day.number
+            for day_group_day in day_group_day_set
+        ]
+        return all_days_in_seq
+
+    def _get_shift_vars_in_seq_off(
+        self,
+        date,
+        invalid_shift_seq,
+        roles,
+        nurse,
+    ):
+        """Find non-working shift variables in invalid sequence."""
+        shift_vars_in_seq_off = []
+        for day_num in invalid_shift_seq:
+            if invalid_shift_seq[day_num][0] is None:
+                day_to_test = date + datetime.timedelta(
+                    days=day_num - 1
+                )
+                for role in roles:
+                    try:
+                        for timeslot in self.timeslots.filter(
+                            date=day_to_test
+                        ):
+                            shift_vars_in_seq_off.append(
+                                self.shift_vars[
+                                    (
+                                        nurse.id,
+                                        role.id,
+                                        day_to_test,
+                                        timeslot.id,
+                                    )
+                                ]
+                            )
+                    except KeyError:
+                        continue
+        return shift_vars_in_seq_off
+
+    def _get_shift_vars_in_seq_on(
+        self,
+        date,
+        invalid_shift_seq,
+        all_days_in_seq,
+        roles,
+        nurse,
+        timeslot_ids,
+    ):
+        """Find working day shift variables in invalid sequence."""
+        shift_vars_in_seq_on = []
+        for day_num in invalid_shift_seq:
+            for invalid_shift in invalid_shift_seq[day_num]:
+                day_to_test = date + datetime.timedelta(
+                    days=day_num - 1
+                )
+
+                # Skip if day not in day group for sequence
+                delta = (day_to_test - self.dates[0]).days
+                if delta < 0:
+                    day_group_day_num = delta + self.num_days + 1
+                else:
+                    day_group_day_num = delta + 1
+                if day_group_day_num not in all_days_in_seq:
+                    break
+
+                for role in roles:
+                    try:
+                        shift_vars_in_seq_on.append(
+                            self.shift_vars[
+                                (
+                                    nurse.id,
+                                    role.id,
+                                    day_to_test,
+                                    timeslot_ids[day_to_test][
+                                        invalid_shift
+                                    ],
+                                )
+                            ]
+                        )
+                    except KeyError:
+                        continue
+        return shift_vars_in_seq_on
+
+    def _enforce_shift_sequences(self):
+        """Enforce shift sequences / staff rules.
+
+        Need to look at previous roster period also
+        """
+        log.info("Addition of shift sequence rules started...")
+
+        timeslot_ids = self._get_timeslot_ids()
 
         for nurse in self.nurses:
             roles = nurse.roles.all()
             for staff_rule in nurse.staffrule_set.all():
-
-                # Create invalid shift sequence for each rule
-                # { 1: [E,L,N], 2: [E,L] }
-                invalid_shift_sequence = OrderedDict()
-                staff_rule_shifts = staff_rule.staffruleshift_set.all()
-                staff_rule_shifts = staff_rule_shifts.order_by("position")
-                for staff_rule_shift in staff_rule_shifts:
-                    invalid_shift_sequence.setdefault(
-                        staff_rule_shift.position, []
-                    ).append(staff_rule_shift.shift)
-
-                # Number of working days specified in invalid shift sequence
-                sequence_size = 0
-                for position in invalid_shift_sequence:
-                    if invalid_shift_sequence[position][0] is not None:
-                        sequence_size += 1
-
-                # List of days relevant to rule
-                day_group_day_set = staff_rule.day_group.daygroupday_set.all()
-                sequence_days = [
-                    day_group_day.day.number
-                    for day_group_day in day_group_day_set
-                ]
+                invalid_shift_seq = self._get_invalid_shift_seq(staff_rule)
+                work_days_in_seq = (
+                    self._get_work_days_in_seq(invalid_shift_seq)
+                )
+                all_days_in_seq = self._get_all_days_in_seq(staff_rule)
 
                 for date in self.extended_dates:
-                    shift_vars_in_seq_on = []
-                    shift_vars_in_seq_off = []
-
-                    # Find non-working shift variables in invalid sequence
-                    for day_num in invalid_shift_sequence:
-                        if invalid_shift_sequence[day_num][0] is None:
-                            day_to_test = date + datetime.timedelta(
-                                days=day_num - 1
-                            )
-                            for role in roles:
-                                try:
-                                    for timeslot in self.timeslots.filter(
-                                        date=day_to_test
-                                    ):
-                                        shift_vars_in_seq_off.append(
-                                            self.shift_vars[
-                                                (
-                                                    nurse.id,
-                                                    role.id,
-                                                    day_to_test,
-                                                    timeslot.id,
-                                                )
-                                            ]
-                                        )
-                                except KeyError:
-                                    continue
-
-                    # Find working day shift variables in invalid sequence
-                    for day_num in invalid_shift_sequence:
-                        for invalid_shift in invalid_shift_sequence[day_num]:
-                            day_to_test = date + datetime.timedelta(
-                                days=day_num - 1
-                            )
-
-                            # Skip if day not in day group for sequence
-                            delta = (day_to_test - self.dates[0]).days
-                            if delta < 0:
-                                day_group_day_num = delta + self.num_days + 1
-                            else:
-                                day_group_day_num = delta + 1
-                            if day_group_day_num not in sequence_days:
-                                break
-
-                            for role in roles:
-                                try:
-                                    shift_vars_in_seq_on.append(
-                                        self.shift_vars[
-                                            (
-                                                nurse.id,
-                                                role.id,
-                                                day_to_test,
-                                                timeslot_ids[day_to_test][
-                                                    invalid_shift
-                                                ],
-                                            )
-                                        ]
-                                    )
-                                except KeyError:
-                                    continue
+                    shift_vars_in_seq_off = self._get_shift_vars_in_seq_off(
+                        date,
+                        invalid_shift_seq,
+                        roles,
+                        nurse,
+                    )
+                    shift_vars_in_seq_on = self._get_shift_vars_in_seq_on(
+                        date,
+                        invalid_shift_seq,
+                        all_days_in_seq,
+                        roles,
+                        nurse,
+                        timeslot_ids,
+                    )
 
                     # Apply constraints
                     if len(shift_vars_in_seq_off) == 0:
                         self.model.Add(
-                            sum(shift_vars_in_seq_on) < sequence_size
+                            sum(shift_vars_in_seq_on) < work_days_in_seq
                         )
                     else:
                         for item, var in enumerate(shift_vars_in_seq_off):
                             shift_vars_in_seq_off[item] = var.Not()
                         self.model.Add(
-                            sum(shift_vars_in_seq_on) < sequence_size
+                            sum(shift_vars_in_seq_on) < work_days_in_seq
                         ).OnlyEnforceIf(shift_vars_in_seq_off)
         log.info("Addition of shift sequence rules completed...")
 
