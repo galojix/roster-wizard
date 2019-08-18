@@ -14,17 +14,21 @@
         <tr>
           <th>Day</th>
           <th>Shift</th>
-          <th>Like</th>
+          <th>Request</th>
           <th>Priority</th>
-          <th>Action</th>
         </tr>
         {% for preference in staff_member.list %}
         <tr>
           <td>{{ preference.date|date:"D d M Y" }}</td>
           <td>{{ preference.shift.shift_type }}</td>
-          <td>{{ preference.like }}</td>
+          <td>
+            {% if preference.like %}
+              Yes
+            {% else %}
+              No
+            {% endif %}
+          </td>
           <td>{{ preference.priority }}</td>
-          <td><a href="{% url 'preference_edit' preference.pk %}">Edit</a> | <a href="{% url 'preference_delete' preference.pk %}">Delete</a></td>
         </tr>
         {% endfor %}
       </table>
