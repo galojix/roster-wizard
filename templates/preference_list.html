@@ -16,6 +16,7 @@
           <th>Shift</th>
           <th>Request</th>
           <th>Priority</th>
+          <th>Action</th>
         </tr>
         {% for preference in staff_member.list %}
         <tr>
@@ -29,10 +30,11 @@
             {% endif %}
           </td>
           <td>{{ preference.priority }}</td>
+          <td><a href="{% url 'preference_delete' preference.pk %}">Delete</a></td>
         </tr>
         {% endfor %}
       </table>
-      <a href="{% url 'staff_request_edit' staff_member.grouper.id %}">Edit Requests</a>
+      <a href="{% url 'staff_request_edit' staff_member.grouper.id %}">Edit Requests for {{ staff_member.grouper.first_name }} {{ staff_member.grouper.last_name }}</a>
     </div>
   {% endfor %}
 {% endblock content %}
