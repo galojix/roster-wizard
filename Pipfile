@@ -9,6 +9,7 @@ django-environ = "*"
 "psycopg2-binary" = "*"
 ortools = "*"
 gunicorn = "*"
+django-admin-rangefilter = "*"
 
 [dev-packages]
 pylint = "*"

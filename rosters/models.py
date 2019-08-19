@@ -222,6 +222,11 @@ class TimeSlot(models.Model):
     staff = models.ManyToManyField(get_user_model())
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
 
+    class Meta:
+        """Meta."""
+
+        ordering = ("date", "shift__shift_type")
+
     def __str__(self):
         """String."""
         return str(self.date) + ":" + self.shift.shift_type
