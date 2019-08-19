@@ -35,7 +35,7 @@ class RosterGenerator:
         self.num_days = Day.objects.count()
         self.date_range = [
             start_date.date(),
-            start_date.date() + datetime.timedelta(days=self.num_days),
+            start_date.date() + datetime.timedelta(days=self.num_days - 1),
         ]
         self.previous_date_range = [
             start_date.date() - datetime.timedelta(days=self.num_days),
@@ -76,9 +76,7 @@ class RosterGenerator:
         log.info("Too many staff check started...")
         total_staff_shifts = 0
         for nurse in self.nurses:
-            leave_days = self.leaves.filter(
-                staff_member=nurse, date__range=self.date_range
-            ).count()
+            leave_days = self.leaves.filter(staff_member=nurse).count()
             if leave_days > nurse.shifts_per_roster:
                 total_staff_shifts += 0
             else:
@@ -472,9 +470,7 @@ class RosterGenerator:
                 )
             )
             if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
-                leave_days = Leave.objects.filter(
-                    staff_member=nurse, date__range=self.date_range
-                ).count()
+                leave_days = self.leaves.filter(staff_member=nurse).count()
                 shifts_per_roster = nurse.shifts_per_roster - leave_days
                 if shifts_per_roster < 0:
                     shifts_per_roster = 0
