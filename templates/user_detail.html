@@ -11,6 +11,8 @@
               <th>First Name</th>
               <th>Email Address</th>
               <th>Shifts per Roster</th>
+              <th>Max Shifts if Taking Leave</th>
+              <th>Available for Shifts</th>
               <th>Roles</th>
           </tr>
       <tr>
@@ -19,6 +21,8 @@
           <td>{{ customuser.first_name }}</td>
           <td>{{ customuser.email }}</td>
           <td>{{ customuser.shifts_per_roster }}</td>
+          <td>{{ customuser.max_shifts }}</td>
+          <td>{{ customuser.available }}</td>
           <td>{% for role in customuser.roles.all %}
               {{ role.role_name }}
               {% endfor %}

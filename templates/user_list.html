@@ -7,6 +7,7 @@
         <th>Last Name</th>
         <th>First Name</th>
         <th>Shifts Per Roster</th>
+        <th>Max Shifts if Taking Leave</th>
         <th>Available for Shifts</th>
         <th>Roles</th>
         <th>Action</th>
@@ -16,6 +17,7 @@
         <td>{{ user.last_name }}</td>
         <td>{{ user.first_name }}</td>
         <td>{{ user.shifts_per_roster }}</td>
+        <td>{{ user.max_shifts }}</td>
         <td>{{ user.available }}</td>
         <td>{% for role in user.roles.all|dictsort:"role_name" %}
             {{ role.role_name }}

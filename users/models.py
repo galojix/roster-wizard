@@ -14,6 +14,7 @@ class CustomUser(AbstractUser):
 
     available = models.BooleanField(null=False, blank=False, default=True)
     shifts_per_roster = models.IntegerField(null=False, blank=False, default=0)
+    max_shifts = models.BooleanField(null=False, blank=False, default=True)
     roles = models.ManyToManyField('rosters.Role')
 
     def __str__(self):

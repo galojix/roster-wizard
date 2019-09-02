@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+import math
 from collections import OrderedDict
 
 from ortools.sat.python import cp_model
@@ -471,10 +472,13 @@ class RosterGenerator:
             )
             if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
                 leave_days = self.leaves.filter(staff_member=nurse).count()
-                shifts_per_roster = nurse.shifts_per_roster - leave_days
-                if shifts_per_roster < 0:
-                    shifts_per_roster = 0
-                self.model.Add(shifts_per_roster == num_shifts_worked)
+                work_fraction = 1 - (leave_days / self.num_days)
+                shifts_per_roster = work_fraction * nurse.shifts_per_roster
+                if nurse.max_shifts:
+                    shifts_per_roster = math.ceil(shifts_per_roster)
+                else:
+                    shifts_per_roster = math.floor(shifts_per_roster)
+                self.model.Add(num_shifts_worked == shifts_per_roster)
         log.info("Enforcement of shifts per roster completed...")
 
     def _split_list(self, alist, wanted_parts=1):

@@ -32,6 +32,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         "last_name",
         "email",
         "shifts_per_roster",
+        "max_shifts",
         "available",
         "roles",
     )
@@ -54,6 +55,7 @@ class UserCreateView(LoginRequiredMixin, CreateView):
         "last_name",
         "email",
         "shifts_per_roster",
+        "max_shifts",
         "available",
         "roles",
     )
