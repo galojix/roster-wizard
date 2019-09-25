@@ -31,7 +31,7 @@ class RosterGenerator:
 
     def __init__(self, start_date):
         """Create starting conditions."""
-        self.nurses = get_user_model().objects.filter(available=True)
+        self.workers = get_user_model().objects.filter(available=True)
         self.shifts = Shift.objects.all().order_by("shift_type")
         self.num_days = Day.objects.count()
         self.date_range = [
@@ -76,12 +76,12 @@ class RosterGenerator:
         # Check if too many staff
         log.info("Too many staff check started...")
         total_staff_shifts = 0
-        for nurse in self.nurses:
-            leave_days = self.leaves.filter(staff_member=nurse).count()
-            if leave_days > nurse.shifts_per_roster:
+        for worker in self.workers:
+            leave_days = self.leaves.filter(staff_member=worker).count()
+            if leave_days > worker.shifts_per_roster:
                 total_staff_shifts += 0
             else:
-                total_staff_shifts += nurse.shifts_per_roster - leave_days
+                total_staff_shifts += worker.shifts_per_roster - leave_days
         total_shifts = 0
         for timeslot in self.timeslots:
             total_shifts += timeslot.shift.max_staff
@@ -96,11 +96,11 @@ class RosterGenerator:
         # Collect shift requests into friendly data structure
         log.info("Shift request collection started...")
         self.shift_requests = []
-        for nurse in self.nurses:
-            nurse_shift_requests = []
-            preferences = nurse.preference_set.all()
+        for worker in self.workers:
+            worker_shift_requests = []
+            preferences = worker.preference_set.all()
             for date in self.dates:
-                nurse_shift_requests_for_day = []
+                worker_shift_requests_for_day = []
                 for timeslot in TimeSlot.objects.filter(date=date).order_by(
                     "shift__shift_type"
                 ):
@@ -114,9 +114,9 @@ class RosterGenerator:
                                 priority = preference.priority
                             else:
                                 priority = -preference.priority
-                    nurse_shift_requests_for_day.append(priority)
-                nurse_shift_requests.append(nurse_shift_requests_for_day)
-            self.shift_requests.append(nurse_shift_requests)
+                    worker_shift_requests_for_day.append(priority)
+                worker_shift_requests.append(worker_shift_requests_for_day)
+            self.shift_requests.append(worker_shift_requests)
         log.info("Shift request collection completed...")
         log.debug(self.shift_requests)
 
@@ -124,17 +124,17 @@ class RosterGenerator:
         """Create shift variables.
 
         shift_vars[(n, r, d, t)]:
-        nurse 'n' with role 'r' works on date 'd' in timeslot 't'
+        worker 'n' with role 'r' works on date 'd' in timeslot 't'
         """
         log.info("Shift variable creation started...")
         self.shift_vars = {}
-        for nurse in self.nurses:
-            for role in nurse.roles.all():
+        for worker in self.workers:
+            for role in worker.roles.all():
                 for date in self.dates:
                     for timeslot in self.timeslots.filter(date=date).order_by(
                         "shift__shift_type"
                     ):
-                        n = nurse.id
+                        n = worker.id
                         r = role.id
                         d = date
                         t = timeslot.id
@@ -152,9 +152,9 @@ class RosterGenerator:
             date__range=self.previous_date_range
         )
         for timeslot in previous_timeslots:
-            for nurse in timeslot.staff.all():
-                n = nurse.id
-                r = nurse.roles.all()[0]
+            for worker in timeslot.staff.all():
+                n = worker.id
+                r = worker.roles.all()[0]
                 d = timeslot.date
                 t = timeslot.id
                 self.shift_vars[(n, r, d, t)] = self.model.NewBoolVar(
@@ -235,7 +235,7 @@ class RosterGenerator:
         date,
         invalid_shift_seq,
         roles,
-        nurse,
+        worker,
     ):
         """Find non-working shift variables in invalid sequence."""
         shift_vars_in_seq_off = []
@@ -252,7 +252,7 @@ class RosterGenerator:
                             shift_vars_in_seq_off.append(
                                 self.shift_vars[
                                     (
-                                        nurse.id,
+                                        worker.id,
                                         role.id,
                                         day_to_test,
                                         timeslot.id,
@@ -269,7 +269,7 @@ class RosterGenerator:
         invalid_shift_seq,
         all_days_in_seq,
         roles,
-        nurse,
+        worker,
         timeslot_ids,
     ):
         """Find working day shift variables in invalid sequence."""
@@ -294,7 +294,7 @@ class RosterGenerator:
                         shift_vars_in_seq_on.append(
                             self.shift_vars[
                                 (
-                                    nurse.id,
+                                    worker.id,
                                     role.id,
                                     day_to_test,
                                     timeslot_ids[day_to_test][
@@ -316,9 +316,9 @@ class RosterGenerator:
 
         timeslot_ids = self._get_timeslot_ids()
 
-        for nurse in self.nurses:
-            roles = nurse.roles.all()
-            for staff_rule in nurse.staffrule_set.all():
+        for worker in self.workers:
+            roles = worker.roles.all()
+            for staff_rule in worker.staffrule_set.all():
                 invalid_shift_seq = self._get_invalid_shift_seq(staff_rule)
                 work_days_in_seq = (
                     self._get_work_days_in_seq(invalid_shift_seq)
@@ -330,14 +330,14 @@ class RosterGenerator:
                         date,
                         invalid_shift_seq,
                         roles,
-                        nurse,
+                        worker,
                     )
                     shift_vars_in_seq_on = self._get_shift_vars_in_seq_on(
                         date,
                         invalid_shift_seq,
                         all_days_in_seq,
                         roles,
-                        nurse,
+                        worker,
                         timeslot_ids,
                     )
 
@@ -420,13 +420,13 @@ class RosterGenerator:
                                 sum(
                                     self.shift_vars[
                                         (
-                                            nurse.id,
+                                            worker.id,
                                             role_id,
                                             timeslot.date,
                                             timeslot.id,
                                         )
                                     ]
-                                    for nurse in self.nurses.filter(
+                                    for worker in self.workers.filter(
                                         roles__id=role_id
                                     )
                                 )
@@ -439,17 +439,17 @@ class RosterGenerator:
         log.info("Enforcement of skill mix rules completed...")
 
     def _enforce_one_shift_per_day(self):
-        """Assign at most one shift per day per nurse."""
+        """Assign at most one shift per day per worker."""
         log.info("Restriction of staff to one shift per day started...")
-        for nurse in self.nurses:
+        for worker in self.workers:
             for date in self.dates:
-                if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
+                if worker.shifts_per_roster != 0:  # Zero means unlimited shifts
                     self.model.Add(
                         sum(
                             self.shift_vars[
-                                (nurse.id, role.id, date, timeslot.id)
+                                (worker.id, role.id, date, timeslot.id)
                             ]
-                            for role in nurse.roles.all()
+                            for role in worker.roles.all()
                             for timeslot in TimeSlot.objects.filter(
                                 date=date
                             ).order_by("shift__shift_type")
@@ -458,31 +458,31 @@ class RosterGenerator:
                     )
         log.info("Restriction of staff to one shift per day completed...")
 
-    def _get_shifts_per_roster(self, nurse):
+    def _get_shifts_per_roster(self, worker):
         """Get number of shifts to work in roster period."""
-        leave_days = self.leaves.filter(staff_member=nurse).count()
+        leave_days = self.leaves.filter(staff_member=worker).count()
         work_fraction = 1 - (leave_days / self.num_days)
-        shifts_per_roster = work_fraction * nurse.shifts_per_roster
-        if nurse.max_shifts:
+        shifts_per_roster = work_fraction * worker.shifts_per_roster
+        if worker.max_shifts:
             shifts_per_roster = math.ceil(shifts_per_roster)
         else:
             shifts_per_roster = math.floor(shifts_per_roster)
         return shifts_per_roster
 
     def _enforce_shifts_per_roster(self):
-        """Enforce shifts per roster for each nurse."""
+        """Enforce shifts per roster for each worker."""
         log.info("Enforcement of shifts per roster started...")
-        for nurse in self.nurses:
+        for worker in self.workers:
             num_shifts_worked = sum(
-                self.shift_vars[(nurse.id, role.id, date, timeslot.id)]
-                for role in nurse.roles.all()
+                self.shift_vars[(worker.id, role.id, date, timeslot.id)]
+                for role in worker.roles.all()
                 for date in self.dates
                 for timeslot in TimeSlot.objects.filter(date=date).order_by(
                     "shift__shift_type"
                 )
             )
-            if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
-                shifts_per_roster = self._get_shifts_per_roster(nurse)
+            if worker.shifts_per_roster != 0:  # Zero means unlimited shifts
+                shifts_per_roster = self._get_shifts_per_roster(worker)
                 self.model.Add(num_shifts_worked == shifts_per_roster)
         log.info("Enforcement of shifts per roster completed...")
 
@@ -493,24 +493,24 @@ class RosterGenerator:
                 for i in range(wanted_parts)]
 
     def _enforce_balanced_shifts(self):
-        """Enforce balanced shifts for each nurse."""
+        """Enforce balanced shifts for each worker."""
         log.info("Enforcement of balanced shifts started...")
-        for nurse in self.nurses:
+        for worker in self.workers:
             leave_dates = [
-                leave.date for leave in self.leaves.filter(staff_member=nurse)
+                leave.date for leave in self.leaves.filter(staff_member=worker)
             ]
             dates = [date for date in self.dates if date not in leave_dates]
             dates1, dates2 = self._split_list(dates, wanted_parts=2)
             num_shifts_worked1 = sum(
-                self.shift_vars[(nurse.id, role.id, date, timeslot.id)]
-                for role in nurse.roles.all()
+                self.shift_vars[(worker.id, role.id, date, timeslot.id)]
+                for role in worker.roles.all()
                 for date in dates1
                 for timeslot in TimeSlot.objects.filter(date=date).order_by(
                     "shift__shift_type"
                 )
             )
-            if nurse.shifts_per_roster != 0:  # Zero means unlimited shifts
-                shifts_per_roster = self._get_shifts_per_roster(nurse)
+            if worker.shifts_per_roster != 0:  # Zero means unlimited shifts
+                shifts_per_roster = self._get_shifts_per_roster(worker)
                 num_shifts = shifts_per_roster // 2
                 if shifts_per_roster % 2 == 0:
                     self.model.Add(num_shifts_worked1 == num_shifts)
@@ -524,9 +524,9 @@ class RosterGenerator:
         self.model.Maximize(
             sum(
                 self.shift_requests[n][d][s]
-                * self.shift_vars[(nurse.id, role.id, date, timeslot.id)]
-                for n, nurse in enumerate(self.nurses)
-                for role in nurse.roles.all()
+                * self.shift_vars[(worker.id, role.id, date, timeslot.id)]
+                for n, worker in enumerate(self.workers)
+                for role in worker.roles.all()
                 for d, date in enumerate(self.dates)
                 for s, timeslot in enumerate(
                     TimeSlot.objects.filter(date=date).order_by(
@@ -561,8 +561,8 @@ class RosterGenerator:
         """Poulate roster."""
         log.info("Population of roster started...")
         for d, date in enumerate(self.dates):
-            for n, nurse in enumerate(self.nurses):
-                for role in nurse.roles.all():
+            for n, worker in enumerate(self.workers):
+                for role in worker.roles.all():
                     for s, timeslot in enumerate(
                         TimeSlot.objects.filter(date=date).order_by(
                             "shift__shift_type"
@@ -571,18 +571,18 @@ class RosterGenerator:
                         if (
                             self.solver.Value(
                                 self.shift_vars[
-                                    (nurse.id, role.id, date, timeslot.id)
+                                    (worker.id, role.id, date, timeslot.id)
                                 ]
                             )
                             == 1
                         ):
                             TimeSlot.objects.get(
                                 date=date, shift=timeslot.shift
-                            ).staff.add(nurse)
+                            ).staff.add(worker)
                             if self.shift_requests[n][d][s] > 0:
                                 log.info(
                                     f"Request Successful: "
-                                    f"{nurse.last_name}, {nurse.first_name}"
+                                    f"{worker.last_name}, {worker.first_name}"
                                     f" {role.role_name}"
                                     f" requested shift"
                                     f" {timeslot.shift.shift_type}"
@@ -593,7 +593,7 @@ class RosterGenerator:
                             elif self.shift_requests[n][d][s] < 0:
                                 log.info(
                                     f"Request Failed: "
-                                    f"{nurse.last_name}, {nurse.first_name}"
+                                    f"{worker.last_name}, {worker.first_name}"
                                     f" {role.role_name}"
                                     f" requested not to work shift"
                                     f" {timeslot.shift.shift_type}"
@@ -605,7 +605,7 @@ class RosterGenerator:
                             if self.shift_requests[n][d][s] > 0:
                                 log.info(
                                     f"Request Failed: "
-                                    f"{nurse.last_name}, {nurse.first_name}"
+                                    f"{worker.last_name}, {worker.first_name}"
                                     f" {role.role_name}"
                                     f" requested shift"
                                     f" {timeslot.shift.shift_type}"
@@ -616,7 +616,7 @@ class RosterGenerator:
                             elif self.shift_requests[n][d][s] < 0:
                                 log.info(
                                     f"Request Succeeded: "
-                                    f"{nurse.last_name}, {nurse.first_name}"
+                                    f"{worker.last_name}, {worker.first_name}"
                                     f" {role.role_name}"
                                     f" requested not to work shift"
                                     f" {timeslot.shift.shift_type}"
@@ -653,50 +653,50 @@ def get_roster_by_staff(start_date):
     """Create data structures for roster grouped by staff."""
     dates = []
     roster = OrderedDict()
-    nurses = (
+    workers = (
         get_user_model()
         .objects.all()
         .order_by("roles__role_name", "last_name", "first_name")
     )
     num_days = Day.objects.count()
-    for nurse in nurses:
-        roster[nurse.last_name + ", " + nurse.first_name] = OrderedDict()
+    for worker in workers:
+        roster[worker.last_name + ", " + worker.first_name] = OrderedDict()
         staff_roles = ""
-        for role in nurse.roles.all().order_by("role_name"):
+        for role in worker.roles.all().order_by("role_name"):
             staff_roles += role.role_name + " "
-        roster[nurse.last_name + ", " + nurse.first_name][
+        roster[worker.last_name + ", " + worker.first_name][
             "roles"
         ] = staff_roles
-        roster[nurse.last_name + ", " + nurse.first_name][
+        roster[worker.last_name + ", " + worker.first_name][
             "shifts_per_roster"
-        ] = nurse.shifts_per_roster
-        leaves = Leave.objects.filter(staff_member=nurse)
+        ] = worker.shifts_per_roster
+        leaves = Leave.objects.filter(staff_member=worker)
         dates = []
         for day in range(num_days):
             date = start_date + datetime.timedelta(days=day)
             date = date.date()
             dates.append(date)
             try:
-                roster[nurse.last_name + ", " + nurse.first_name][
+                roster[worker.last_name + ", " + worker.first_name][
                     date
                 ] = TimeSlot.objects.get(
-                    date=date, staff=nurse.id
+                    date=date, staff=worker.id
                 ).shift.shift_type
             except TimeSlot.DoesNotExist:
                 leave = leaves.filter(date=date).count()
                 if leave == 0:
-                    roster[nurse.last_name + ", " + nurse.first_name][
+                    roster[worker.last_name + ", " + worker.first_name][
                         date
                     ] = "X"
                 else:
-                    roster[nurse.last_name + ", " + nurse.first_name][
+                    roster[worker.last_name + ", " + worker.first_name][
                         date
                     ] = leaves.get(date=date).description
             except TimeSlot.MultipleObjectsReturned:
-                timeslots = TimeSlot.objects.filter(date=date, staff=nurse.id)
-                roster[nurse.last_name + ", " + nurse.first_name][date] = ""
+                timeslots = TimeSlot.objects.filter(date=date, staff=worker.id)
+                roster[worker.last_name + ", " + worker.first_name][date] = ""
                 for timeslot in timeslots:
-                    roster[nurse.last_name + ", " + nurse.first_name][
+                    roster[worker.last_name + ", " + worker.first_name][
                         date
                     ] += (timeslot.shift.shift_type + " ")
     return dates, roster
