@@ -443,7 +443,7 @@ class RosterGenerator:
         log.info("Restriction of staff to one shift per day started...")
         for worker in self.workers:
             for date in self.dates:
-                if worker.shifts_per_roster != 0:  # Zero means unlimited shifts
+                if worker.shifts_per_roster != 0:  # Zero is unlimited shifts
                     self.model.Add(
                         sum(
                             self.shift_vars[
