@@ -43,7 +43,7 @@ class Role(models.Model):
     role_name = models.CharField(max_length=50, null=False, blank=False)
 
     def __str__(self):
-        """String."""
+        """Return a meaningful string representation."""
         return self.role_name
 
     def get_absolute_url(self):
@@ -57,7 +57,7 @@ class DayGroup(models.Model):
     name = models.CharField(max_length=20, null=False, blank=False)
 
     def __str__(self):
-        """String."""
+        """Return a meaningful string representation."""
         return str(self.name)
 
     def get_absolute_url(self):
@@ -76,7 +76,7 @@ class Day(models.Model):
         ordering = ("number",)
 
     def __str__(self):
-        """String."""
+        """Return a meaningful string representation."""
         return str(self.number)
 
     def get_absolute_url(self):
@@ -96,7 +96,7 @@ class DayGroupDay(models.Model):
         ordering = ("day__number",)
 
     def __str__(self):
-        """String."""
+        """Return a meaningful string representation."""
         return str(self.day_group.name) + str(self.day.number)
 
     def get_absolute_url(self):
@@ -119,7 +119,7 @@ class Shift(models.Model):
         ordering = ("shift_type",)
 
     def __str__(self):
-        """String."""
+        """Return a meaningful string representation."""
         return self.shift_type
 
     def get_absolute_url(self):
@@ -137,7 +137,7 @@ class ShiftRule(models.Model):
     roles = models.ManyToManyField(Role, through="ShiftRuleRole")
 
     def __str__(self):
-        """String."""
+        """Return a meaningful string representation."""
         return self.shift_rule_name
 
     def get_absolute_url(self):
@@ -153,7 +153,7 @@ class ShiftRuleRole(models.Model):
     count = models.IntegerField(null=False, blank=False)
 
     def __str__(self):
-        """String."""
+        """Return a meaningful string representation."""
         return (
             self.shift_rule.shift_rule_name
             + " "
@@ -178,7 +178,7 @@ class StaffRule(models.Model):
     )
 
     def __str__(self):
-        """String."""
+        """Return a meaningful string representation."""
         return self.staff_rule_name
 
     def get_absolute_url(self):
@@ -201,7 +201,7 @@ class StaffRuleShift(models.Model):
         ordering = ("position", "shift__shift_type")
 
     def __str__(self):
-        """String."""
+        """Return a meaningful string representation."""
         return (
             self.staff_rule.staff_rule_name
             + ":"
@@ -228,7 +228,7 @@ class TimeSlot(models.Model):
         ordering = ("date", "shift__shift_type")
 
     def __str__(self):
-        """String."""
+        """Return a meaningful string representation."""
         return str(self.date) + ":" + self.shift.shift_type
 
     def get_absolute_url(self):
