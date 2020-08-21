@@ -2,18 +2,39 @@
 
 {% block content %}
 <h4>Staff Requests:</h4>
-<table class="table table-striped table-bordered table-hover">
-    <tr>
-        <th>Last Name</th>
-        <th>First Name</th>
-        <th>Action</th>
-    </tr>
-    {% for user in customuser_list %}
-    <tr>
-        <td>{{ user.last_name }}</td>
-        <td>{{ user.first_name }}</td>
-        <td><a href="{% url 'staff_request_edit' user.id %}">Edit Requests</a></td>
-    </tr>
+  {% regroup staffrequest_list by staff_member as staffrequest_list_by_staff_member %}
+  {% for staff_member in staffrequest_list_by_staff_member %}
+    <h5>
+      <button href="#Pref{{ forloop.counter0 }}" class="btn btn-outline-dark" data-toggle="collapse">
+        {{ staff_member.grouper.last_name }}, {{ staff_member.grouper.first_name }}
+      </button>
+    </h5>
+    <div id="Pref{{ forloop.counter0 }}" class="collapse">
+      <table class="table table-striped table-bordered table-hover">
+        <tr>
+          <th>Day</th>
+          <th>Shift</th>
+          <th>Request</th>
+          <th>Priority</th>
+          <th>Action</th>
+        </tr>
+        {% for staff_request in staff_member.list %}
+        <tr>
+          <td>{{ staff_request.date|date:"D d M Y" }}</td>
+          <td>{{ staff_request.shift.shift_type }}</td>
+          <td>
+            {% if staff_request.like %}
+              Yes
+            {% else %}
+              No
+            {% endif %}
+          </td>
+          <td>{{ staff_request.priority }}</td>
+          <td><a href="{% url 'staff_request_delete' staff_request.pk %}">Delete</a></td>
+        </tr>
+        {% endfor %}
+      </table>
+      <a href="{% url 'staff_request_edit' staff_member.grouper.id %}">Edit Requests for {{ staff_member.grouper.first_name }} {{ staff_member.grouper.last_name }}</a>
+    </div>
   {% endfor %}
-</table>
 {% endblock content %}

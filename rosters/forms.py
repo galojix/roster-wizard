@@ -3,7 +3,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from .models import Leave, TimeSlot, StaffRule, Preference
+from .models import Leave, TimeSlot, StaffRule
 
 
 class DateInput(forms.DateInput):
@@ -34,28 +34,6 @@ class LeaveUpdateForm(ModelForm):
 
         model = Leave
         fields = ("date", "staff_member", "description")
-        widgets = {"date": DateInput()}
-
-
-class PreferenceCreateForm(ModelForm):
-    """Preference Create Form."""
-
-    class Meta:
-        """Meta."""
-
-        model = Preference
-        fields = ("staff_member", "date", "shift", "like", "priority")
-        widgets = {"date": DateInput()}
-
-
-class PreferenceUpdateForm(ModelForm):
-    """Preference Update Form."""
-
-    class Meta:
-        """Meta."""
-
-        model = Preference
-        fields = ("date", "shift", "like", "priority")
         widgets = {"date": DateInput()}
 
 
@@ -124,7 +102,7 @@ class DaySetCreateForm(forms.Form):
     number_of_days = forms.IntegerField(initial=28)
 
 
-class StaffRequestsUpdateForm(forms.Form):
+class StaffRequestUpdateForm(forms.Form):
     """Staff Requests Update Form."""
 
     def __init__(self, requests, priorities, *args, **kwargs):

@@ -14,7 +14,7 @@ from .models import (
     DayGroup,
     Day,
     DayGroupDay,
-    Preference,
+    StaffRequest,
 )
 
 admin.site.site_header = "Roster Wizard Administration"
@@ -42,10 +42,10 @@ class TimeSlotAdmin(admin.ModelAdmin):
     )
 
 
-class PreferenceAdmin(admin.ModelAdmin):
-    """Customise admin for Preference."""
+class StaffRequestAdmin(admin.ModelAdmin):
+    """Customise admin for StaffRequest."""
 
-    model = Preference
+    model = StaffRequest
     list_display = ("date", "staff_member", "shift", "like", "priority",)
     list_filter = (
         ("date", DateRangeFilter),
@@ -64,7 +64,7 @@ admin.site.register(TimeSlot, TimeSlotAdmin)
 admin.site.register(DayGroup)
 admin.site.register(Day)
 admin.site.register(DayGroupDay)
-admin.site.register(Preference, PreferenceAdmin)
+admin.site.register(StaffRequest, StaffRequestAdmin)
 
 # class CommentInLine(admin.TabularInline):
 #     model = Comment

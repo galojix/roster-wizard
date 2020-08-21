@@ -236,8 +236,8 @@ class TimeSlot(models.Model):
         return reverse("timeslot_list")
 
 
-class Preference(models.Model):
-    """Preference."""
+class StaffRequest(models.Model):
+    """StaffRequest."""
 
     priority = models.IntegerField(null=False, blank=False)
     date = models.DateField(null=False, blank=False)
@@ -254,8 +254,8 @@ class Preference(models.Model):
         ordering = ("staff_member", "date", "shift", "like")
 
     def __str__(self):
-        """How a preference object is displayed."""
-        preference_display = (
+        """How a StaffRequest object is displayed."""
+        staff_request_display = (
             self.staff_member.last_name
             + ", "
             + self.staff_member.first_name
@@ -264,8 +264,8 @@ class Preference(models.Model):
             + " "
             + str(self.date)
         )
-        return preference_display
+        return staff_request_display
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("preference_detail", args=[str(self.id)])
+        return reverse("staff_request_detail", args=[str(self.id)])

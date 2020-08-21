@@ -29,7 +29,7 @@ from .models import (
     StaffRule,
     StaffRuleShift,
     TimeSlot,
-    Preference,
+    StaffRequest,
     DayGroup,
     Day,
     DayGroupDay,
@@ -44,9 +44,7 @@ from .forms import (
     DaySetCreateForm,
     GenerateRosterForm,
     SelectRosterForm,
-    PreferenceCreateForm,
-    PreferenceUpdateForm,
-    StaffRequestsUpdateForm,
+    StaffRequestUpdateForm,
 )
 from .logic import (
     SolutionNotFeasible,
@@ -548,64 +546,6 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class PreferenceListView(LoginRequiredMixin, ListView):
-    """Preference List View."""
-
-    model = Preference
-    template_name = "preference_list.html"
-    login_url = "login"
-
-    def get_queryset(self):
-        """Get staff requests in date range."""
-        if "start_date" in self.request.session:
-            start_date = datetime.datetime.strptime(
-                self.request.session["start_date"], "%d-%b-%Y"
-            )
-        else:
-            start_date = datetime.datetime.now()
-        num_days = datetime.timedelta(days=Day.objects.count() - 1)
-        end_date = start_date + num_days
-        date_range = [start_date, end_date]
-        return Preference.objects.filter(date__range=date_range)
-
-
-class PreferenceDetailView(LoginRequiredMixin, DetailView):
-    """Preference Detail View."""
-
-    model = Preference
-    template_name = "preference_detail.html"
-    login_url = "login"
-
-
-class PreferenceUpdateView(LoginRequiredMixin, UpdateView):
-    """Preference Update View."""
-
-    model = Preference
-    form_class = PreferenceUpdateForm
-    # fields = ("date", "shift", "priority")
-    template_name = "preference_edit.html"
-    login_url = "login"
-
-
-class PreferenceDeleteView(LoginRequiredMixin, DeleteView):
-    """Preference Delete View."""
-
-    model = Preference
-    template_name = "preference_delete.html"
-    success_url = reverse_lazy("preference_list")
-    login_url = "login"
-
-
-class PreferenceCreateView(LoginRequiredMixin, CreateView):
-    """Preference Create View."""
-
-    model = Preference
-    template_name = "preference_new.html"
-    form_class = PreferenceCreateForm
-    # fields = ("staff_member", "date", "shift", "priority")
-    login_url = "login"
-
-
 @login_required
 def download_csv(request):
     """Download roster as CSV file."""
@@ -807,10 +747,40 @@ class DaySetCreateView(LoginRequiredMixin, FormView):
 
 
 class StaffRequestListView(LoginRequiredMixin, ListView):
+    """StaffRequest List View."""
+
+    model = StaffRequest
+    template_name = "staff_request_list.html"
+    login_url = "login"
+
+    def get_queryset(self):
+        """Get staff requests in date range."""
+        if "start_date" in self.request.session:
+            start_date = datetime.datetime.strptime(
+                self.request.session["start_date"], "%d-%b-%Y"
+            )
+        else:
+            start_date = datetime.datetime.now()
+        num_days = datetime.timedelta(days=Day.objects.count() - 1)
+        end_date = start_date + num_days
+        date_range = [start_date, end_date]
+        return StaffRequest.objects.filter(date__range=date_range)
+
+
+class StaffRequestDeleteView(LoginRequiredMixin, DeleteView):
+    """StaffRequest Delete View."""
+
+    model = StaffRequest
+    template_name = "staff_request_delete.html"
+    success_url = reverse_lazy("staff_request_list")
+    login_url = "login"
+
+
+class StaffRequestCreateView(LoginRequiredMixin, ListView):
     """Staff Request List View."""
 
     model = get_user_model()
-    template_name = "staff_request_list.html"
+    template_name = "staff_request_new.html"
     login_url = "login"
 
 
@@ -818,7 +788,7 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
     """Staff Request Update Form."""
 
     template_name = "staff_request_update.html"
-    form_class = StaffRequestsUpdateForm
+    form_class = StaffRequestUpdateForm
     success_url = reverse_lazy("staff_request_list")
 
     def dispatch(self, request, *args, **kwargs):
@@ -844,7 +814,7 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
         self.shifts = []
         self.requests = []
         self.priorities = []
-        preferences = Preference.objects.filter(
+        staff_requests = StaffRequest.objects.filter(
             staff_member=self.staff_member,
             date__range=date_range
         )
@@ -855,20 +825,20 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
                     date = date.date()
                     self.dates.append(date)
                     self.shifts.append(shift)
-                    # Check for existing preference here
-                    preference = preferences.filter(
+                    # Check for existing staff request here
+                    staff_request = staff_requests.filter(
                         date=date,
                         shift__shift_type=shift,
                     ).first()
-                    if preference is None:
+                    if staff_request is None:
                         self.requests.append("Don't Care")
                         self.priorities.append(1)
                     else:
-                        if preference.like:
+                        if staff_request.like:
                             self.requests.append("Yes")
                         else:
                             self.requests.append("No")
-                        self.priorities.append(preference.priority)
+                        self.priorities.append(staff_request.priority)
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -885,13 +855,13 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
         for i, date in enumerate(self.dates):
             # Delete existing requests for date and shift
             shift = shifts.get(shift_type=self.shifts[i])
-            Preference.objects.filter(
+            StaffRequest.objects.filter(
                     date=date,
                     shift=shift,
                     staff_member=self.staff_member,
             ).delete()
             if form.cleaned_data[f"request_{i}"] == "Yes":
-                Preference.objects.create(
+                StaffRequest.objects.create(
                     date=date,
                     shift=shift,
                     staff_member=self.staff_member,
@@ -899,7 +869,7 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
                     priority=form.cleaned_data[f"priority_{i}"],
                 )
             elif form.cleaned_data[f"request_{i}"] == "No":
-                Preference.objects.create(
+                StaffRequest.objects.create(
                     date=date,
                     shift=shift,
                     staff_member=self.staff_member,
