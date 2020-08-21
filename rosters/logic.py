@@ -98,22 +98,22 @@ class RosterGenerator:
         self.shift_requests = []
         for worker in self.workers:
             worker_shift_requests = []
-            preferences = worker.preference_set.all()
+            staffrequests = worker.staffrequest_set.all()
             for date in self.dates:
                 worker_shift_requests_for_day = []
                 for timeslot in TimeSlot.objects.filter(date=date).order_by(
                     "shift__shift_type"
                 ):
                     priority = 0
-                    for preference in preferences:
+                    for staffrequest in staffrequests:
                         if (
-                            preference.date == date
-                            and preference.shift == timeslot.shift
+                            staffrequest.date == date
+                            and staffrequest.shift == timeslot.shift
                         ):
-                            if preference.like:
-                                priority = preference.priority
+                            if staffrequest.like:
+                                priority = staffrequest.priority
                             else:
-                                priority = -preference.priority
+                                priority = -staffrequest.priority
                     worker_shift_requests_for_day.append(priority)
                 worker_shift_requests.append(worker_shift_requests_for_day)
             self.shift_requests.append(worker_shift_requests)
