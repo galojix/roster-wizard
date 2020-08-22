@@ -787,7 +787,7 @@ class StaffRequestCreateView(LoginRequiredMixin, ListView):
 class StaffRequestUpdateView(LoginRequiredMixin, FormView):
     """Staff Request Update Form."""
 
-    template_name = "staff_request_update.html"
+    template_name = "staff_request_edit.html"
     form_class = StaffRequestUpdateForm
     success_url = reverse_lazy("staff_request_list")
 
