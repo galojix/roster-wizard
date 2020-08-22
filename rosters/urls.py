@@ -207,21 +207,6 @@ urlpatterns = [
     ),
     path("timeslot/select", SelectRosterView.as_view(), name="select_roster"),
     path("roster/", RosterListView.as_view(), name="roster_list"),
-    path(
-        "staff_request/<int:pk>/delete/",
-        StaffRequestDeleteView.as_view(),
-        name="staff_request_delete",
-    ),
-    path(
-        "staff_request/new/",
-        StaffRequestCreateView.as_view(),
-        name="staff_request_new",
-    ),
-    path(
-        "staff_request/",
-        StaffRequestListView.as_view(),
-        name="staff_request_list",
-    ),
     path("roster/download", download_csv, name="download_csv"),
     path("daygroup/", DayGroupListView.as_view(), name="day_group_list"),
     path(
@@ -276,6 +261,21 @@ urlpatterns = [
     path("day/new/", DayCreateView.as_view(), name="day_new"),
     path("day/", DayListView.as_view(), name="day_list"),
     path("dayset/new", DaySetCreateView.as_view(), name="day_set_new"),
+    path(
+        "staff_request/<int:pk>/delete/",
+        StaffRequestDeleteView.as_view(),
+        name="staff_request_delete",
+    ),
+    path(
+        "staff_request/new/",
+        StaffRequestCreateView.as_view(),
+        name="staff_request_new",
+    ),
+    path(
+        "staff_request/",
+        StaffRequestListView.as_view(),
+        name="staff_request_list",
+    ),
     path(
         "staffrequest/<int:staffid>/edit/",
         StaffRequestUpdateView.as_view(),
