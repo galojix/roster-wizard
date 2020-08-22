@@ -886,3 +886,12 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
         kwargs["requests"] = self.requests
         kwargs["priorities"] = self.priorities
         return kwargs
+
+
+class StaffRequestDetailView(LoginRequiredMixin, DetailView):
+    """Staff Request Detail View."""
+
+    model = StaffRequest
+    template_name = "staff_request_detail.html"
+    login_url = "login"
+    context_object_name = "staff_request"
