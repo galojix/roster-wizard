@@ -38,7 +38,7 @@ class Leave(models.Model):
 
 
 class Role(models.Model):
-    """Role."""
+    """Role (Designation/Level/Rank)."""
 
     role_name = models.CharField(max_length=50, null=False, blank=False)
 
@@ -85,7 +85,7 @@ class Day(models.Model):
 
 
 class DayGroupDay(models.Model):
-    """Day Group."""
+    """Day Group Day."""
 
     day_group = models.ForeignKey(DayGroup, on_delete=models.CASCADE)
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
@@ -128,7 +128,7 @@ class Shift(models.Model):
 
 
 class ShiftRule(models.Model):
-    """Shift Rule."""
+    """Shift Rule (Skill Mix Rule)."""
 
     shift_rule_name = models.CharField(
         max_length=20, null=False, blank=False, unique=True
@@ -168,7 +168,7 @@ class ShiftRuleRole(models.Model):
 
 
 class StaffRule(models.Model):
-    """Staff Rule."""
+    """Staff Rule (Shift Sequence Rule)."""
 
     staff_rule_name = models.CharField(max_length=40, null=False, blank=False)
     staff = models.ManyToManyField(get_user_model(), blank=True)
