@@ -2,8 +2,8 @@
 
 {% block content %}
 <h4>Staff Requests:</h4>
-  {% regroup staffrequest_list by staff_member as staffrequest_list_by_staff_member %}
-  {% for staff_member in staffrequest_list_by_staff_member %}
+  {% regroup staff_request_list by staff_member as staff_request_list_by_staff_member %}
+  {% for staff_member in staff_request_list_by_staff_member %}
     <h5>
       <button href="#Pref{{ forloop.counter0 }}" class="btn btn-outline-dark" data-toggle="collapse">
         {{ staff_member.grouper.last_name }}, {{ staff_member.grouper.first_name }}
