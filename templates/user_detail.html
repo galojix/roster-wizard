@@ -31,6 +31,6 @@
   </table>
 </div>
 
-  <p><a href="{% url 'user_edit' customuser.pk %}">Edit</a> | <a href="{% url 'user_delete' customuser.pk %}">Delete</a></p>
+  <p><a href="{% url 'user_update' customuser.pk %}">Edit</a> | <a href="{% url 'user_delete' customuser.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'user_list' %}">All Staff</a>.</p>
 {% endblock content %}

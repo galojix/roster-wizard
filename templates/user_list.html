@@ -23,7 +23,7 @@
             {{ role.role_name }}
             {% endfor %}
         </td>
-        <td><a href="{% url 'user_edit' user.pk %}">Edit</a> | <a href="{% url 'user_delete' user.pk %}">Delete</a></td>
+        <td><a href="{% url 'user_update' user.pk %}">Edit</a> | <a href="{% url 'user_delete' user.pk %}">Delete</a></td>
     </tr>
   {% endfor %}
 </table>

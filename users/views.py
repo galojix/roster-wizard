@@ -32,7 +32,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     """UserUpdateView."""
 
     model = CustomUser
-    template_name = "user_edit.html"
+    template_name = "user_update.html"
     fields = (
         "username",
         "first_name",
@@ -59,7 +59,7 @@ class UserCreateView(LoginRequiredMixin, CreateView):
     """UserCreateView."""
 
     model = CustomUser
-    template_name = "user_new.html"
+    template_name = "user_create.html"
     fields = (
         "username",
         "first_name",

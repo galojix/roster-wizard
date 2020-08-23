@@ -14,7 +14,7 @@
     <td><a href="{% url 'role_update' role.pk %}">Edit</a> | <a href="{% url 'role_delete' role.pk %}">Delete</a></td>
     <td>{% for staff in role.customuser_set.all|dictsort:"last_name" %}
         {{ staff.last_name }}, {{ staff.first_name }}
-        <a href="{% url 'user_edit' staff.pk %}">Edit</a> | <a href="{% url 'user_delete' staff.pk %}">Delete</a>
+        <a href="{% url 'user_update' staff.pk %}">Edit</a> | <a href="{% url 'user_delete' staff.pk %}">Delete</a>
         <br/>
         {% endfor %}
     </td>
