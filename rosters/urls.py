@@ -84,12 +84,12 @@ urlpatterns = [
     ),
     path("leave/create/", LeaveCreateView.as_view(), name="leave_create"),
     path("leave/", LeaveListView.as_view(), name="leave_list"),
-    path("role/<int:pk>/edit/", RoleUpdateView.as_view(), name="role_edit"),
+    path("role/<int:pk>/update/", RoleUpdateView.as_view(), name="role_update"),
     path("role/<int:pk>/", RoleDetailView.as_view(), name="role_detail"),
     path(
         "role/<int:pk>/delete/", RoleDeleteView.as_view(), name="role_delete"
     ),
-    path("role/new/", RoleCreateView.as_view(), name="role_new"),
+    path("role/create/", RoleCreateView.as_view(), name="role_create"),
     path("role/", RoleListView.as_view(), name="role_list"),
     path("shift/<int:pk>/edit/", ShiftUpdateView.as_view(), name="shift_edit"),
     path("shift/<int:pk>/", ShiftDetailView.as_view(), name="shift_detail"),

@@ -5,6 +5,6 @@
   <h4>{{ role.role_name }}:</h4>
 </div>
 
-  <p><a href="{% url 'role_edit' role.pk %}">Edit</a> | <a href="{% url 'role_delete' role.pk %}">Delete</a></p>
+  <p><a href="{% url 'role_update' role.pk %}">Edit</a> | <a href="{% url 'role_delete' role.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'role_list' %}">All Roles</a>.</p>
 {% endblock content %}

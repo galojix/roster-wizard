@@ -152,7 +152,7 @@ class RoleUpdateView(LoginRequiredMixin, UpdateView):
 
     model = Role
     fields = ("role_name",)
-    template_name = "role_edit.html"
+    template_name = "role_update.html"
     login_url = "login"
 
 
@@ -169,7 +169,7 @@ class RoleCreateView(LoginRequiredMixin, CreateView):
     """Role Create View."""
 
     model = Role
-    template_name = "role_new.html"
+    template_name = "role_create.html"
     fields = ("role_name",)
     login_url = "login"
 
