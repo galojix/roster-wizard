@@ -71,14 +71,18 @@ from .views import (
 )
 
 urlpatterns = [
-    path("leave/<int:pk>/edit/", LeaveUpdateView.as_view(), name="leave_edit"),
+    path(
+        "leave/<int:pk>/update/",
+        LeaveUpdateView.as_view(),
+        name="leave_update",
+    ),
     path("leave/<int:pk>/", LeaveDetailView.as_view(), name="leave_detail"),
     path(
         "leave/<int:pk>/delete/",
         LeaveDeleteView.as_view(),
         name="leave_delete",
     ),
-    path("leave/new/", LeaveCreateView.as_view(), name="leave_new"),
+    path("leave/create/", LeaveCreateView.as_view(), name="leave_create"),
     path("leave/", LeaveListView.as_view(), name="leave_list"),
     path("role/<int:pk>/edit/", RoleUpdateView.as_view(), name="role_edit"),
     path("role/<int:pk>/", RoleDetailView.as_view(), name="role_detail"),
@@ -290,5 +294,6 @@ urlpatterns = [
     path(
         "staff_request/<int:pk>/",
         StaffRequestDetailView.as_view(),
-        name="staff_request_detail"),
+        name="staff_request_detail",
+    ),
 ]

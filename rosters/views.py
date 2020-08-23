@@ -88,7 +88,7 @@ class LeaveUpdateView(LoginRequiredMixin, UpdateView):
 
     model = Leave
     form_class = LeaveUpdateForm
-    template_name = "leave_edit.html"
+    template_name = "leave_update.html"
     login_url = "login"
 
 
@@ -106,7 +106,7 @@ class LeaveCreateView(LoginRequiredMixin, FormView):
 
     model = Leave
     form_class = LeaveCreateForm
-    template_name = "leave_new.html"
+    template_name = "leave_create.html"
     success_url = reverse_lazy("leave_list")
     login_url = "login"
 

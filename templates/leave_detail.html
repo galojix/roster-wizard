@@ -6,6 +6,6 @@
     <p>for {{ leave.staff_member.username}}</p>
 </div>
 
-  <p><a href="{% url 'leave_edit' leave.pk %}">Edit</a> | <a href="{% url 'leave_delete' leave.pk %}">Delete</a></p>
+  <p><a href="{% url 'leave_update' leave.pk %}">Edit</a> | <a href="{% url 'leave_delete' leave.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'leave_list' %}">All Leave</a></p>
 {% endblock content %}

@@ -20,7 +20,7 @@
         <tr>
             <td>{{ leave.date }}</td>
             <td>{{ leave.description }}</td>
-            <td><a href="{% url 'leave_edit' leave.pk %}">Edit</a> | <a href="{% url 'leave_delete' leave.pk %}">Delete</a></td>
+            <td><a href="{% url 'leave_update' leave.pk %}">Edit</a> | <a href="{% url 'leave_delete' leave.pk %}">Delete</a></td>
         </tr>
         {% endfor %}
       </table>
