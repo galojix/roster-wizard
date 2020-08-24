@@ -59,7 +59,7 @@ class TimeSlotUpdateForm(ModelForm):
         widgets = {
             "date": DateInput(),
             "staff": forms.CheckboxSelectMultiple(),
-            }
+        }
 
 
 class GenerateRosterForm(forms.Form):
@@ -115,13 +115,8 @@ class StaffRequestUpdateForm(forms.Form):
                 ("Don't Care", "Don't Care"),
             )
             self.fields[f"request_{i}"] = forms.ChoiceField(
-                choices=choices,
-                label="",
-                initial=requests[i],
-                required=False,
+                choices=choices, label="", initial=requests[i], required=False,
             )
             self.fields[f"priority_{i}"] = forms.IntegerField(
-                label="",
-                initial=priorities[i],
-                required=False
+                label="", initial=priorities[i], required=False
             )

@@ -48,13 +48,10 @@ def init_feasible_db():
         day = Day.objects.create(number=i)
         DayGroupDay.objects.create(day_group=day_group, day=day)
     shift = Shift.objects.create(
-        shift_type="Early",
-        day_group=day_group,
-        max_staff=2
+        shift_type="Early", day_group=day_group, max_staff=2
     )
     shift_rule = ShiftRule.objects.create(
-        shift_rule_name="Early Option A",
-        shift=shift
+        shift_rule_name="Early Option A", shift=shift
     )
     ShiftRuleRole.objects.create(shift_rule=shift_rule, role=role, count=2)
 
@@ -84,13 +81,10 @@ def init_infeasible_db():
         day = Day.objects.create(number=i)
         DayGroupDay.objects.create(day_group=day_group, day=day)
     shift = Shift.objects.create(
-        shift_type="Early",
-        day_group=day_group,
-        max_staff=2
+        shift_type="Early", day_group=day_group, max_staff=2
     )
     shift_rule = ShiftRule.objects.create(
-        shift_rule_name="Early Option A",
-        shift=shift
+        shift_rule_name="Early Option A", shift=shift
     )
     ShiftRuleRole.objects.create(shift_rule=shift_rule, role=role, count=2)
 
@@ -120,13 +114,10 @@ def init_too_many_staff_db():
         day = Day.objects.create(number=i)
         DayGroupDay.objects.create(day_group=day_group, day=day)
     shift = Shift.objects.create(
-        shift_type="Early",
-        day_group=day_group,
-        max_staff=2
+        shift_type="Early", day_group=day_group, max_staff=2
     )
     shift_rule = ShiftRule.objects.create(
-        shift_rule_name="Early Option A",
-        shift=shift
+        shift_rule_name="Early Option A", shift=shift
     )
     ShiftRuleRole.objects.create(shift_rule=shift_rule, role=role, count=2)
 

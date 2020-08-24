@@ -817,8 +817,7 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
         self.requests = []
         self.priorities = []
         staff_requests = StaffRequest.objects.filter(
-            staff_member=self.staff_member,
-            date__range=date_range
+            staff_member=self.staff_member, date__range=date_range
         )
         for day in Day.objects.all():
             for shift in shift_days:
@@ -829,8 +828,7 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
                     self.shifts.append(shift)
                     # Check for existing staff request here
                     staff_request = staff_requests.filter(
-                        date=date,
-                        shift__shift_type=shift,
+                        date=date, shift__shift_type=shift,
                     ).first()
                     if staff_request is None:
                         self.requests.append("Don't Care")
@@ -858,9 +856,7 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
             # Delete existing requests for date and shift
             shift = shifts.get(shift_type=self.shifts[i])
             StaffRequest.objects.filter(
-                    date=date,
-                    shift=shift,
-                    staff_member=self.staff_member,
+                date=date, shift=shift, staff_member=self.staff_member,
             ).delete()
             if form.cleaned_data[f"request_{i}"] == "Yes":
                 StaffRequest.objects.create(

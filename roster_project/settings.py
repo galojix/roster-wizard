@@ -130,8 +130,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'webserver/static')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_ROOT = os.path.join(BASE_DIR, "webserver/static")
 
 AUTH_USER_MODEL = "users.CustomUser"
 
@@ -147,68 +147,64 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
-    X_FRAME_OPTIONS = 'DENY'
+    X_FRAME_OPTIONS = "DENY"
     SECURE_HSTS_PRELOAD = True
 
 # Logging
 LOGLEVEL = env("LOGLEVEL")
-LOGSIZE = 1024*1024*15  # 15MB
+LOGSIZE = 1024 * 1024 * 15  # 15MB
 LOGCOUNT = 10
-LOGFILENAME = os.path.join(BASE_DIR, 'logs/django.log')
+LOGFILENAME = os.path.join(BASE_DIR, "logs/django.log")
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_false": {"()": "django.utils.log.RequireDebugFalse"},
+        "require_debug_true": {"()": "django.utils.log.RequireDebugTrue"},
+    },
+    "formatters": {
+        "simple": {
+            "format": "[%(asctime)s] %(levelname)s %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         },
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue'
+        "verbose": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         },
     },
-    'formatters': {
-        'simple': {
-            'format': '[%(asctime)s] %(levelname)s %(message)s',
-            'datefmt': '%Y-%m-%d %H:%M:%S'
+    "handlers": {
+        "console": {
+            "level": LOGLEVEL,
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
         },
-        'verbose': {
-            'format': '[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s',
-            'datefmt': '%Y-%m-%d %H:%M:%S'
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+            "formatter": "simple",
         },
-    },
-    'handlers': {
-        'console': {
-            'level': LOGLEVEL,
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler',
-            'formatter': 'simple',
-        },
-        'file': {
-            'level': LOGLEVEL,
-            'filters': ['require_debug_false'],
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOGFILENAME,
-            'maxBytes': LOGSIZE,
-            'backupCount': LOGCOUNT,
-            'formatter': 'simple',
+        "file": {
+            "level": LOGLEVEL,
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOGFILENAME,
+            "maxBytes": LOGSIZE,
+            "backupCount": LOGCOUNT,
+            "formatter": "simple",
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'file', 'mail_admins'],
-            'level': LOGLEVEL,
-            'propagate': True,
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file", "mail_admins"],
+            "level": LOGLEVEL,
+            "propagate": True,
         },
-        'django.server': {
-            'handlers': ['console', 'file'],
-            'level': LOGLEVEL,
-            'propagate': False,
+        "django.server": {
+            "handlers": ["console", "file"],
+            "level": LOGLEVEL,
+            "propagate": False,
         },
-    }
+    },
 }

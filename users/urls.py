@@ -9,7 +9,9 @@ from .views import (
 )
 
 urlpatterns = [
-    path("users/<int:pk>/update/", UserUpdateView.as_view(), name="user_update"),
+    path(
+        "users/<int:pk>/update/", UserUpdateView.as_view(), name="user_update"
+    ),
     path("users/<int:pk>/", UserDetailView.as_view(), name="user_detail"),
     path(
         "users/<int:pk>/delete/", UserDeleteView.as_view(), name="user_delete"

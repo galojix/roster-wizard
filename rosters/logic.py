@@ -225,25 +225,18 @@ class RosterGenerator:
         """Get number of days in staff rule."""
         day_group_day_set = staff_rule.day_group.daygroupday_set.all()
         all_days_in_seq = [
-            day_group_day.day.number
-            for day_group_day in day_group_day_set
+            day_group_day.day.number for day_group_day in day_group_day_set
         ]
         return all_days_in_seq
 
     def _get_shift_vars_in_seq_off(
-        self,
-        date,
-        invalid_shift_seq,
-        roles,
-        worker,
+        self, date, invalid_shift_seq, roles, worker,
     ):
         """Find non-working shift variables in invalid sequence."""
         shift_vars_in_seq_off = []
         for day_num in invalid_shift_seq:
             if invalid_shift_seq[day_num][0] is None:
-                day_to_test = date + datetime.timedelta(
-                    days=day_num - 1
-                )
+                day_to_test = date + datetime.timedelta(days=day_num - 1)
                 for role in roles:
                     try:
                         for timeslot in self.timeslots.filter(
@@ -276,9 +269,7 @@ class RosterGenerator:
         shift_vars_in_seq_on = []
         for day_num in invalid_shift_seq:
             for invalid_shift in invalid_shift_seq[day_num]:
-                day_to_test = date + datetime.timedelta(
-                    days=day_num - 1
-                )
+                day_to_test = date + datetime.timedelta(days=day_num - 1)
 
                 # Skip if day not in day group for sequence
                 delta = (day_to_test - self.dates[0]).days
@@ -297,9 +288,7 @@ class RosterGenerator:
                                     worker.id,
                                     role.id,
                                     day_to_test,
-                                    timeslot_ids[day_to_test][
-                                        invalid_shift
-                                    ],
+                                    timeslot_ids[day_to_test][invalid_shift],
                                 )
                             ]
                         )
@@ -320,17 +309,14 @@ class RosterGenerator:
             roles = worker.roles.all()
             for staff_rule in worker.staffrule_set.all():
                 invalid_shift_seq = self._get_invalid_shift_seq(staff_rule)
-                work_days_in_seq = (
-                    self._get_work_days_in_seq(invalid_shift_seq)
+                work_days_in_seq = self._get_work_days_in_seq(
+                    invalid_shift_seq
                 )
                 all_days_in_seq = self._get_all_days_in_seq(staff_rule)
 
                 for date in self.extended_dates:
                     shift_vars_in_seq_off = self._get_shift_vars_in_seq_off(
-                        date,
-                        invalid_shift_seq,
-                        roles,
-                        worker,
+                        date, invalid_shift_seq, roles, worker,
                     )
                     shift_vars_in_seq_on = self._get_shift_vars_in_seq_on(
                         date,
@@ -489,8 +475,12 @@ class RosterGenerator:
     def _split_list(self, alist, wanted_parts=1):
         """Split list into parts."""
         length = len(alist)
-        return [alist[i*length // wanted_parts: (i+1)*length // wanted_parts]
-                for i in range(wanted_parts)]
+        return [
+            alist[
+                i * length // wanted_parts : (i + 1) * length // wanted_parts
+            ]
+            for i in range(wanted_parts)
+        ]
 
     def _enforce_balanced_shifts(self):
         """Enforce balanced shifts for each worker."""

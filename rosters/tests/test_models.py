@@ -8,8 +8,8 @@ from ..models import Day
 class ModelTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            username='temporary',
-            password='temporary',
+            username="temporary",
+            password="temporary",
             available=True,
             shifts_per_roster=10,
         )
@@ -22,7 +22,7 @@ class ModelTests(TestCase):
         self.assertEqual(self.day.number, 5)
 
     def test_day_detail_view(self):
-        self.client.login(username='temporary', password='temporary')
+        self.client.login(username="temporary", password="temporary")
         response = self.client.get(
             reverse("day_detail", kwargs={"pk": self.day.id})
         )

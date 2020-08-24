@@ -84,7 +84,9 @@ urlpatterns = [
     ),
     path("leave/create/", LeaveCreateView.as_view(), name="leave_create"),
     path("leave/", LeaveListView.as_view(), name="leave_list"),
-    path("role/<int:pk>/update/", RoleUpdateView.as_view(), name="role_update"),
+    path(
+        "role/<int:pk>/update/", RoleUpdateView.as_view(), name="role_update"
+    ),
     path("role/<int:pk>/", RoleDetailView.as_view(), name="role_detail"),
     path(
         "role/<int:pk>/delete/", RoleDeleteView.as_view(), name="role_delete"

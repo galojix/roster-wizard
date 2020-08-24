@@ -24,7 +24,11 @@ class LeaveAdmin(admin.ModelAdmin):
     """Customise admin for Leave."""
 
     model = Leave
-    list_display = ("date", "staff_member", "description",)
+    list_display = (
+        "date",
+        "staff_member",
+        "description",
+    )
     list_filter = (
         ("date", DateRangeFilter),
         ("staff_member", admin.RelatedOnlyFieldListFilter),
@@ -35,7 +39,10 @@ class TimeSlotAdmin(admin.ModelAdmin):
     """Customise admin for Timeslot."""
 
     model = TimeSlot
-    list_display = ("date", "shift",)
+    list_display = (
+        "date",
+        "shift",
+    )
     list_filter = (
         ("date", DateRangeFilter),
         ("shift", admin.RelatedOnlyFieldListFilter),
@@ -46,7 +53,13 @@ class StaffRequestAdmin(admin.ModelAdmin):
     """Customise admin for StaffRequest."""
 
     model = StaffRequest
-    list_display = ("date", "staff_member", "shift", "like", "priority",)
+    list_display = (
+        "date",
+        "staff_member",
+        "shift",
+        "like",
+        "priority",
+    )
     list_filter = (
         ("date", DateRangeFilter),
         ("staff_member", admin.RelatedOnlyFieldListFilter),
