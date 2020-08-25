@@ -1,35 +1,34 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h4>Shift Sequences:</h4>
-<table class="table table-striped table-bordered table-hover">
+  <h4>Shift Sequences:</h4>
+  <table class="table table-striped table-bordered table-hover">
     <tr>
-        <th>Shift Sequence Name</th>
-        <th>Staff</th>
-        <th>Day Group</th>
-        <th>Action</th>
-        <th>Invalid Shift Sequences</th>
-
+      <th>Shift Sequence Name</th>
+      <th>Staff</th>
+      <th>Day Group</th>
+      <th>Action</th>
+      <th>Invalid Shift Sequences</th>
     </tr>
     {% for staff_rule in staffrule_list %}
-    <tr>
+      <tr>
         <td>{{ staff_rule.staff_rule_name }}</td>
         <td>{% for staff_member in staff_rule.staff.all %}
             {{ staff_member.last_name }}, {{ staff_member.first_name }}
-            <br/>
+              <br/>
             {% endfor %}
         </td>
         <td>{{ staff_rule.day_group.name }}</td>
         <td><a href="{% url 'staff_rule_edit' staff_rule.pk %}">Edit</a> | <a href="{% url 'staff_rule_delete' staff_rule.pk %}">Delete</a></td>
         <td>
-            {% for staff_rule_shift in staff_rule.staffruleshift_set.all %}
-            {{ staff_rule_shift.shift.shift_type}}:{{ staff_rule_shift.position}}
-            <a href="{% url 'staff_rule_shift_edit' staff_rule_shift.pk %}">Edit</a> | <a href="{% url 'staff_rule_shift_delete' staff_rule_shift.pk %}">Delete</a>
-            <br/>
-            {% endfor %}
-            <a href="{% url 'staff_rule_shift_new' staff_rule.pk %}">Add Shift</a>
+          {% for staff_rule_shift in staff_rule.staffruleshift_set.all %}
+          {{ staff_rule_shift.shift.shift_type}}:{{ staff_rule_shift.position}}
+          <a href="{% url 'staff_rule_shift_edit' staff_rule_shift.pk %}">Edit</a> | <a href="{% url 'staff_rule_shift_delete' staff_rule_shift.pk %}">Delete</a>
+          <br/>
+          {% endfor %}
+          <a href="{% url 'staff_rule_shift_new' staff_rule.pk %}">Add Shift</a>
         </td>
-    </tr>
-  {% endfor %}
-</table>
+      </tr>
+    {% endfor %}
+  </table>
 {% endblock content %}

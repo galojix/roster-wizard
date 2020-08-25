@@ -1,13 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h3>Generate New Roster:</h3>
-    <form id="generate" action="" method="post">{% csrf_token %}
-      {{ form.as_p }}
+
+  <h3>Generate New Roster:</h3>
+
+  <form id="generate" action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
     <button class="btn btn-success ml-2 btn-process" type="submit">Submit</button>
-</form>
-<div class="processing mt-3">
-  <p>Processing, please wait...</p>
-  <div class="spinner-border text-success"></div>
-</div>
+  </form>
+
+  <div class="processing mt-3">
+    <p>Processing, please wait...</p>
+    <div class="spinner-border text-success"></div>
+  </div>
+
 {% endblock content %}

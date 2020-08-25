@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="leave-entry">
-  <h2>{{ leave.date }}</h2>
+
+  <div class="leave-entry">
+    <h2>{{ leave.date }}</h2>
     <p>for {{ leave.staff_member.username}}</p>
-</div>
+  </div>
 
   <p><a href="{% url 'leave_update' leave.pk %}">Edit</a> | <a href="{% url 'leave_delete' leave.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'leave_list' %}">All Leave</a></p>
+
 {% endblock content %}

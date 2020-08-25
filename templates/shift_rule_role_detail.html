@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="shift_rule_role-entry">
-  <h2>Shift Rule Role</h2>
+
+  <div class="shift_rule_role-entry">
+    <h2>Shift Rule Role</h2>
     <p>Shift Rule Name: {{ shiftrulerole.shift_rule.shift_rule_name }}</p>
     <p>Role: {{ shiftrulerole.role.role_name }}</p>
     <p>Count: {{ shiftrulerole.count }}</p>
-</div>
+  </div>
 
   <p><a href="{% url 'shift_rule_role_edit' shiftrulerole.pk %}">Edit</a> | <a href="{% url 'shift_rule_role_delete' shiftrulerole.pk %}">Delete</a></p>
-  <p>Back to <a href="{% url 'shift_rule_list' %}">All Shift Rules</a>.</p>
+  <p>Back to <a href="{% url 'shift_rule_list' %}">All Shift Rules</a></p>
+
 {% endblock content %}

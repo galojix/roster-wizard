@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h4>Staff Requests:</h4>
+
+  <h4>Staff Requests:</h4>
   {% regroup staff_request_list by staff_member as staff_request_list_by_staff_member %}
   {% for staff_member in staff_request_list_by_staff_member %}
     <h5>
@@ -37,4 +38,5 @@
       <a href="{% url 'staff_request_edit' staff_member.grouper.id %}">Edit Requests for {{ staff_member.grouper.first_name }} {{ staff_member.grouper.last_name }}</a>
     </div>
   {% endfor %}
+
 {% endblock content %}

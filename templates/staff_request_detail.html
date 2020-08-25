@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="staff_request-entry">
-  <h2>{{ staff_request.staff_member.username }}</h2>
+
+  <div class="staff_request-entry">
+    <h2>{{ staff_request.staff_member.username }}</h2>
     <p>Day:{{ staff_request.day }} Shift:{{ staff_request.shift.shift_type }}</p>
-</div>
+  </div>
 
   <p><a href="{% url 'staff_request_delete' staff_request.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'staff_request_list' %}">All Staff Requests</a></p>
+  
 {% endblock content %}

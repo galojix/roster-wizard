@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="staff_rule-entry">
-  <h2>Shift Sequence Name: {{ staffrule.staff_rule_name }}</h2>
-    <p>Day Group: {{ staffrule.day_group.name }}</p>
-    <p>Shifts: {% for staff_rule_shift in staffrule.staffruleshift_set.all %}
-       {{ staff_rule_shift.shift.shift_type }}:{{ staff_rule_shift.position }}
-       {% endfor %}
-    </p>
-</div>
+  <div class="staff_rule-entry">
+    <h2>Shift Sequence Name: {{ staffrule.staff_rule_name }}</h2>
+      <p>Day Group: {{ staffrule.day_group.name }}</p>
+      <p>Shifts: {% for staff_rule_shift in staffrule.staffruleshift_set.all %}
+        {{ staff_rule_shift.shift.shift_type }}:{{ staff_rule_shift.position }}
+        {% endfor %}
+      </p>
+  </div>
 
   <p><a href="{% url 'staff_rule_edit' staffrule.pk %}">Edit</a> | <a href="{% url 'staff_rule_delete' staffrule.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'staff_rule_list' %}">All Shift Sequences</a>.</p>

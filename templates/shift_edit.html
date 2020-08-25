@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h4>Edit Shift:</h4>
-    <form action="" method="post">{% csrf_token %}
-      {{ form.as_p }}
+
+  <h4>Edit Shift:</h4>
+  <form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
     <button class="btn btn-info ml-2" type="submit">Update</button>
-</form>
+  </form>
+
 {% endblock content %}

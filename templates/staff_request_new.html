@@ -1,19 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h4>Staff Requests:</h4>
-<table class="table table-striped table-bordered table-hover">
+
+  <h4>Staff Requests:</h4>
+  <table class="table table-striped table-bordered table-hover">
     <tr>
-        <th>Last Name</th>
-        <th>First Name</th>
-        <th>Action</th>
+      <th>Last Name</th>
+      <th>First Name</th>
+      <th>Action</th>
     </tr>
     {% for user in customuser_list %}
-    <tr>
+      <tr>
         <td>{{ user.last_name }}</td>
         <td>{{ user.first_name }}</td>
         <td><a href="{% url 'staff_request_edit' user.id %}">Edit Requests</a></td>
-    </tr>
-  {% endfor %}
-</table>
+      </tr>
+    {% endfor %}
+  </table>
+
 {% endblock content %}

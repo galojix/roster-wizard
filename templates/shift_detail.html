@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="shift-entry">
-  <h4>{{ shift.shift_type }}:</h4>
-  <p>{{ shift.day_group.name }}</p>
-</div>
+
+  <div class="shift-entry">
+    <h4>{{ shift.shift_type }}:</h4>
+    <p>{{ shift.day_group.name }}</p>
+  </div>
 
   <p><a href="{% url 'shift_edit' shift.pk %}">Edit</a> | <a href="{% url 'shift_delete' shift.pk %}">Delete</a></p>
-  <p>Back to <a href="{% url 'shift_list' %}">All Shifts</a>.</p>
+  <p>Back to <a href="{% url 'shift_list' %}">All Shifts</a></p>
+
 {% endblock content %}

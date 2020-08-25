@@ -19,8 +19,6 @@
   <body>
     <nav class="navbar fixed-top navbar-expand-xl navbar-dark bg-dark mb-4">
       <a class="navbar-brand" href="{% url 'home' %}">Roster Wizard</a>
-      {% if user.is_authenticated %}
-      {% endif %}
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -53,10 +51,6 @@
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'day_group_new' %}">Create New Day Group</a>
                   <div class="dropdown-divider"></div>
-                  <!--<a class="dropdown-item" href="{% url 'day_list' %}">Display Days</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'day_new' %}">Create New Day</a>
-                  <div class="dropdown-divider"></div>-->
                   <a class="dropdown-item" href="{% url 'day_set_new' %}">Set Number of Days</a>
                 </div>
               </div>
@@ -166,18 +160,18 @@
     </nav>
     <div class="container-fluid" style="margin-top:80px">
       {% if messages %}
-      <div class="messages alert alert-danger">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        {% for message in messages %}
-        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-        {% endfor %}
-      </div>
+        <div class="messages alert alert-danger">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {% for message in messages %}
+          <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+          {% endfor %}
+        </div>
       {% endif %}
       {% block content-wide %}
-      <div class="container">
-        {% block content %}
-        {% endblock content %}
-      </div>
+        <div class="container">
+          {% block content %}
+          {% endblock content %}
+        </div>
       {% endblock content-wide %}
     </div>
 

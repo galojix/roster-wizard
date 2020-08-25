@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Days</h2>
-<table class="table table-striped table-bordered table-hover">
-<tr>
-    <th>Day Number</th>
-    <th>Action</th>
-</tr>
+  <h2>Days</h2>
+  <table class="table table-striped table-bordered table-hover">
+    <tr>
+        <th>Day Number</th>
+        <th>Action</th>
+    </tr>
     {% for day in day_list %}
-<tr>
-    <td>{{ day.number }}</td>
-    <td><a href="{% url 'day_edit' day.pk %}">Edit</a> | <a href="{% url 'day_delete' day.pk %}">Delete</a></td>
-</tr>
-{% endfor %}
-</table>
+      <tr>
+          <td>{{ day.number }}</td>
+          <td><a href="{% url 'day_edit' day.pk %}">Edit</a> | <a href="{% url 'day_delete' day.pk %}">Delete</a></td>
+      </tr>
+    {% endfor %}
+  </table>
 {% endblock content %}
