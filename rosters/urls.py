@@ -93,19 +93,23 @@ urlpatterns = [
     ),
     path("role/create/", RoleCreateView.as_view(), name="role_create"),
     path("role/", RoleListView.as_view(), name="role_list"),
-    path("shift/<int:pk>/edit/", ShiftUpdateView.as_view(), name="shift_edit"),
+    path(
+        "shift/<int:pk>/update/",
+        ShiftUpdateView.as_view(),
+        name="shift_update",
+    ),
     path("shift/<int:pk>/", ShiftDetailView.as_view(), name="shift_detail"),
     path(
         "shift/<int:pk>/delete/",
         ShiftDeleteView.as_view(),
         name="shift_delete",
     ),
-    path("shift/new/", ShiftCreateView.as_view(), name="shift_new"),
+    path("shift/create/", ShiftCreateView.as_view(), name="shift_create"),
     path("shift/", ShiftListView.as_view(), name="shift_list"),
     path(
-        "shiftrule/<int:pk>/edit/",
+        "shiftrule/<int:pk>/update/",
         ShiftRuleUpdateView.as_view(),
-        name="shift_rule_edit",
+        name="shift_rule_update",
     ),
     path(
         "shiftrule/<int:pk>/",
@@ -118,13 +122,15 @@ urlpatterns = [
         name="shift_rule_delete",
     ),
     path(
-        "shiftrule/new/", ShiftRuleCreateView.as_view(), name="shift_rule_new"
+        "shiftrule/create/",
+        ShiftRuleCreateView.as_view(),
+        name="shift_rule_create",
     ),
     path("shiftrule/", ShiftRuleListView.as_view(), name="shift_rule_list"),
     path(
-        "shiftrulerole/<int:pk>/edit/",
+        "shiftrulerole/<int:pk>/update/",
         ShiftRuleRoleUpdateView.as_view(),
-        name="shift_rule_role_edit",
+        name="shift_rule_role_update",
     ),
     path(
         "shiftrulerole/<int:pk>/",
@@ -137,9 +143,9 @@ urlpatterns = [
         name="shift_rule_role_delete",
     ),
     path(
-        "shiftrulerole/<int:shiftrule>/new/",
+        "shiftrulerole/<int:shiftrule>/create/",
         ShiftRuleRoleCreateView.as_view(),
-        name="shift_rule_role_new",
+        name="shift_rule_role_create",
     ),
     path(
         "shiftrulerole/",
@@ -147,9 +153,9 @@ urlpatterns = [
         name="shift_rule_role_list",
     ),
     path(
-        "staffrule/<int:pk>/edit/",
+        "staffrule/<int:pk>/update/",
         StaffRuleUpdateView.as_view(),
-        name="staff_rule_edit",
+        name="staff_rule_update",
     ),
     path(
         "staffrule/<int:pk>/",
@@ -162,13 +168,15 @@ urlpatterns = [
         name="staff_rule_delete",
     ),
     path(
-        "staffrule/new/", StaffRuleCreateView.as_view(), name="staff_rule_new"
+        "staffrule/create/",
+        StaffRuleCreateView.as_view(),
+        name="staff_rule_create",
     ),
     path("staffrule/", StaffRuleListView.as_view(), name="staff_rule_list"),
     path(
-        "staffruleshift/<int:pk>/edit/",
+        "staffruleshift/<int:pk>/update/",
         StaffRuleShiftUpdateView.as_view(),
-        name="staff_rule_shift_edit",
+        name="staff_rule_shift_update",
     ),
     path(
         "staffruleshift/<int:pk>/",
@@ -181,9 +189,9 @@ urlpatterns = [
         name="staff_rule_shift_delete",
     ),
     path(
-        "staffruleshift/<int:staffrule>/new/",
+        "staffruleshift/<int:staffrule>/create/",
         StaffRuleShiftCreateView.as_view(),
-        name="staff_rule_shift_new",
+        name="staff_rule_shift_create",
     ),
     path(
         "staffruleshift/",
@@ -191,9 +199,9 @@ urlpatterns = [
         name="staff_rule_shift_list",
     ),
     path(
-        "timeslot/<int:pk>/edit/",
+        "timeslot/<int:pk>/update/",
         TimeSlotUpdateView.as_view(),
-        name="timeslot_edit",
+        name="timeslot_update",
     ),
     path(
         "timeslot/<int:pk>/",
@@ -205,7 +213,11 @@ urlpatterns = [
         TimeSlotDeleteView.as_view(),
         name="timeslot_delete",
     ),
-    path("timeslot/new/", TimeSlotCreateView.as_view(), name="timeslot_new"),
+    path(
+        "timeslot/create/",
+        TimeSlotCreateView.as_view(),
+        name="timeslot_create",
+    ),
     path("timeslot/", TimeSlotListView.as_view(), name="timeslot_list"),
     path(
         "timeslot/generate",
@@ -217,9 +229,9 @@ urlpatterns = [
     path("roster/download", download_csv, name="download_csv"),
     path("daygroup/", DayGroupListView.as_view(), name="day_group_list"),
     path(
-        "daygroup/<int:pk>/edit/",
+        "daygroup/<int:pk>/update/",
         DayGroupUpdateView.as_view(),
-        name="day_group_edit",
+        name="day_group_update",
     ),
     path(
         "daygroup/<int:pk>/",
@@ -231,16 +243,20 @@ urlpatterns = [
         DayGroupDeleteView.as_view(),
         name="day_group_delete",
     ),
-    path("daygroup/new/", DayGroupCreateView.as_view(), name="day_group_new"),
+    path(
+        "daygroup/create/",
+        DayGroupCreateView.as_view(),
+        name="day_group_create",
+    ),
     path(
         "daygroupday/",
         DayGroupDayListView.as_view(),
         name="day_group_day_list",
     ),
     path(
-        "daygroupday/<int:pk>/edit/",
+        "daygroupday/<int:pk>/update/",
         DayGroupDayUpdateView.as_view(),
-        name="day_group_day_edit",
+        name="day_group_day_update",
     ),
     path(
         "daygroupday/<int:pk>/",
@@ -253,30 +269,30 @@ urlpatterns = [
         name="day_group_day_delete",
     ),
     path(
-        "daygroupday/<int:daygroup>/new/",
+        "daygroupday/<int:daygroup>/create/",
         DayGroupDayCreateView.as_view(),
-        name="day_group_day_new",
+        name="day_group_day_create",
     ),
     path(
         "daygroupday/",
         DayGroupDayListView.as_view(),
         name="day_group_day_list",
     ),
-    path("day/<int:pk>/edit/", DayUpdateView.as_view(), name="day_edit"),
+    path("day/<int:pk>/update/", DayUpdateView.as_view(), name="day_update"),
     path("day/<int:pk>/", DayDetailView.as_view(), name="day_detail"),
     path("day/<int:pk>/delete/", DayDeleteView.as_view(), name="day_delete"),
-    path("day/new/", DayCreateView.as_view(), name="day_new"),
+    path("day/create/", DayCreateView.as_view(), name="day_create"),
     path("day/", DayListView.as_view(), name="day_list"),
-    path("dayset/new", DaySetCreateView.as_view(), name="day_set_new"),
+    path("dayset/create", DaySetCreateView.as_view(), name="day_set_create"),
     path(
         "staff_request/<int:pk>/delete/",
         StaffRequestDeleteView.as_view(),
         name="staff_request_delete",
     ),
     path(
-        "staff_request/new/",
+        "staff_request/create/",
         StaffRequestCreateView.as_view(),
-        name="staff_request_new",
+        name="staff_request_create",
     ),
     path(
         "staff_request/",
@@ -284,9 +300,9 @@ urlpatterns = [
         name="staff_request_list",
     ),
     path(
-        "staffrequest/<int:staffid>/edit/",
+        "staffrequest/<int:staffid>/update/",
         StaffRequestUpdateView.as_view(),
-        name="staff_request_edit",
+        name="staff_request_update",
     ),
     path(
         "staffrequest/",

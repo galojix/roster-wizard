@@ -35,7 +35,7 @@
         </tr>
         {% endfor %}
       </table>
-      <a href="{% url 'staff_request_edit' staff_member.grouper.id %}">Edit Requests for {{ staff_member.grouper.first_name }} {{ staff_member.grouper.last_name }}</a>
+      <a href="{% url 'staff_request_update' staff_member.grouper.id %}">Edit Requests for {{ staff_member.grouper.first_name }} {{ staff_member.grouper.last_name }}</a>
     </div>
   {% endfor %}
 

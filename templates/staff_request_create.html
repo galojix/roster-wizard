@@ -13,7 +13,7 @@
       <tr>
         <td>{{ user.last_name }}</td>
         <td>{{ user.first_name }}</td>
-        <td><a href="{% url 'staff_request_edit' user.id %}">Edit Requests</a></td>
+        <td><a href="{% url 'staff_request_update' user.id %}">Edit Requests</a></td>
       </tr>
     {% endfor %}
   </table>

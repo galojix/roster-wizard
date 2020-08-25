@@ -8,6 +8,6 @@
     <p>Position: {{ staffruleshift.position }}</p>
   </div>
 
-  <p><a href="{% url 'staff_rule_shift_edit' staffruleshift.pk %}">Edit</a> | <a href="{% url 'staff_rule_shift_delete' staffruleshift.pk %}">Delete</a></p>
+  <p><a href="{% url 'staff_rule_shift_update' staffruleshift.pk %}">Edit</a> | <a href="{% url 'staff_rule_shift_delete' staffruleshift.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'staff_rule_list' %}">All Shift Sequence Rules</a></p>
 {% endblock content %}

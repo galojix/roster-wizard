@@ -7,6 +7,6 @@
       <p>Day: {{ daygroupday.day.number }}</p>
   </div>
 
-  <p><a href="{% url 'day_group_day_edit' daygroupday.pk %}">Edit</a> | <a href="{% url 'day_group_day_delete' daygroupday.pk %}">Delete</a></p>
+  <p><a href="{% url 'day_group_day_update' daygroupday.pk %}">Edit</a> | <a href="{% url 'day_group_day_delete' daygroupday.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'day_group_list' %}">All Day Groups</a>.</p>
 {% endblock content %}

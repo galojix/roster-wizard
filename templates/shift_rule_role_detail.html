@@ -9,7 +9,7 @@
     <p>Count: {{ shiftrulerole.count }}</p>
   </div>
 
-  <p><a href="{% url 'shift_rule_role_edit' shiftrulerole.pk %}">Edit</a> | <a href="{% url 'shift_rule_role_delete' shiftrulerole.pk %}">Delete</a></p>
+  <p><a href="{% url 'shift_rule_role_update' shiftrulerole.pk %}">Edit</a> | <a href="{% url 'shift_rule_role_delete' shiftrulerole.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'shift_rule_list' %}">All Shift Rules</a></p>
 
 {% endblock content %}

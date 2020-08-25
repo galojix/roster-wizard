@@ -14,14 +14,14 @@
       <tr>
         <td>{{ shift_rule.shift }}
         <td>{{ shift_rule.shift_rule_name }}</td>
-        <td><a href="{% url 'shift_rule_edit' shift_rule.pk %}">Edit</a> | <a href="{% url 'shift_rule_delete' shift_rule.pk %}">Delete</a></td>
+        <td><a href="{% url 'shift_rule_update' shift_rule.pk %}">Edit</a> | <a href="{% url 'shift_rule_delete' shift_rule.pk %}">Delete</a></td>
         <td>
             {% for shift_rule_role in shift_rule.shiftrulerole_set.all %}
             {{ shift_rule_role.role}}:{{ shift_rule_role.count}}
-            <a href="{% url 'shift_rule_role_edit' shift_rule_role.pk %}">Edit</a> | <a href="{% url 'shift_rule_role_delete' shift_rule_role.pk %}">Delete</a>
+            <a href="{% url 'shift_rule_role_update' shift_rule_role.pk %}">Edit</a> | <a href="{% url 'shift_rule_role_delete' shift_rule_role.pk %}">Delete</a>
             <br/>
             {% endfor %}
-            <a href="{% url 'shift_rule_role_new' shift_rule.pk %}">Add Role</a>
+            <a href="{% url 'shift_rule_role_create' shift_rule.pk %}">Add Role</a>
         </td>
       </tr>
     {% endfor %}

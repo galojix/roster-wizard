@@ -14,12 +14,12 @@
         <td>{{ day_group.name }}</td>
         <td>{% for day_group_day in day_group.daygroupday_set.all %}
           {{ day_group_day.day.number }}
-          <a href="{% url 'day_group_day_edit' day_group_day.pk %}">Edit</a> | <a href="{% url 'day_group_day_delete' day_group_day.pk %}">Delete</a>
+          <a href="{% url 'day_group_day_update' day_group_day.pk %}">Edit</a> | <a href="{% url 'day_group_day_delete' day_group_day.pk %}">Delete</a>
           <br/>
           {% endfor %}
-          <a href="{% url 'day_group_day_new' day_group.pk %}">Add Day</a>
+          <a href="{% url 'day_group_day_create' day_group.pk %}">Add Day</a>
         </td>
-        <td><a href="{% url 'day_group_edit' day_group.pk %}">Edit</a> | <a href="{% url 'day_group_delete' day_group.pk %}">Delete</a></td>
+        <td><a href="{% url 'day_group_update' day_group.pk %}">Edit</a> | <a href="{% url 'day_group_delete' day_group.pk %}">Delete</a></td>
       </tr>
     {% endfor %}
   </table>

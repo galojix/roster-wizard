@@ -10,7 +10,7 @@
     {% for day in day_list %}
       <tr>
           <td>{{ day.number }}</td>
-          <td><a href="{% url 'day_edit' day.pk %}">Edit</a> | <a href="{% url 'day_delete' day.pk %}">Delete</a></td>
+          <td><a href="{% url 'day_update' day.pk %}">Edit</a> | <a href="{% url 'day_delete' day.pk %}">Delete</a></td>
       </tr>
     {% endfor %}
   </table>

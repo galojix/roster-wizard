@@ -19,14 +19,14 @@
             {% endfor %}
         </td>
         <td>{{ staff_rule.day_group.name }}</td>
-        <td><a href="{% url 'staff_rule_edit' staff_rule.pk %}">Edit</a> | <a href="{% url 'staff_rule_delete' staff_rule.pk %}">Delete</a></td>
+        <td><a href="{% url 'staff_rule_update' staff_rule.pk %}">Edit</a> | <a href="{% url 'staff_rule_delete' staff_rule.pk %}">Delete</a></td>
         <td>
           {% for staff_rule_shift in staff_rule.staffruleshift_set.all %}
           {{ staff_rule_shift.shift.shift_type}}:{{ staff_rule_shift.position}}
-          <a href="{% url 'staff_rule_shift_edit' staff_rule_shift.pk %}">Edit</a> | <a href="{% url 'staff_rule_shift_delete' staff_rule_shift.pk %}">Delete</a>
+          <a href="{% url 'staff_rule_shift_update' staff_rule_shift.pk %}">Edit</a> | <a href="{% url 'staff_rule_shift_delete' staff_rule_shift.pk %}">Delete</a>
           <br/>
           {% endfor %}
-          <a href="{% url 'staff_rule_shift_new' staff_rule.pk %}">Add Shift</a>
+          <a href="{% url 'staff_rule_shift_create' staff_rule.pk %}">Add Shift</a>
         </td>
       </tr>
     {% endfor %}

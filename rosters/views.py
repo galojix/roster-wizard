@@ -195,7 +195,7 @@ class ShiftUpdateView(LoginRequiredMixin, UpdateView):
 
     model = Shift
     fields = ("shift_type", "day_group", "max_staff")
-    template_name = "shift_edit.html"
+    template_name = "shift_update.html"
     login_url = "login"
 
 
@@ -212,7 +212,7 @@ class ShiftCreateView(LoginRequiredMixin, CreateView):
     """Shift Create View."""
 
     model = Shift
-    template_name = "shift_new.html"
+    template_name = "shift_create.html"
     fields = ("shift_type", "day_group", "max_staff")
     login_url = "login"
 
@@ -242,7 +242,7 @@ class ShiftRuleUpdateView(LoginRequiredMixin, UpdateView):
 
     model = ShiftRule
     fields = ("shift_rule_name", "shift")
-    template_name = "shift_rule_edit.html"
+    template_name = "shift_rule_update.html"
     login_url = "login"
 
 
@@ -259,7 +259,7 @@ class ShiftRuleCreateView(LoginRequiredMixin, CreateView):
     """Shift Rule Create View."""
 
     model = ShiftRule
-    template_name = "shift_rule_new.html"
+    template_name = "shift_rule_create.html"
     fields = ("shift_rule_name", "shift")
     login_url = "login"
 
@@ -289,7 +289,7 @@ class ShiftRuleRoleUpdateView(LoginRequiredMixin, UpdateView):
 
     model = ShiftRuleRole
     fields = ("shift_rule", "role", "count")
-    template_name = "shift_rule_role_edit.html"
+    template_name = "shift_rule_role_update.html"
     login_url = "login"
 
 
@@ -306,7 +306,7 @@ class ShiftRuleRoleCreateView(LoginRequiredMixin, CreateView):
     """Shift Rule Role Create View."""
 
     model = ShiftRuleRole
-    template_name = "shift_rule_role_new.html"
+    template_name = "shift_rule_role_create.html"
     fields = ("role", "count")
     login_url = "login"
 
@@ -342,7 +342,7 @@ class StaffRuleUpdateView(LoginRequiredMixin, UpdateView):
 
     model = StaffRule
     form_class = StaffRuleUpdateForm
-    template_name = "staff_rule_edit.html"
+    template_name = "staff_rule_update.html"
     login_url = "login"
 
 
@@ -360,7 +360,7 @@ class StaffRuleCreateView(LoginRequiredMixin, CreateView):
 
     model = StaffRule
     form_class = StaffRuleCreateForm
-    template_name = "staff_rule_new.html"
+    template_name = "staff_rule_create.html"
     login_url = "login"
 
 
@@ -386,7 +386,7 @@ class StaffRuleShiftUpdateView(LoginRequiredMixin, UpdateView):
 
     model = StaffRuleShift
     fields = ("shift", "position")
-    template_name = "staff_rule_shift_edit.html"
+    template_name = "staff_rule_shift_update.html"
     success_url = reverse_lazy("staff_rule_list")
     login_url = "login"
 
@@ -404,7 +404,7 @@ class StaffRuleShiftCreateView(LoginRequiredMixin, CreateView):
     """Staff Rule Shift Create View."""
 
     model = StaffRuleShift
-    template_name = "staff_rule_shift_new.html"
+    template_name = "staff_rule_shift_create.html"
     fields = ("shift", "position")
     login_url = "login"
 
@@ -473,7 +473,7 @@ class TimeSlotUpdateView(LoginRequiredMixin, UpdateView):
 
     model = TimeSlot
     form_class = TimeSlotUpdateForm
-    template_name = "timeslot_edit.html"
+    template_name = "timeslot_update.html"
     login_url = "login"
 
 
@@ -491,7 +491,7 @@ class TimeSlotCreateView(LoginRequiredMixin, CreateView):
 
     model = TimeSlot
     form_class = TimeSlotCreateForm
-    template_name = "timeslot_new.html"
+    template_name = "timeslot_create.html"
     login_url = "login"
 
 
@@ -598,7 +598,7 @@ class DayGroupUpdateView(LoginRequiredMixin, UpdateView):
 
     model = DayGroup
     fields = ("name",)
-    template_name = "day_group_edit.html"
+    template_name = "day_group_update.html"
     login_url = "login"
 
 
@@ -615,7 +615,7 @@ class DayGroupCreateView(LoginRequiredMixin, CreateView):
     """Day Group Create View."""
 
     model = DayGroup
-    template_name = "day_group_new.html"
+    template_name = "day_group_create.html"
     fields = ("name",)
     login_url = "login"
 
@@ -651,7 +651,7 @@ class DayGroupDayUpdateView(LoginRequiredMixin, UpdateView):
 
     model = DayGroupDay
     fields = ("day_group", "day")
-    template_name = "day_group_day_edit.html"
+    template_name = "day_group_day_update.html"
     success_url = reverse_lazy("day_group_list")
     login_url = "login"
 
@@ -669,7 +669,7 @@ class DayGroupDayCreateView(LoginRequiredMixin, CreateView):
     """Day Group Day Create View."""
 
     model = DayGroupDay
-    template_name = "day_group_day_new.html"
+    template_name = "day_group_day_create.html"
     fields = ("day",)
     login_url = "login"
 
@@ -705,7 +705,7 @@ class DayUpdateView(LoginRequiredMixin, UpdateView):
 
     model = Day
     fields = ("number",)
-    template_name = "day_edit.html"
+    template_name = "day_update.html"
     login_url = "login"
 
 
@@ -722,7 +722,7 @@ class DayCreateView(LoginRequiredMixin, CreateView):
     """Day Create View."""
 
     model = Day
-    template_name = "day_new.html"
+    template_name = "day_create.html"
     fields = ("number",)
     login_url = "login"
 
@@ -730,7 +730,7 @@ class DayCreateView(LoginRequiredMixin, CreateView):
 class DaySetCreateView(LoginRequiredMixin, FormView):
     """Day Set Create View."""
 
-    template_name = "day_set_new.html"
+    template_name = "day_set_create.html"
     form_class = DaySetCreateForm
     success_url = reverse_lazy("day_list")
 
@@ -782,14 +782,14 @@ class StaffRequestCreateView(LoginRequiredMixin, ListView):
     """Staff Request List View."""
 
     model = get_user_model()
-    template_name = "staff_request_new.html"
+    template_name = "staff_request_create.html"
     login_url = "login"
 
 
 class StaffRequestUpdateView(LoginRequiredMixin, FormView):
     """Staff Request Update Form."""
 
-    template_name = "staff_request_edit.html"
+    template_name = "staff_request_update.html"
     form_class = StaffRequestUpdateForm
     success_url = reverse_lazy("staff_request_list")
 

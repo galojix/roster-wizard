@@ -15,7 +15,7 @@
         <td>{{ shift_rule_role.shift_rule }}</td>
         <td>{{ shift_rule_role.role }}</td>
         <td>{{ shift_rule_role.count }}</td>
-        <td><a href="{% url 'shift_rule_role_edit' shift_rule_role.pk %}">Edit</a> | <a href="{% url 'shift_rule_role_delete' shift_rule_role.pk %}">Delete</a></td>
+        <td><a href="{% url 'shift_rule_role_update' shift_rule_role.pk %}">Edit</a> | <a href="{% url 'shift_rule_role_delete' shift_rule_role.pk %}">Delete</a></td>
       </tr>
     {% endfor %}
   </table>

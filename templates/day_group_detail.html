@@ -9,6 +9,6 @@
       </p>
   </div>
 
-  <p><a href="{% url 'day_group_edit' daygroup.pk %}">Edit</a> | <a href="{% url 'day_group_delete' daygroup.pk %}">Delete</a></p>
+  <p><a href="{% url 'day_group_update' daygroup.pk %}">Edit</a> | <a href="{% url 'day_group_delete' daygroup.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'day_group_list' %}">All Day Groups</a>.</p>
 {% endblock content %}

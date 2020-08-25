@@ -11,7 +11,7 @@
       </p>
   </div>
 
-  <p><a href="{% url 'shift_rule_edit' shiftrule.pk %}">Edit</a> | <a href="{% url 'shift_rule_delete' shiftrule.pk %}">Delete</a></p>
+  <p><a href="{% url 'shift_rule_update' shiftrule.pk %}">Edit</a> | <a href="{% url 'shift_rule_delete' shiftrule.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'shift_rule_list' %}">All Skill Mix Rules</a>.</p>
 
 {% endblock content %}

@@ -15,7 +15,7 @@
         <td>{{ shift.shift_type }}</td>
         <td>{{ shift.day_group.name }}</td>
         <td>{{ shift.max_staff }}</td>
-        <td><a href="{% url 'shift_edit' shift.pk %}">Edit</a> | <a href="{% url 'shift_delete' shift.pk %}">Delete</a></td>
+        <td><a href="{% url 'shift_update' shift.pk %}">Edit</a> | <a href="{% url 'shift_delete' shift.pk %}">Delete</a></td>
       </tr>
     {% endfor %}
   </table>
