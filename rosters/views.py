@@ -832,7 +832,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
 
     template_name = "generate_roster.html"
     form_class = GenerateRosterForm
-    success_url = reverse_lazy("roster_list")
+    success_url = reverse_lazy("timeslot_list")
 
     def form_valid(self, form):
         """Process generate roster form."""
