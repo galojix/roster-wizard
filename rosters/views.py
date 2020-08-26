@@ -650,9 +650,9 @@ class StaffRequestListView(LoginRequiredMixin, ListView):
     """StaffRequest List View."""
 
     model = StaffRequest
-    template_name = "staff_request_list.html"
+    template_name = "staffrequest_list.html"
     login_url = "login"
-    context_object_name = "staff_request_list"
+    context_object_name = "staffrequest_list"
 
     def get_queryset(self):
         """Get staff requests in date range."""
@@ -672,26 +672,26 @@ class StaffRequestDeleteView(LoginRequiredMixin, DeleteView):
     """StaffRequest Delete View."""
 
     model = StaffRequest
-    template_name = "staff_request_delete.html"
-    success_url = reverse_lazy("staff_request_list")
+    template_name = "staffrequest_delete.html"
+    success_url = reverse_lazy("staffrequest_list")
     login_url = "login"
-    context_object_name = "staff_request"
+    context_object_name = "staffrequest"
 
 
 class StaffRequestCreateView(LoginRequiredMixin, ListView):
     """Staff Request List View."""
 
     model = get_user_model()
-    template_name = "staff_request_create.html"
+    template_name = "staffrequest_create.html"
     login_url = "login"
 
 
 class StaffRequestUpdateView(LoginRequiredMixin, FormView):
     """Staff Request Update Form."""
 
-    template_name = "staff_request_update.html"
+    template_name = "staffrequest_update.html"
     form_class = StaffRequestUpdateForm
-    success_url = reverse_lazy("staff_request_list")
+    success_url = reverse_lazy("staffrequest_list")
 
     def dispatch(self, request, *args, **kwargs):
         """Collect requests."""
@@ -716,7 +716,7 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
         self.shifts = []
         self.requests = []
         self.priorities = []
-        staff_requests = StaffRequest.objects.filter(
+        staffrequests = StaffRequest.objects.filter(
             staff_member=self.staff_member, date__range=date_range
         )
         for day in Day.objects.all():
@@ -727,18 +727,18 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
                     self.dates.append(date)
                     self.shifts.append(shift)
                     # Check for existing staff request here
-                    staff_request = staff_requests.filter(
+                    staffrequest = staffrequests.filter(
                         date=date, shift__shift_type=shift,
                     ).first()
-                    if staff_request is None:
+                    if staffrequest is None:
                         self.requests.append("Don't Care")
                         self.priorities.append(1)
                     else:
-                        if staff_request.like:
+                        if staffrequest.like:
                             self.requests.append("Yes")
                         else:
                             self.requests.append("No")
-                        self.priorities.append(staff_request.priority)
+                        self.priorities.append(staffrequest.priority)
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -788,9 +788,9 @@ class StaffRequestDetailView(LoginRequiredMixin, DetailView):
     """Staff Request Detail View."""
 
     model = StaffRequest
-    template_name = "staff_request_detail.html"
+    template_name = "staffrequest_detail.html"
     login_url = "login"
-    context_object_name = "staff_request"
+    context_object_name = "staffrequest"
 
 
 class RosterByStaffView(LoginRequiredMixin, TemplateView):

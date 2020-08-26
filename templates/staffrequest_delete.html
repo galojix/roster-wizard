@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Delete</h1>
+  <form action="" method="post">{% csrf_token %}
+    <p>Are you sure you want to delete request for {{ staffrequest.shift.shift_type }}
+        for "{{ staffrequest.staff_member.first_name}} {{staffrequest.staff_member.last_name}}" on "{{ staffrequest.date }}"?</p>
+    <button class="btn btn-danger ml-2" type="submit">Confirm</button>
+  </form>
+{% endblock content %}

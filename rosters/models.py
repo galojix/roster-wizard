@@ -268,4 +268,4 @@ class StaffRequest(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("staff_request_detail", args=[str(self.id)])
+        return reverse("staffrequest_detail", args=[str(self.id)])

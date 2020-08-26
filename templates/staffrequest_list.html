@@ -3,8 +3,8 @@
 {% block content %}
 
   <h4>Staff Requests:</h4>
-  {% regroup staff_request_list by staff_member as staff_request_list_by_staff_member %}
-  {% for staff_member in staff_request_list_by_staff_member %}
+  {% regroup staffrequest_list by staff_member as staffrequest_list_by_staff_member %}
+  {% for staff_member in staffrequest_list_by_staff_member %}
     <h5>
       <button href="#Pref{{ forloop.counter0 }}" class="btn btn-outline-dark" data-toggle="collapse">
         {{ staff_member.grouper.last_name }}, {{ staff_member.grouper.first_name }}
@@ -19,23 +19,23 @@
           <th>Priority</th>
           <th>Action</th>
         </tr>
-        {% for staff_request in staff_member.list %}
+        {% for staffrequest in staff_member.list %}
         <tr>
-          <td>{{ staff_request.date|date:"D d M Y" }}</td>
-          <td>{{ staff_request.shift.shift_type }}</td>
+          <td>{{ staffrequest.date|date:"D d M Y" }}</td>
+          <td>{{ staffrequest.shift.shift_type }}</td>
           <td>
-            {% if staff_request.like %}
+            {% if staffrequest.like %}
               Yes
             {% else %}
               No
             {% endif %}
           </td>
-          <td>{{ staff_request.priority }}</td>
-          <td><a href="{% url 'staff_request_delete' staff_request.pk %}">Delete</a></td>
+          <td>{{ staffrequest.priority }}</td>
+          <td><a href="{% url 'staffrequest_delete' staffrequest.pk %}">Delete</a></td>
         </tr>
         {% endfor %}
       </table>
-      <a href="{% url 'staff_request_update' staff_member.grouper.id %}">Edit Requests for {{ staff_member.grouper.first_name }} {{ staff_member.grouper.last_name }}</a>
+      <a href="{% url 'staffrequest_update' staff_member.grouper.id %}">Edit Requests for {{ staff_member.grouper.first_name }} {{ staff_member.grouper.last_name }}</a>
     </div>
   {% endfor %}
 

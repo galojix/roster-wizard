@@ -273,34 +273,34 @@ urlpatterns = [
     path("day/", DayListView.as_view(), name="day_list"),
     path("day_set/create", DaySetCreateView.as_view(), name="day_set_create"),
     path(
-        "staff_request/<int:pk>/delete/",
+        "staffrequest/<int:pk>/delete/",
         StaffRequestDeleteView.as_view(),
-        name="staff_request_delete",
+        name="staffrequest_delete",
     ),
     path(
-        "staff_request/create/",
+        "staffrequest/create/",
         StaffRequestCreateView.as_view(),
-        name="staff_request_create",
+        name="staffrequest_create",
     ),
     path(
-        "staff_request/",
+        "staffrequest/",
         StaffRequestListView.as_view(),
-        name="staff_request_list",
+        name="staffrequest_list",
     ),
     path(
-        "staff_request/<int:staffid>/update/",
+        "staffrequest/<int:staffid>/update/",
         StaffRequestUpdateView.as_view(),
-        name="staff_request_update",
+        name="staffrequest_update",
     ),
     path(
-        "staff_request/",
+        "staffrequest/",
         StaffRequestListView.as_view(),
-        name="staff_request_list",
+        name="staffrequest_list",
     ),
     path(
-        "staff_request/<int:pk>/",
+        "staffrequest/<int:pk>/",
         StaffRequestDetailView.as_view(),
-        name="staff_request_detail",
+        name="staffrequest_detail",
     ),
     path(
         "roster_by_staff/", RosterByStaffView.as_view(), name="roster_by_staff"
