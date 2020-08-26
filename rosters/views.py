@@ -494,10 +494,10 @@ class TimeSlotCreateView(LoginRequiredMixin, CreateView):
     login_url = "login"
 
 
-class SelectRosterView(LoginRequiredMixin, FormView):
-    """Select Roster View."""
+class SelectRosterPeriodView(LoginRequiredMixin, FormView):
+    """Select Roster Period View."""
 
-    template_name = "select_roster.html"
+    template_name = "select_roster_period.html"
     form_class = SelectRosterForm
     success_url = reverse_lazy("timeslot_list")
 

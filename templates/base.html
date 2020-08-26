@@ -125,7 +125,7 @@
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'roster_by_staff' %}">Display Roster by Staff</a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'select_roster' %}">Select Roster Period</a>
+                  <a class="dropdown-item" href="{% url 'select_roster_period' %}">Select Roster Period</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'generate_roster' %}">Generate New Roster</a>
                   <div class="dropdown-divider"></div>
@@ -134,7 +134,7 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-warning" href="{% url 'select_roster' %}">Period: {{ request.session.start_date }}</a>
+              <a class="nav-link text-warning" href="{% url 'select_roster_period' %}">Period: {{ request.session.start_date }}</a>
             </li>
           </ul>
           <ul class="navbar-nav ml-auto">
