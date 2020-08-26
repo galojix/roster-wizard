@@ -272,6 +272,7 @@ class ShiftRuleRoleListView(LoginRequiredMixin, ListView):
 
     model = ShiftRuleRole
     template_name = "shift_rule_role_list.html"
+    context_object_name = "shift_rule_role_list"
     login_url = "login"
 
     def get_queryset(self):
@@ -284,6 +285,7 @@ class ShiftRuleRoleDetailView(LoginRequiredMixin, DetailView):
 
     model = ShiftRuleRole
     template_name = "shift_rule_role_detail.html"
+    context_object_name = "shift_rule_role"
     login_url = "login"
 
 
@@ -293,6 +295,7 @@ class ShiftRuleRoleUpdateView(LoginRequiredMixin, UpdateView):
     model = ShiftRuleRole
     fields = ("shift_rule", "role", "count")
     template_name = "shift_rule_role_update.html"
+    context_object_name = "shift_rule_role"
     login_url = "login"
 
 
@@ -302,6 +305,7 @@ class ShiftRuleRoleDeleteView(LoginRequiredMixin, DeleteView):
     model = ShiftRuleRole
     template_name = "shift_rule_role_delete.html"
     success_url = reverse_lazy("shift_rule_list")
+    context_object_name = "shift_rule_role"
     login_url = "login"
 
 

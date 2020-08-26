@@ -4,12 +4,12 @@
 
   <div class="shift_rule_role-entry">
     <h2>Shift Rule Role</h2>
-    <p>Shift Rule Name: {{ shiftrulerole.shift_rule.shift_rule_name }}</p>
-    <p>Role: {{ shiftrulerole.role.role_name }}</p>
-    <p>Count: {{ shiftrulerole.count }}</p>
+    <p>Shift Rule Name: {{ shift_rule_role.shift_rule.shift_rule_name }}</p>
+    <p>Role: {{ shift_rule_role.role.role_name }}</p>
+    <p>Count: {{ shift_rule_role.count }}</p>
   </div>
 
-  <p><a href="{% url 'shift_rule_role_update' shiftrulerole.pk %}">Edit</a> | <a href="{% url 'shift_rule_role_delete' shiftrulerole.pk %}">Delete</a></p>
+  <p><a href="{% url 'shift_rule_role_update' shift_rule_role.pk %}">Edit</a> | <a href="{% url 'shift_rule_role_delete' shift_rule_role.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'shift_rule_list' %}">All Shift Rules</a></p>
 
 {% endblock content %}
