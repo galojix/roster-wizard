@@ -43,12 +43,12 @@ def init_feasible_db():
     role = Role.objects.create(role_name="RN")
     staff_member1.roles.add(role)
     staff_member2.roles.add(role)
-    day_group = DayGroup.objects.create(name="All Days")
+    daygroup = DayGroup.objects.create(name="All Days")
     for i in range(1, 11):
         day = Day.objects.create(number=i)
-        DayGroupDay.objects.create(day_group=day_group, day=day)
+        DayGroupDay.objects.create(daygroup=daygroup, day=day)
     shift = Shift.objects.create(
-        shift_type="Early", day_group=day_group, max_staff=2
+        shift_type="Early", daygroup=daygroup, max_staff=2
     )
     shift_rule = ShiftRule.objects.create(
         shift_rule_name="Early Option A", shift=shift
@@ -76,12 +76,12 @@ def init_infeasible_db():
     role = Role.objects.create(role_name="RN")
     staff_member1.roles.add(role)
     staff_member2.roles.add(role)
-    day_group = DayGroup.objects.create(name="All Days")
+    daygroup = DayGroup.objects.create(name="All Days")
     for i in range(1, 11):
         day = Day.objects.create(number=i)
-        DayGroupDay.objects.create(day_group=day_group, day=day)
+        DayGroupDay.objects.create(daygroup=daygroup, day=day)
     shift = Shift.objects.create(
-        shift_type="Early", day_group=day_group, max_staff=2
+        shift_type="Early", daygroup=daygroup, max_staff=2
     )
     shift_rule = ShiftRule.objects.create(
         shift_rule_name="Early Option A", shift=shift
@@ -109,12 +109,12 @@ def init_too_many_staff_db():
     role = Role.objects.create(role_name="RN")
     staff_member1.roles.add(role)
     staff_member2.roles.add(role)
-    day_group = DayGroup.objects.create(name="All Days")
+    daygroup = DayGroup.objects.create(name="All Days")
     for i in range(1, 11):
         day = Day.objects.create(number=i)
-        DayGroupDay.objects.create(day_group=day_group, day=day)
+        DayGroupDay.objects.create(daygroup=daygroup, day=day)
     shift = Shift.objects.create(
-        shift_type="Early", day_group=day_group, max_staff=2
+        shift_type="Early", daygroup=daygroup, max_staff=2
     )
     shift_rule = ShiftRule.objects.create(
         shift_rule_name="Early Option A", shift=shift

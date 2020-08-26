@@ -18,7 +18,7 @@
               <br/>
             {% endfor %}
         </td>
-        <td>{{ staff_rule.day_group.name }}</td>
+        <td>{{ staff_rule.daygroup.name }}</td>
         <td><a href="{% url 'staff_rule_update' staff_rule.pk %}">Edit</a> | <a href="{% url 'staff_rule_delete' staff_rule.pk %}">Delete</a></td>
         <td>
           {% for staff_rule_shift in staff_rule.staffruleshift_set.all %}

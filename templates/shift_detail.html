@@ -4,7 +4,7 @@
 
   <div class="shift-entry">
     <h4>{{ shift.shift_type }}:</h4>
-    <p>{{ shift.day_group.name }}</p>
+    <p>{{ shift.daygroup.name }}</p>
   </div>
 
   <p><a href="{% url 'shift_update' shift.pk %}">Edit</a> | <a href="{% url 'shift_delete' shift.pk %}">Delete</a></p>

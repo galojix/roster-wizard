@@ -194,7 +194,7 @@ class ShiftUpdateView(LoginRequiredMixin, UpdateView):
     """Shift Update View."""
 
     model = Shift
-    fields = ("shift_type", "day_group", "max_staff")
+    fields = ("shift_type", "daygroup", "max_staff")
     template_name = "shift_update.html"
     login_url = "login"
 
@@ -213,7 +213,7 @@ class ShiftCreateView(LoginRequiredMixin, CreateView):
 
     model = Shift
     template_name = "shift_create.html"
-    fields = ("shift_type", "day_group", "max_staff")
+    fields = ("shift_type", "daygroup", "max_staff")
     login_url = "login"
 
 
@@ -484,7 +484,7 @@ class DayGroupListView(LoginRequiredMixin, ListView):
     """Day Group List View."""
 
     model = DayGroup
-    template_name = "day_group_list.html"
+    template_name = "daygroup_list.html"
     login_url = "login"
 
     def get_queryset(self):
@@ -496,7 +496,7 @@ class DayGroupDetailView(LoginRequiredMixin, DetailView):
     """Day Group Detail View."""
 
     model = DayGroup
-    template_name = "day_group_detail.html"
+    template_name = "daygroup_detail.html"
     login_url = "login"
 
 
@@ -505,7 +505,7 @@ class DayGroupUpdateView(LoginRequiredMixin, UpdateView):
 
     model = DayGroup
     fields = ("name",)
-    template_name = "day_group_update.html"
+    template_name = "daygroup_update.html"
     login_url = "login"
 
 
@@ -513,8 +513,8 @@ class DayGroupDeleteView(LoginRequiredMixin, DeleteView):
     """Day Group Delete View."""
 
     model = DayGroup
-    template_name = "day_group_delete.html"
-    success_url = reverse_lazy("day_group_list")
+    template_name = "daygroup_delete.html"
+    success_url = reverse_lazy("daygroup_list")
     login_url = "login"
 
 
@@ -522,17 +522,17 @@ class DayGroupCreateView(LoginRequiredMixin, CreateView):
     """Day Group Create View."""
 
     model = DayGroup
-    template_name = "day_group_create.html"
+    template_name = "daygroup_create.html"
     fields = ("name",)
     login_url = "login"
 
     def form_valid(self, form):
         """Add all days to day group by default."""
         days = Day.objects.all()
-        day_group = form.save(commit=False)
-        day_group.save()
+        daygroup = form.save(commit=False)
+        daygroup.save()
         for day in days:
-            DayGroupDay.objects.get_or_create(day_group=day_group, day=day)
+            DayGroupDay.objects.get_or_create(daygroup=daygroup, day=day)
         return super().form_valid(form)
 
 
@@ -540,7 +540,7 @@ class DayGroupDayListView(LoginRequiredMixin, ListView):
     """Day Group Day List View."""
 
     model = DayGroupDay
-    template_name = "day_group_day_list.html"
+    template_name = "daygroupday_list.html"
     login_url = "login"
 
 
@@ -548,8 +548,8 @@ class DayGroupDayDetailView(LoginRequiredMixin, DetailView):
     """Day Group Day Detail View."""
 
     model = DayGroupDay
-    template_name = "day_group_day_detail.html"
-    success_url = reverse_lazy("day_group_list")
+    template_name = "daygroupday_detail.html"
+    success_url = reverse_lazy("daygroup_list")
     login_url = "login"
 
 
@@ -557,9 +557,9 @@ class DayGroupDayUpdateView(LoginRequiredMixin, UpdateView):
     """Day Group Day Update View."""
 
     model = DayGroupDay
-    fields = ("day_group", "day")
-    template_name = "day_group_day_update.html"
-    success_url = reverse_lazy("day_group_list")
+    fields = ("daygroup", "day")
+    template_name = "daygroupday_update.html"
+    success_url = reverse_lazy("daygroup_list")
     login_url = "login"
 
 
@@ -567,8 +567,8 @@ class DayGroupDayDeleteView(LoginRequiredMixin, DeleteView):
     """Day Group Day Delete View."""
 
     model = DayGroupDay
-    template_name = "day_group_day_delete.html"
-    success_url = reverse_lazy("day_group_list")
+    template_name = "daygroupday_delete.html"
+    success_url = reverse_lazy("daygroup_list")
     login_url = "login"
 
 
@@ -576,14 +576,14 @@ class DayGroupDayCreateView(LoginRequiredMixin, CreateView):
     """Day Group Day Create View."""
 
     model = DayGroupDay
-    template_name = "day_group_day_create.html"
+    template_name = "daygroupday_create.html"
     fields = ("day",)
     login_url = "login"
 
     def form_valid(self, form):
         """Process day group day create form."""
-        day_group = get_object_or_404(DayGroup, id=self.kwargs["daygroup"])
-        form.instance.day_group = day_group
+        daygroup = get_object_or_404(DayGroup, id=self.kwargs["daygroup"])
+        form.instance.daygroup = daygroup
         return super().form_valid(form)
 
 
@@ -717,8 +717,8 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
         shift_days = OrderedDict()
         for shift in Shift.objects.all():
             shift_days[shift.shift_type] = []
-            for day_group_day in shift.day_group.daygroupday_set.all():
-                shift_days[shift.shift_type].append(day_group_day.day.number)
+            for daygroupday in shift.daygroup.daygroupday_set.all():
+                shift_days[shift.shift_type].append(daygroupday.day.number)
         self.dates = []
         self.shifts = []
         self.requests = []

@@ -62,7 +62,7 @@ class DayGroup(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("day_group_detail", args=[str(self.id)])
+        return reverse("daygroup_detail", args=[str(self.id)])
 
 
 class Day(models.Model):
@@ -87,7 +87,7 @@ class Day(models.Model):
 class DayGroupDay(models.Model):
     """Day Group Day."""
 
-    day_group = models.ForeignKey(DayGroup, on_delete=models.CASCADE)
+    daygroup = models.ForeignKey(DayGroup, on_delete=models.CASCADE)
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
 
     class Meta:
@@ -97,18 +97,18 @@ class DayGroupDay(models.Model):
 
     def __str__(self):
         """Return a meaningful string representation."""
-        return str(self.day_group.name) + str(self.day.number)
+        return str(self.daygroup.name) + str(self.day.number)
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("day_group_day_detail", args=[str(self.id)])
+        return reverse("daygroupday_detail", args=[str(self.id)])
 
 
 class Shift(models.Model):
     """Shift."""
 
     shift_type = models.CharField(max_length=20, null=False, blank=False)
-    day_group = models.ForeignKey(
+    daygroup = models.ForeignKey(
         DayGroup, null=True, blank=False, on_delete=models.SET_NULL
     )
     max_staff = models.IntegerField(null=False, blank=False, default=5)
@@ -173,7 +173,7 @@ class StaffRule(models.Model):
     staff_rule_name = models.CharField(max_length=40, null=False, blank=False)
     staff = models.ManyToManyField(get_user_model(), blank=True)
     shifts = models.ManyToManyField(Shift, through="StaffRuleShift")
-    day_group = models.ForeignKey(
+    daygroup = models.ForeignKey(
         DayGroup, null=True, blank=False, on_delete=models.SET_NULL
     )
 

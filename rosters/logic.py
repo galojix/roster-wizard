@@ -66,9 +66,9 @@ class RosterGenerator:
         # Create timeslots
         for day, date in enumerate(self.dates):
             for shift in self.shifts:
-                day_group_days = shift.day_group.daygroupday_set.all()
-                for day_group_day in day_group_days:
-                    if day_group_day.day.number == day + 1:
+                daygroupdays = shift.daygroup.daygroupday_set.all()
+                for daygroupday in daygroupdays:
+                    if daygroupday.day.number == day + 1:
                         TimeSlot.objects.create(date=date, shift=shift)
         self.timeslots = TimeSlot.objects.filter(date__range=self.date_range)
 
@@ -223,9 +223,9 @@ class RosterGenerator:
 
     def _get_all_days_in_seq(self, staff_rule):
         """Get number of days in staff rule."""
-        day_group_day_set = staff_rule.day_group.daygroupday_set.all()
+        daygroupday_set = staff_rule.daygroup.daygroupday_set.all()
         all_days_in_seq = [
-            day_group_day.day.number for day_group_day in day_group_day_set
+            daygroupday.day.number for daygroupday in daygroupday_set
         ]
         return all_days_in_seq
 
@@ -274,10 +274,10 @@ class RosterGenerator:
                 # Skip if day not in day group for sequence
                 delta = (day_to_test - self.dates[0]).days
                 if delta < 0:
-                    day_group_day_num = delta + self.num_days + 1
+                    daygroupday_num = delta + self.num_days + 1
                 else:
-                    day_group_day_num = delta + 1
-                if day_group_day_num not in all_days_in_seq:
+                    daygroupday_num = delta + 1
+                if daygroupday_num not in all_days_in_seq:
                     break
 
                 for role in roles:

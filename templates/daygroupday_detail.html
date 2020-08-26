@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="staff_rule_shift-entry">
+    <h2>Day Group Day</h2>
+      <p>Day Group Day Name: {{ daygroupday.daygroup.name }}</p>
+      <p>Day: {{ daygroupday.day.number }}</p>
+  </div>
+
+  <p><a href="{% url 'daygroupday_update' daygroupday.pk %}">Edit</a> | <a href="{% url 'daygroupday_delete' daygroupday.pk %}">Delete</a></p>
+  <p>Back to <a href="{% url 'daygroup_list' %}">All Day Groups</a>.</p>
+{% endblock content %}
