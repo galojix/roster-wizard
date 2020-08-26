@@ -438,27 +438,6 @@ class TimeSlotListView(LoginRequiredMixin, ListView):
         )
 
 
-class RosterByStaffView(LoginRequiredMixin, TemplateView):
-    """Roster By Staff View."""
-
-    template_name = "roster_by_staff.html"
-    login_url = "login"
-
-    def get_context_data(self, **kwargs):
-        """Add dates and roster data to context."""
-        context = super().get_context_data(**kwargs)
-        if "start_date" in self.request.session:
-            start_date = datetime.datetime.strptime(
-                self.request.session["start_date"], "%d-%b-%Y"
-            )
-        else:
-            start_date = datetime.datetime.now()
-        dates, roster = get_roster_by_staff(start_date)
-        context["dates"] = dates
-        context["roster"] = roster
-        return context
-
-
 class TimeSlotDetailView(LoginRequiredMixin, DetailView):
     """Time Slot Detail View."""
 
@@ -492,84 +471,6 @@ class TimeSlotCreateView(LoginRequiredMixin, CreateView):
     form_class = TimeSlotCreateForm
     template_name = "timeslot_create.html"
     login_url = "login"
-
-
-class SelectRosterPeriodView(LoginRequiredMixin, FormView):
-    """Select Roster Period View."""
-
-    template_name = "select_roster_period.html"
-    form_class = SelectRosterForm
-    success_url = reverse_lazy("timeslot_list")
-
-    def form_valid(self, form):
-        """Process select roster form."""
-        start_date = form.cleaned_data["start_date"]
-        self.request.session["start_date"] = start_date.date().strftime(
-            "%d-%b-%Y"
-        )
-        return super().form_valid(form)
-
-
-class GenerateRosterView(LoginRequiredMixin, FormView):
-    """Generate Roster View."""
-
-    template_name = "generate_roster.html"
-    form_class = GenerateRosterForm
-    success_url = reverse_lazy("roster_list")
-
-    def form_valid(self, form):
-        """Process generate roster form."""
-        start_date = form.cleaned_data["start_date"]
-        self.request.session["start_date"] = start_date.date().strftime(
-            "%d-%b-%Y"
-        )
-        try:
-            roster = RosterGenerator(start_date=start_date)
-            roster.create()
-        except SolutionNotFeasible:
-            messages.error(
-                self.request,
-                (
-                    "Could not generate roster,"
-                    " try putting more staff on leave or changing rules."
-                ),
-            )
-        except TooManyStaff:
-            messages.error(
-                self.request,
-                (
-                    "There are too many staff available,"
-                    " put more staff on leave."
-                ),
-            )
-        return super().form_valid(form)
-
-
-@login_required
-def download_csv(request):
-    """Download roster as CSV file."""
-    if "start_date" in request.session:
-        start_date = datetime.datetime.strptime(
-            request.session["start_date"], "%d-%b-%Y"
-        )
-    else:
-        start_date = datetime.datetime.now()
-
-    dates, roster = get_roster_by_staff(start_date)
-
-    response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = 'attachment; filename="roster.csv"'
-
-    writer = csv.writer(response)
-    dates = [date.strftime("%a %d-%b-%Y") for date in dates]
-    row = ["Staff Member", "Roles", "Shifts"] + dates
-    writer.writerow(row)
-    for staff_member in roster:
-        row = [staff_member]
-        for key in roster[staff_member]:
-            row.append(roster[staff_member][key])
-        writer.writerow(row)
-    return response
 
 
 class DayGroupListView(LoginRequiredMixin, ListView):
@@ -890,3 +791,102 @@ class StaffRequestDetailView(LoginRequiredMixin, DetailView):
     template_name = "staff_request_detail.html"
     login_url = "login"
     context_object_name = "staff_request"
+
+
+class RosterByStaffView(LoginRequiredMixin, TemplateView):
+    """Roster By Staff View."""
+
+    template_name = "roster_by_staff.html"
+    login_url = "login"
+
+    def get_context_data(self, **kwargs):
+        """Add dates and roster data to context."""
+        context = super().get_context_data(**kwargs)
+        if "start_date" in self.request.session:
+            start_date = datetime.datetime.strptime(
+                self.request.session["start_date"], "%d-%b-%Y"
+            )
+        else:
+            start_date = datetime.datetime.now()
+        dates, roster = get_roster_by_staff(start_date)
+        context["dates"] = dates
+        context["roster"] = roster
+        return context
+
+
+class SelectRosterPeriodView(LoginRequiredMixin, FormView):
+    """Select Roster Period View."""
+
+    template_name = "select_roster_period.html"
+    form_class = SelectRosterForm
+    success_url = reverse_lazy("timeslot_list")
+
+    def form_valid(self, form):
+        """Process select roster form."""
+        start_date = form.cleaned_data["start_date"]
+        self.request.session["start_date"] = start_date.date().strftime(
+            "%d-%b-%Y"
+        )
+        return super().form_valid(form)
+
+
+class GenerateRosterView(LoginRequiredMixin, FormView):
+    """Generate Roster View."""
+
+    template_name = "generate_roster.html"
+    form_class = GenerateRosterForm
+    success_url = reverse_lazy("roster_list")
+
+    def form_valid(self, form):
+        """Process generate roster form."""
+        start_date = form.cleaned_data["start_date"]
+        self.request.session["start_date"] = start_date.date().strftime(
+            "%d-%b-%Y"
+        )
+        try:
+            roster = RosterGenerator(start_date=start_date)
+            roster.create()
+        except SolutionNotFeasible:
+            messages.error(
+                self.request,
+                (
+                    "Could not generate roster,"
+                    " try putting more staff on leave or changing rules."
+                ),
+            )
+        except TooManyStaff:
+            messages.error(
+                self.request,
+                (
+                    "There are too many staff available,"
+                    " put more staff on leave."
+                ),
+            )
+        return super().form_valid(form)
+
+
+@login_required
+def download_csv(request):
+    """Download roster as CSV file."""
+    if "start_date" in request.session:
+        start_date = datetime.datetime.strptime(
+            request.session["start_date"], "%d-%b-%Y"
+        )
+    else:
+        start_date = datetime.datetime.now()
+
+    dates, roster = get_roster_by_staff(start_date)
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="roster.csv"'
+
+    writer = csv.writer(response)
+    dates = [date.strftime("%a %d-%b-%Y") for date in dates]
+    row = ["Staff Member", "Roles", "Shifts"] + dates
+    writer.writerow(row)
+    for staff_member in roster:
+        row = [staff_member]
+        for key in roster[staff_member]:
+            row.append(roster[staff_member][key])
+        writer.writerow(row)
+    return response
