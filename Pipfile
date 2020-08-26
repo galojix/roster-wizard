@@ -19,6 +19,7 @@ pydocstyle = "*"
 pytest-django = "*"
 pytest-cov = "*"
 black = "*"
+django-debug-toolbar = "*"
 
 [requires]
 python_version = "3.8"
