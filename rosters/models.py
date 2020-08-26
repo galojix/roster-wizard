@@ -130,7 +130,7 @@ class Shift(models.Model):
 class ShiftRule(models.Model):
     """Shift Rule (Skill Mix Rule)."""
 
-    shift_rule_name = models.CharField(
+    shiftrule_name = models.CharField(
         max_length=20, null=False, blank=False, unique=True
     )
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
@@ -138,7 +138,7 @@ class ShiftRule(models.Model):
 
     def __str__(self):
         """Return a meaningful string representation."""
-        return self.shift_rule_name
+        return self.shiftrule_name
 
     def get_absolute_url(self):
         """URL."""

@@ -226,7 +226,7 @@ class ShiftRuleListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         """Change order of shift rule list view."""
-        return ShiftRule.objects.order_by("shift", "shift_rule_name")
+        return ShiftRule.objects.order_by("shift", "shiftrule_name")
 
 
 class ShiftRuleDetailView(LoginRequiredMixin, DetailView):
@@ -241,7 +241,7 @@ class ShiftRuleUpdateView(LoginRequiredMixin, UpdateView):
     """Shift Rule Update View."""
 
     model = ShiftRule
-    fields = ("shift_rule_name", "shift")
+    fields = ("shiftrule_name", "shift")
     template_name = "shiftrule_update.html"
     login_url = "login"
 
@@ -260,7 +260,7 @@ class ShiftRuleCreateView(LoginRequiredMixin, CreateView):
 
     model = ShiftRule
     template_name = "shiftrule_create.html"
-    fields = ("shift_rule_name", "shift")
+    fields = ("shiftrule_name", "shift")
     login_url = "login"
 
 

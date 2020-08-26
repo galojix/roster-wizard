@@ -13,7 +13,7 @@
     {% for shiftrule in shiftrule_list %}
       <tr>
         <td>{{ shiftrule.shift }}
-        <td>{{ shiftrule.shift_rule_name }}</td>
+        <td>{{ shiftrule.shiftrule_name }}</td>
         <td><a href="{% url 'shiftrule_update' shiftrule.pk %}">Edit</a> | <a href="{% url 'shiftrule_delete' shiftrule.pk %}">Delete</a></td>
         <td>
             {% for shiftrulerole in shiftrule.shiftrulerole_set.all %}
