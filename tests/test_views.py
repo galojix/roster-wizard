@@ -37,15 +37,15 @@ def test_day_detail_view(init_db, client):
 def test_roster_list_view(init_db, client):
     """Test roster list view."""
     client.login(username="temporary", password="temporary")
-    response = client.get(reverse("roster_list"))
+    response = client.get(reverse("roster_by_staff"))
     assert response.status_code == 200
     assert "Roster By Staff:" in response.rendered_content
-    assert "roster_list.html" in [t.name for t in response.templates]
+    assert "roster_by_staff.html" in [t.name for t in response.templates]
 
 
 def test_roster_list_redirect_if_not_logged_in(client):
     """Test roster list view redirects if not logged in."""
-    response = client.get(reverse("roster_list"))
+    response = client.get(reverse("roster_by_staff"))
     SimpleTestCase().assertRedirects(
-        response, "/users/login/?next=/rosters/roster/"
+        response, "/users/login/?next=/rosters/roster_by_staff/"
     )
