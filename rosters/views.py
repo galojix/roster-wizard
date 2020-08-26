@@ -652,7 +652,6 @@ class StaffRequestListView(LoginRequiredMixin, ListView):
     model = StaffRequest
     template_name = "staffrequest_list.html"
     login_url = "login"
-    context_object_name = "staffrequest_list"
 
     def get_queryset(self):
         """Get staff requests in date range."""
@@ -675,7 +674,6 @@ class StaffRequestDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "staffrequest_delete.html"
     success_url = reverse_lazy("staffrequest_list")
     login_url = "login"
-    context_object_name = "staffrequest"
 
 
 class StaffRequestCreateView(LoginRequiredMixin, ListView):
@@ -790,7 +788,6 @@ class StaffRequestDetailView(LoginRequiredMixin, DetailView):
     model = StaffRequest
     template_name = "staffrequest_detail.html"
     login_url = "login"
-    context_object_name = "staffrequest"
 
 
 class RosterByStaffView(LoginRequiredMixin, TemplateView):
