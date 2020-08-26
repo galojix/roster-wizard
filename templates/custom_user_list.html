@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h4>Staff:</h4>
+  <table class="table table-striped table-bordered table-hover">
+    <tr>
+      <th>Last Name</th>
+      <th>First Name</th>
+      <th>Shifts Per Roster</th>
+      <th>Max Shifts if Taking Leave</th>
+      <th>Available for Shifts</th>
+      <th>Roles</th>
+      <th>Action</th>
+    </tr>
+    {% for custom_user in custom_user_list %}
+      <tr>
+        <td>{{ custom_user.last_name }}</td>
+        <td>{{ custom_user.first_name }}</td>
+        <td>{{ custom_user.shifts_per_roster }}</td>
+        <td>{{ custom_user.max_shifts }}</td>
+        <td>{{ custom_user.available }}</td>
+        <td>{% for role in custom_user.roles.all|dictsort:"role_name" %}
+            {{ role.role_name }}
+            {% endfor %}
+        </td>
+        <td><a href="{% url 'custom_user_update' custom_user.pk %}">Edit</a> | <a href="{% url 'custom_user_delete' custom_user.pk %}">Delete</a></td>
+      </tr>
+    {% endfor %}
+  </table>
+
+{% endblock content %}

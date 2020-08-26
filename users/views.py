@@ -9,11 +9,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import CustomUser
 
 
-class UserListView(LoginRequiredMixin, ListView):
+class CustomUserListView(LoginRequiredMixin, ListView):
     """UserListView."""
 
     model = CustomUser
-    template_name = "user_list.html"
+    template_name = "custom_user_list.html"
+    context_object_name = "custom_user_list"
     login_url = "login"
 
     def get_queryset(self):
@@ -21,19 +22,21 @@ class UserListView(LoginRequiredMixin, ListView):
         return CustomUser.objects.order_by("last_name", "first_name")
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
+class CustomUserDetailView(LoginRequiredMixin, DetailView):
     """UserDetailView."""
 
     model = CustomUser
-    template_name = "user_detail.html"
+    template_name = "custom_user_detail.html"
+    context_object_name = "custom_user"
     login_url = "login"
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
+class CustomUserUpdateView(LoginRequiredMixin, UpdateView):
     """UserUpdateView."""
 
     model = CustomUser
-    template_name = "user_update.html"
+    template_name = "custom_user_update.html"
+    context_object_name = "custom_user"
     fields = (
         "username",
         "first_name",
@@ -47,20 +50,21 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     login_url = "login"
 
 
-class UserDeleteView(LoginRequiredMixin, DeleteView):
+class CustomUserDeleteView(LoginRequiredMixin, DeleteView):
     """UserDeleteView."""
 
     model = CustomUser
-    template_name = "user_delete.html"
+    template_name = "custom_user_delete.html"
     success_url = reverse_lazy("user_list")
+    context_object_name = "custom_user"
     login_url = "login"
 
 
-class UserCreateView(LoginRequiredMixin, CreateView):
+class CustomUserCreateView(LoginRequiredMixin, CreateView):
     """UserCreateView."""
 
     model = CustomUser
-    template_name = "user_create.html"
+    template_name = "custom_user_create.html"
     fields = (
         "username",
         "first_name",

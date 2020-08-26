@@ -1,21 +1,36 @@
+"""URLs."""
 from django.urls import path
 
 from .views import (
-    UserListView,
-    UserUpdateView,
-    UserDetailView,
-    UserDeleteView,
-    UserCreateView,
+    CustomUserListView,
+    CustomUserUpdateView,
+    CustomUserDetailView,
+    CustomUserDeleteView,
+    CustomUserCreateView,
 )
 
 urlpatterns = [
     path(
-        "users/<int:pk>/update/", UserUpdateView.as_view(), name="user_update"
+        "custom_user/<int:pk>/update/",
+        CustomUserUpdateView.as_view(),
+        name="custom_user_update",
     ),
-    path("users/<int:pk>/", UserDetailView.as_view(), name="user_detail"),
     path(
-        "users/<int:pk>/delete/", UserDeleteView.as_view(), name="user_delete"
+        "custom_user/<int:pk>/",
+        CustomUserDetailView.as_view(),
+        name="custom_user_detail",
     ),
-    path("users/create/", UserCreateView.as_view(), name="user_create"),
-    path("users/", UserListView.as_view(), name="user_list"),
+    path(
+        "custom_user/<int:pk>/delete/",
+        CustomUserDeleteView.as_view(),
+        name="custom_user_delete",
+    ),
+    path(
+        "custom_user/create/",
+        CustomUserCreateView.as_view(),
+        name="custom_user_create",
+    ),
+    path(
+        "custom_user/", CustomUserListView.as_view(), name="custom_user_list"
+    ),
 ]
