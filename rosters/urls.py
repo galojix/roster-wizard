@@ -219,20 +219,6 @@ urlpatterns = [
         name="timeslot_create",
     ),
     path("timeslot/", TimeSlotListView.as_view(), name="timeslot_list"),
-    path(
-        "generate_roster/",
-        GenerateRosterView.as_view(),
-        name="generate_roster",
-    ),
-    path(
-        "select_roster_period/",
-        SelectRosterPeriodView.as_view(),
-        name="select_roster_period",
-    ),
-    path(
-        "roster_by_staff/", RosterByStaffView.as_view(), name="roster_by_staff"
-    ),
-    path("download_csv/", download_csv, name="download_csv"),
     path("daygroup/", DayGroupListView.as_view(), name="day_group_list"),
     path(
         "daygroup/<int:pk>/update/",
@@ -320,4 +306,18 @@ urlpatterns = [
         StaffRequestDetailView.as_view(),
         name="staff_request_detail",
     ),
+    path(
+        "roster_by_staff/", RosterByStaffView.as_view(), name="roster_by_staff"
+    ),
+    path(
+        "select_roster_period/",
+        SelectRosterPeriodView.as_view(),
+        name="select_roster_period",
+    ),
+    path(
+        "generate_roster/",
+        GenerateRosterView.as_view(),
+        name="generate_roster",
+    ),
+    path("download_csv/", download_csv, name="download_csv"),
 ]
