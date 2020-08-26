@@ -47,5 +47,5 @@ def test_roster_list_redirect_if_not_logged_in(client):
     """Test roster list view redirects if not logged in."""
     response = client.get(reverse("roster_by_staff"))
     SimpleTestCase().assertRedirects(
-        response, "/users/login/?next=/rosters/roster_by_staff/"
+        response, "/accounts/login/?next=/rosters/roster_by_staff/"
     )
