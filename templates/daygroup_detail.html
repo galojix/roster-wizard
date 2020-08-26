@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="staff_rule-entry">
+  <div class="staffrule-entry">
     <h4>Day Group Name: {{ daygroup.name }}</h4>
       <p>Days: {% for daygroupday in daygroup.daygroupday_set.all %}
         {{ daygroupday.day.number }}

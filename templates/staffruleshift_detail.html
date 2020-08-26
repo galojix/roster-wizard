@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="staffruleshift-entry">
+    <h2>Shift Sequence Shift</h2>
+    <p>Shift Sequence Rule Name: {{ staffruleshift.staffrule.staffrule_name }}</p>
+    <p>Shift: {{ staffruleshift.shift.shift_type }}</p>
+    <p>Position: {{ staffruleshift.position }}</p>
+  </div>
+
+  <p><a href="{% url 'staffruleshift_update' staffruleshift.pk %}">Edit</a> | <a href="{% url 'staffruleshift_delete' staffruleshift.pk %}">Delete</a></p>
+  <p>Back to <a href="{% url 'staffrule_list' %}">All Shift Sequence Rules</a></p>
+{% endblock content %}

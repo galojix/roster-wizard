@@ -199,18 +199,18 @@ class RosterGenerator:
                     continue
         return timeslot_ids
 
-    def _get_invalid_shift_seq(self, staff_rule):
+    def _get_invalid_shift_seq(self, staffrule):
         """Create invalid shift sequence for each rule.
 
         Example: { 1: [ "E", "L", "N"], 2: ["E", "L"] }
         """
         invalid_shift_sequence = OrderedDict()
-        staff_rule_shifts = staff_rule.staffruleshift_set.all()
-        staff_rule_shifts = staff_rule_shifts.order_by("position")
-        for staff_rule_shift in staff_rule_shifts:
+        staffruleshifts = staffrule.staffruleshift_set.all()
+        staffruleshifts = staffruleshifts.order_by("position")
+        for staffruleshift in staffruleshifts:
             invalid_shift_sequence.setdefault(
-                staff_rule_shift.position, []
-            ).append(staff_rule_shift.shift)
+                staffruleshift.position, []
+            ).append(staffruleshift.shift)
         return invalid_shift_sequence
 
     def _get_work_days_in_seq(self, invalid_shift_seq):
@@ -221,9 +221,9 @@ class RosterGenerator:
                 work_days_in_seq += 1
         return work_days_in_seq
 
-    def _get_all_days_in_seq(self, staff_rule):
+    def _get_all_days_in_seq(self, staffrule):
         """Get number of days in staff rule."""
-        daygroupday_set = staff_rule.daygroup.daygroupday_set.all()
+        daygroupday_set = staffrule.daygroup.daygroupday_set.all()
         all_days_in_seq = [
             daygroupday.day.number for daygroupday in daygroupday_set
         ]
@@ -307,12 +307,12 @@ class RosterGenerator:
 
         for worker in self.workers:
             roles = worker.roles.all()
-            for staff_rule in worker.staffrule_set.all():
-                invalid_shift_seq = self._get_invalid_shift_seq(staff_rule)
+            for staffrule in worker.staffrule_set.all():
+                invalid_shift_seq = self._get_invalid_shift_seq(staffrule)
                 work_days_in_seq = self._get_work_days_in_seq(
                     invalid_shift_seq
                 )
-                all_days_in_seq = self._get_all_days_in_seq(staff_rule)
+                all_days_in_seq = self._get_all_days_in_seq(staffrule)
 
                 for date in self.extended_dates:
                     shift_vars_in_seq_off = self._get_shift_vars_in_seq_off(

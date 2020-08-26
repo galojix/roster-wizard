@@ -81,7 +81,7 @@ class StaffRuleUpdateForm(ModelForm):
         """Meta."""
 
         model = StaffRule
-        fields = ("staff_rule_name", "daygroup", "staff")
+        fields = ("staffrule_name", "daygroup", "staff")
         widgets = {"staff": forms.CheckboxSelectMultiple()}
 
 
@@ -92,7 +92,7 @@ class StaffRuleCreateForm(ModelForm):
         """Meta."""
 
         model = StaffRule
-        fields = ("staff_rule_name", "daygroup", "staff")
+        fields = ("staffrule_name", "daygroup", "staff")
         widgets = {"staff": forms.CheckboxSelectMultiple()}
 
 

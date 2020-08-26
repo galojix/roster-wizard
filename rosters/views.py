@@ -321,19 +321,19 @@ class StaffRuleListView(LoginRequiredMixin, ListView):
     """Staff Rule List View."""
 
     model = StaffRule
-    template_name = "staff_rule_list.html"
+    template_name = "staffrule_list.html"
     login_url = "login"
 
     def get_queryset(self):
         """Change list order."""
-        return StaffRule.objects.order_by("staff_rule_name")
+        return StaffRule.objects.order_by("staffrule_name")
 
 
 class StaffRuleDetailView(LoginRequiredMixin, DetailView):
     """Staff Rule Detail View."""
 
     model = StaffRule
-    template_name = "staff_rule_detail.html"
+    template_name = "staffrule_detail.html"
     login_url = "login"
 
 
@@ -342,7 +342,7 @@ class StaffRuleUpdateView(LoginRequiredMixin, UpdateView):
 
     model = StaffRule
     form_class = StaffRuleUpdateForm
-    template_name = "staff_rule_update.html"
+    template_name = "staffrule_update.html"
     login_url = "login"
 
 
@@ -350,8 +350,8 @@ class StaffRuleDeleteView(LoginRequiredMixin, DeleteView):
     """Staff Rule Delete View."""
 
     model = StaffRule
-    template_name = "staff_rule_delete.html"
-    success_url = reverse_lazy("staff_rule_list")
+    template_name = "staffrule_delete.html"
+    success_url = reverse_lazy("staffrule_list")
     login_url = "login"
 
 
@@ -360,7 +360,7 @@ class StaffRuleCreateView(LoginRequiredMixin, CreateView):
 
     model = StaffRule
     form_class = StaffRuleCreateForm
-    template_name = "staff_rule_create.html"
+    template_name = "staffrule_create.html"
     login_url = "login"
 
 
@@ -368,7 +368,7 @@ class StaffRuleShiftListView(LoginRequiredMixin, ListView):
     """Staff Rule Shift List View."""
 
     model = StaffRuleShift
-    template_name = "staff_rule_shift_list.html"
+    template_name = "staffruleshift_list.html"
     login_url = "login"
 
 
@@ -376,8 +376,8 @@ class StaffRuleShiftDetailView(LoginRequiredMixin, DetailView):
     """Staff Rule Shift Detail View."""
 
     model = StaffRuleShift
-    template_name = "staff_rule_shift_detail.html"
-    success_url = reverse_lazy("staff_rule_list")
+    template_name = "staffruleshift_detail.html"
+    success_url = reverse_lazy("staffrule_list")
     login_url = "login"
 
 
@@ -386,8 +386,8 @@ class StaffRuleShiftUpdateView(LoginRequiredMixin, UpdateView):
 
     model = StaffRuleShift
     fields = ("shift", "position")
-    template_name = "staff_rule_shift_update.html"
-    success_url = reverse_lazy("staff_rule_list")
+    template_name = "staffruleshift_update.html"
+    success_url = reverse_lazy("staffrule_list")
     login_url = "login"
 
 
@@ -395,8 +395,8 @@ class StaffRuleShiftDeleteView(LoginRequiredMixin, DeleteView):
     """Staff Rule Shift Delete View."""
 
     model = StaffRuleShift
-    template_name = "staff_rule_shift_delete.html"
-    success_url = reverse_lazy("staff_rule_list")
+    template_name = "staffruleshift_delete.html"
+    success_url = reverse_lazy("staffrule_list")
     login_url = "login"
 
 
@@ -404,14 +404,14 @@ class StaffRuleShiftCreateView(LoginRequiredMixin, CreateView):
     """Staff Rule Shift Create View."""
 
     model = StaffRuleShift
-    template_name = "staff_rule_shift_create.html"
+    template_name = "staffruleshift_create.html"
     fields = ("shift", "position")
     login_url = "login"
 
     def form_valid(self, form):
         """Process staff rule shift create form."""
-        staff_rule = get_object_or_404(StaffRule, id=self.kwargs["staffrule"])
-        form.instance.staff_rule = staff_rule
+        staffrule = get_object_or_404(StaffRule, id=self.kwargs["staffrule"])
+        form.instance.staffrule = staffrule
         return super().form_valid(form)
 
 

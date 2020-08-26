@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="staffrule-entry">
+    <h2>Shift Sequence Name: {{ staffrule.staffrule_name }}</h2>
+      <p>Day Group: {{ staffrule.daygroup.name }}</p>
+      <p>Shifts: {% for staffruleshift in staffrule.staffruleshift_set.all %}
+        {{ staffruleshift.shift.shift_type }}:{{ staffruleshift.position }}
+        {% endfor %}
+      </p>
+  </div>
+
+  <p><a href="{% url 'staffrule_update' staffrule.pk %}">Edit</a> | <a href="{% url 'staffrule_delete' staffrule.pk %}">Delete</a></p>
+  <p>Back to <a href="{% url 'staffrule_list' %}">All Shift Sequences</a>.</p>
+{% endblock content %}

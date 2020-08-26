@@ -170,7 +170,7 @@ class ShiftRuleRole(models.Model):
 class StaffRule(models.Model):
     """Staff Rule (Shift Sequence Rule)."""
 
-    staff_rule_name = models.CharField(max_length=40, null=False, blank=False)
+    staffrule_name = models.CharField(max_length=40, null=False, blank=False)
     staff = models.ManyToManyField(get_user_model(), blank=True)
     shifts = models.ManyToManyField(Shift, through="StaffRuleShift")
     daygroup = models.ForeignKey(
@@ -179,17 +179,17 @@ class StaffRule(models.Model):
 
     def __str__(self):
         """Return a meaningful string representation."""
-        return self.staff_rule_name
+        return self.staff_name
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("staff_rule_detail", args=[str(self.id)])
+        return reverse("staffrule_detail", args=[str(self.id)])
 
 
 class StaffRuleShift(models.Model):
     """StaffRuleShift."""
 
-    staff_rule = models.ForeignKey(StaffRule, on_delete=models.CASCADE)
+    staffrule = models.ForeignKey(StaffRule, on_delete=models.CASCADE)
     shift = models.ForeignKey(
         Shift, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -203,7 +203,7 @@ class StaffRuleShift(models.Model):
     def __str__(self):
         """Return a meaningful string representation."""
         return (
-            self.staff_rule.staff_rule_name
+            self.staffrule.staff_name
             + ":"
             + self.shift.shift_type
             + ":"
@@ -212,7 +212,7 @@ class StaffRuleShift(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("staff_rule_list")
+        return reverse("staffrule_list")
 
 
 class TimeSlot(models.Model):
