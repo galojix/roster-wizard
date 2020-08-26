@@ -3,7 +3,7 @@
 {% block content %}
 
   <div class="user-entry">
-    <h4>{{ custom_user.last_name}}, {{ custom_user.first_name}}:</h4>
+    <h4>{{ customuser.last_name}}, {{ customuser.first_name}}:</h4>
     <table class="table table-striped table-bordered table-hover">
       <tr>
         <th>Username</th>
@@ -16,14 +16,14 @@
         <th>Roles</th>
       </tr>
       <tr>
-        <td>{{ custom_user.username }}</td>
-        <td>{{ custom_user.last_name }}</td>
-        <td>{{ custom_user.first_name }}</td>
-        <td>{{ custom_user.email }}</td>
-        <td>{{ custom_user.shifts_per_roster }}</td>
-        <td>{{ custom_user.max_shifts }}</td>
-        <td>{{ custom_user.available }}</td>
-        <td>{% for role in custom_user.roles.all %}
+        <td>{{ customuser.username }}</td>
+        <td>{{ customuser.last_name }}</td>
+        <td>{{ customuser.first_name }}</td>
+        <td>{{ customuser.email }}</td>
+        <td>{{ customuser.shifts_per_roster }}</td>
+        <td>{{ customuser.max_shifts }}</td>
+        <td>{{ customuser.available }}</td>
+        <td>{% for role in customuser.roles.all %}
             {{ role.role_name }}
             {% endfor %}
         </td>
@@ -31,7 +31,7 @@
     </table>
   </div>
 
-  <p><a href="{% url 'user_update' custom_user.pk %}">Edit</a> | <a href="{% url 'user_delete' custom_user.pk %}">Delete</a></p>
+  <p><a href="{% url 'user_update' customuser.pk %}">Edit</a> | <a href="{% url 'user_delete' customuser.pk %}">Delete</a></p>
   <p>Back to <a href="{% url 'user_list' %}">All Staff</a></p>
 
 {% endblock content %}

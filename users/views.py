@@ -13,8 +13,7 @@ class CustomUserListView(LoginRequiredMixin, ListView):
     """UserListView."""
 
     model = CustomUser
-    template_name = "custom_user_list.html"
-    context_object_name = "custom_user_list"
+    template_name = "customuser_list.html"
     login_url = "login"
 
     def get_queryset(self):
@@ -26,8 +25,7 @@ class CustomUserDetailView(LoginRequiredMixin, DetailView):
     """UserDetailView."""
 
     model = CustomUser
-    template_name = "custom_user_detail.html"
-    context_object_name = "custom_user"
+    template_name = "customuser_detail.html"
     login_url = "login"
 
 
@@ -35,8 +33,7 @@ class CustomUserUpdateView(LoginRequiredMixin, UpdateView):
     """UserUpdateView."""
 
     model = CustomUser
-    template_name = "custom_user_update.html"
-    context_object_name = "custom_user"
+    template_name = "customuser_update.html"
     fields = (
         "username",
         "first_name",
@@ -54,9 +51,8 @@ class CustomUserDeleteView(LoginRequiredMixin, DeleteView):
     """UserDeleteView."""
 
     model = CustomUser
-    template_name = "custom_user_delete.html"
+    template_name = "customuser_delete.html"
     success_url = reverse_lazy("user_list")
-    context_object_name = "custom_user"
     login_url = "login"
 
 
@@ -64,7 +60,7 @@ class CustomUserCreateView(LoginRequiredMixin, CreateView):
     """UserCreateView."""
 
     model = CustomUser
-    template_name = "custom_user_create.html"
+    template_name = "customuser_create.html"
     fields = (
         "username",
         "first_name",

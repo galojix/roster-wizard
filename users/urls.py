@@ -11,26 +11,24 @@ from .views import (
 
 urlpatterns = [
     path(
-        "custom_user/<int:pk>/update/",
+        "customuser/<int:pk>/update/",
         CustomUserUpdateView.as_view(),
-        name="custom_user_update",
+        name="customuser_update",
     ),
     path(
-        "custom_user/<int:pk>/",
+        "customuser/<int:pk>/",
         CustomUserDetailView.as_view(),
-        name="custom_user_detail",
+        name="customuser_detail",
     ),
     path(
-        "custom_user/<int:pk>/delete/",
+        "customuser/<int:pk>/delete/",
         CustomUserDeleteView.as_view(),
-        name="custom_user_delete",
+        name="customuser_delete",
     ),
     path(
-        "custom_user/create/",
+        "customuser/create/",
         CustomUserCreateView.as_view(),
-        name="custom_user_create",
+        name="customuser_create",
     ),
-    path(
-        "custom_user/", CustomUserListView.as_view(), name="custom_user_list"
-    ),
+    path("customuser/", CustomUserListView.as_view(), name="customuser_list"),
 ]

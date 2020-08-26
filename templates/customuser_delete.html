@@ -3,7 +3,7 @@
 {% block content %}
   <h4>Delete Staff Member:</h4>
   <form action="" method="post">{% csrf_token %}
-    <p>Are you sure you want to delete staff member: "{{ custom_user.last_name}}, {{ custom_user.first_name}}"?</p>
+    <p>Are you sure you want to delete staff member: "{{ customuser.last_name}}, {{ customuser.first_name}}"?</p>
     <button class="btn btn-danger ml-2" type="submit">Confirm</button>
   </form>
 {% endblock content %}
