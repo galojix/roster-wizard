@@ -3,9 +3,9 @@
 {% block content %}
 
   <div class="shift_rule-entry">
-    <h2>Skill Mix Rule Name: {{ shiftrule.shift_rule_name }}</h2>
-      <p>Shift: {{ shiftrule.shift }}</p>
-      <p>Roles: {% for shift_rule_role in shiftrule.shiftrulerole_set.all %}
+    <h2>Skill Mix Rule Name: {{ shift_rule.shift_rule_name }}</h2>
+      <p>Shift: {{ shift_rule.shift }}</p>
+      <p>Roles: {% for shift_rule_role in shift_rule.shiftrulerole_set.all %}
         {{ shift_rule_role.role.role_name }}:{{ shift_rule_role.count }}
         {% endfor %}
       </p>
