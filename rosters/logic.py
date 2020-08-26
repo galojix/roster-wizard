@@ -343,9 +343,9 @@ class RosterGenerator:
     def _collect_skill_mix_rules(self):
         """Collect shift rules into friendly structure."""
         log.info("Collection of skill mix rules started...")
-        self.shift_rules = {}
+        self.shiftrules = {}
         for shift in self.shifts:
-            self.shift_rules[shift.id] = []
+            self.shiftrules[shift.id] = []
             shiftrules = ShiftRule.objects.filter(shift=shift)
             for shiftrule in shiftrules:
                 shiftruleroles = shiftrule.shiftrulerole_set.all()
@@ -354,9 +354,9 @@ class RosterGenerator:
                     role_count[role.id] = 0
                 for shiftrulerole in shiftruleroles:
                     role_count[shiftrulerole.role.id] = shiftrulerole.count
-                self.shift_rules[shift.id].append(role_count)
+                self.shiftrules[shift.id].append(role_count)
         log.info("Collection of skill mix rules completed...")
-        log.debug(self.shift_rules)
+        log.debug(self.shiftrules)
 
     def _create_intermediate_skill_mix_vars(self):
         # Intermediate shift rule variables
@@ -366,9 +366,7 @@ class RosterGenerator:
                 f"t{timeslot.id}r{rule_num}"
             )
             for timeslot in self.timeslots
-            for rule_num, rule in enumerate(
-                self.shift_rules[timeslot.shift.id]
-            )
+            for rule_num, rule in enumerate(self.shiftrules[timeslot.shift.id])
         }
         log.info("Creation of skill mix intermediate variables completed...")
         log.debug(self.intermediate_skill_mix_vars)
@@ -377,14 +375,14 @@ class RosterGenerator:
         """Only one skill mix rule at a time should be enforced."""
         log.info("Enforcement of one shift rule at a time started...")
         for timeslot in self.timeslots:
-            if len(self.shift_rules[timeslot.shift.id]) >= 1:
+            if len(self.shiftrules[timeslot.shift.id]) >= 1:
                 self.model.Add(
                     sum(
                         self.intermediate_skill_mix_vars[
                             (timeslot.id, rule_num)
                         ]
                         for rule_num, rule in enumerate(
-                            self.shift_rules[timeslot.shift.id]
+                            self.shiftrules[timeslot.shift.id]
                         )
                     )
                     == 1
@@ -394,9 +392,9 @@ class RosterGenerator:
     def _enforce_skill_mix_rules(self):
         """Enforce one skill mix rule per shift per timeslot."""
         log.info("Enforcement of skill mix rules started...")
-        for shift_id in self.shift_rules:
-            if len(self.shift_rules[shift_id]) >= 1:
-                for rule_num, rule in enumerate(self.shift_rules[shift_id]):
+        for shift_id in self.shiftrules:
+            if len(self.shiftrules[shift_id]) >= 1:
+                for rule_num, rule in enumerate(self.shiftrules[shift_id]):
                     for role_id in rule:
                         role_count = rule[role_id]
                         for timeslot in self.timeslots.filter(

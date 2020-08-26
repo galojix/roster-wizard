@@ -142,20 +142,20 @@ class ShiftRule(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("shift_rule_detail", args=[str(self.id)])
+        return reverse("shiftrule_detail", args=[str(self.id)])
 
 
 class ShiftRuleRole(models.Model):
     """ShiftRuleRole."""
 
-    shift_rule = models.ForeignKey(ShiftRule, on_delete=models.CASCADE)
+    shiftrule = models.ForeignKey(ShiftRule, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     count = models.IntegerField(null=False, blank=False)
 
     def __str__(self):
         """Return a meaningful string representation."""
         return (
-            self.shift_rule.shift_rule_name
+            self.shiftrule.shiftrule_name
             + " "
             + self.role.role_name
             + ":"
@@ -164,7 +164,7 @@ class ShiftRuleRole(models.Model):
 
     def get_absolute_url(self):
         """Next URL to display after updating."""
-        return reverse("shift_rule_list")
+        return reverse("shiftrule_list")
 
 
 class StaffRule(models.Model):

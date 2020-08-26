@@ -50,10 +50,10 @@ def init_feasible_db():
     shift = Shift.objects.create(
         shift_type="Early", daygroup=daygroup, max_staff=2
     )
-    shift_rule = ShiftRule.objects.create(
+    shiftrule = ShiftRule.objects.create(
         shift_rule_name="Early Option A", shift=shift
     )
-    ShiftRuleRole.objects.create(shift_rule=shift_rule, role=role, count=2)
+    ShiftRuleRole.objects.create(shiftrule=shiftrule, role=role, count=2)
 
 
 @pytest.fixture()
@@ -83,10 +83,10 @@ def init_infeasible_db():
     shift = Shift.objects.create(
         shift_type="Early", daygroup=daygroup, max_staff=2
     )
-    shift_rule = ShiftRule.objects.create(
+    shiftrule = ShiftRule.objects.create(
         shift_rule_name="Early Option A", shift=shift
     )
-    ShiftRuleRole.objects.create(shift_rule=shift_rule, role=role, count=2)
+    ShiftRuleRole.objects.create(shiftrule=shiftrule, role=role, count=2)
 
 
 @pytest.fixture()
@@ -116,10 +116,10 @@ def init_too_many_staff_db():
     shift = Shift.objects.create(
         shift_type="Early", daygroup=daygroup, max_staff=2
     )
-    shift_rule = ShiftRule.objects.create(
+    shiftrule = ShiftRule.objects.create(
         shift_rule_name="Early Option A", shift=shift
     )
-    ShiftRuleRole.objects.create(shift_rule=shift_rule, role=role, count=2)
+    ShiftRuleRole.objects.create(shiftrule=shiftrule, role=role, count=2)
 
 
 def test_feasible_roster_generation(init_feasible_db):

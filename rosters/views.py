@@ -221,8 +221,7 @@ class ShiftRuleListView(LoginRequiredMixin, ListView):
     """Shift Rule List View."""
 
     model = ShiftRule
-    template_name = "shift_rule_list.html"
-    context_object_name = "shift_rule_list"
+    template_name = "shiftrule_list.html"
     login_url = "login"
 
     def get_queryset(self):
@@ -234,8 +233,7 @@ class ShiftRuleDetailView(LoginRequiredMixin, DetailView):
     """Shift Rule Detail View."""
 
     model = ShiftRule
-    template_name = "shift_rule_detail.html"
-    context_object_name = "shift_rule"
+    template_name = "shiftrule_detail.html"
     login_url = "login"
 
 
@@ -244,7 +242,7 @@ class ShiftRuleUpdateView(LoginRequiredMixin, UpdateView):
 
     model = ShiftRule
     fields = ("shift_rule_name", "shift")
-    template_name = "shift_rule_update.html"
+    template_name = "shiftrule_update.html"
     login_url = "login"
 
 
@@ -252,9 +250,8 @@ class ShiftRuleDeleteView(LoginRequiredMixin, DeleteView):
     """Shift Rule Delete View."""
 
     model = ShiftRule
-    template_name = "shift_rule_delete.html"
-    success_url = reverse_lazy("shift_rule_list")
-    context_object_name = "shift_rule"
+    template_name = "shiftrule_delete.html"
+    success_url = reverse_lazy("shiftrule_list")
     login_url = "login"
 
 
@@ -262,7 +259,7 @@ class ShiftRuleCreateView(LoginRequiredMixin, CreateView):
     """Shift Rule Create View."""
 
     model = ShiftRule
-    template_name = "shift_rule_create.html"
+    template_name = "shiftrule_create.html"
     fields = ("shift_rule_name", "shift")
     login_url = "login"
 
@@ -271,21 +268,19 @@ class ShiftRuleRoleListView(LoginRequiredMixin, ListView):
     """Shift Rule Role List View."""
 
     model = ShiftRuleRole
-    template_name = "shift_rule_role_list.html"
-    context_object_name = "shift_rule_role_list"
+    template_name = "shiftrulerole_list.html"
     login_url = "login"
 
     def get_queryset(self):
         """Change order of shift rule role list view."""
-        return ShiftRuleRole.objects.order_by("shift_rule", "role")
+        return ShiftRuleRole.objects.order_by("shiftrule", "role")
 
 
 class ShiftRuleRoleDetailView(LoginRequiredMixin, DetailView):
     """Shift Rule Role Detail View."""
 
     model = ShiftRuleRole
-    template_name = "shift_rule_role_detail.html"
-    context_object_name = "shift_rule_role"
+    template_name = "shiftrulerole_detail.html"
     login_url = "login"
 
 
@@ -293,9 +288,8 @@ class ShiftRuleRoleUpdateView(LoginRequiredMixin, UpdateView):
     """Shift Rule Role Update View."""
 
     model = ShiftRuleRole
-    fields = ("shift_rule", "role", "count")
-    template_name = "shift_rule_role_update.html"
-    context_object_name = "shift_rule_role"
+    fields = ("shiftrule", "role", "count")
+    template_name = "shiftrulerole_update.html"
     login_url = "login"
 
 
@@ -303,9 +297,8 @@ class ShiftRuleRoleDeleteView(LoginRequiredMixin, DeleteView):
     """Shift Rule Role Delete View."""
 
     model = ShiftRuleRole
-    template_name = "shift_rule_role_delete.html"
-    success_url = reverse_lazy("shift_rule_list")
-    context_object_name = "shift_rule_role"
+    template_name = "shiftrulerole_delete.html"
+    success_url = reverse_lazy("shiftrule_list")
     login_url = "login"
 
 
@@ -313,14 +306,14 @@ class ShiftRuleRoleCreateView(LoginRequiredMixin, CreateView):
     """Shift Rule Role Create View."""
 
     model = ShiftRuleRole
-    template_name = "shift_rule_role_create.html"
+    template_name = "shiftrulerole_create.html"
     fields = ("role", "count")
     login_url = "login"
 
     def form_valid(self, form):
         """Process shift rule role create form."""
-        shift_rule = get_object_or_404(ShiftRule, id=self.kwargs["shiftrule"])
-        form.instance.shift_rule = shift_rule
+        shiftrule = get_object_or_404(ShiftRule, id=self.kwargs["shiftrule"])
+        form.instance.shiftrule = shiftrule
         return super().form_valid(form)
 
 
