@@ -45,7 +45,7 @@ from .views import (
     TimeSlotCreateView,
     GenerateRosterView,
     SelectRosterView,
-    RosterListView,
+    RosterByStaffView,
     StaffRequestListView,
     StaffRequestDeleteView,
     StaffRequestCreateView,
@@ -220,13 +220,15 @@ urlpatterns = [
     ),
     path("timeslot/", TimeSlotListView.as_view(), name="timeslot_list"),
     path(
-        "timeslot/generate",
+        "timeslot/generate/",
         GenerateRosterView.as_view(),
         name="generate_roster",
     ),
-    path("timeslot/select", SelectRosterView.as_view(), name="select_roster"),
-    path("roster/", RosterListView.as_view(), name="roster_list"),
-    path("roster/download", download_csv, name="download_csv"),
+    path("timeslot/select/", SelectRosterView.as_view(), name="select_roster"),
+    path(
+        "roster_by_staff/", RosterByStaffView.as_view(), name="roster_by_staff"
+    ),
+    path("roster/download/", download_csv, name="download_csv"),
     path("daygroup/", DayGroupListView.as_view(), name="day_group_list"),
     path(
         "daygroup/<int:pk>/update/",

@@ -5,7 +5,7 @@ import csv
 
 from collections import OrderedDict
 
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import (
     UpdateView,
     DeleteView,
@@ -438,11 +438,10 @@ class TimeSlotListView(LoginRequiredMixin, ListView):
         )
 
 
-class RosterListView(LoginRequiredMixin, ListView):
-    """Roster List View."""
+class RosterByStaffView(LoginRequiredMixin, TemplateView):
+    """Roster By Staff View."""
 
-    model = TimeSlot
-    template_name = "roster_list.html"
+    template_name = "roster_by_staff.html"
     login_url = "login"
 
     def get_context_data(self, **kwargs):
