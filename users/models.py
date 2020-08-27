@@ -1,10 +1,10 @@
 """User models."""
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from django.urls import reverse
 
 
-class CustomUserManager(models.Manager):
+class CustomUserManager(UserManager):
     """CustomUser Manager."""
 
     def get_queryset(self):

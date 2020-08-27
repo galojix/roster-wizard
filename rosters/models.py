@@ -124,9 +124,19 @@ class DayGroupDay(models.Model):
         return reverse("daygroupday_detail", args=[str(self.id)])
 
 
+class ShiftManager(models.Manager):
+    """Shift Manager."""
+
+    def get_queryset(self):
+        """Select additional related object data."""
+        query_set = super().get_queryset()
+        return query_set.select_related("daygroup")
+
+
 class Shift(models.Model):
     """Shift."""
 
+    objects = ShiftManager()
     shift_type = models.CharField(max_length=20, null=False, blank=False)
     daygroup = models.ForeignKey(
         DayGroup, null=True, blank=False, on_delete=models.SET_NULL
@@ -147,9 +157,19 @@ class Shift(models.Model):
         return reverse("shift_detail", args=[str(self.id)])
 
 
+class ShiftRuleManager(models.Manager):
+    """ShiftRule Manager."""
+
+    def get_queryset(self):
+        """Select additional related object data."""
+        query_set = super().get_queryset()
+        return query_set.select_related("shift").prefetch_related("roles")
+
+
 class ShiftRule(models.Model):
     """Shift Rule (Skill Mix Rule)."""
 
+    objects = ShiftRuleManager()
     shiftrule_name = models.CharField(
         max_length=20, null=False, blank=False, unique=True
     )
@@ -165,9 +185,19 @@ class ShiftRule(models.Model):
         return reverse("shiftrule_detail", args=[str(self.id)])
 
 
+class ShiftRuleRoleManager(models.Manager):
+    """ShiftRuleRole Manager."""
+
+    def get_queryset(self):
+        """Select additional related object data."""
+        query_set = super().get_queryset()
+        return query_set.select_related("shiftrule", "role")
+
+
 class ShiftRuleRole(models.Model):
     """ShiftRuleRole."""
 
+    objects = ShiftRuleRoleManager()
     shiftrule = models.ForeignKey(ShiftRule, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     count = models.IntegerField(null=False, blank=False)
@@ -187,9 +217,21 @@ class ShiftRuleRole(models.Model):
         return reverse("shiftrule_list")
 
 
+class StaffRuleManager(models.Manager):
+    """StaffRule Manager."""
+
+    def get_queryset(self):
+        """Select additional related object data."""
+        query_set = super().get_queryset()
+        return query_set.select_related("daygroup").prefetch_related(
+            "staff", "shifts"
+        )
+
+
 class StaffRule(models.Model):
     """Staff Rule (Shift Sequence Rule)."""
 
+    objects = StaffRuleManager()
     staffrule_name = models.CharField(max_length=40, null=False, blank=False)
     staff = models.ManyToManyField(get_user_model(), blank=True)
     shifts = models.ManyToManyField(Shift, through="StaffRuleShift")
@@ -206,9 +248,19 @@ class StaffRule(models.Model):
         return reverse("staffrule_detail", args=[str(self.id)])
 
 
+class StaffRuleShiftManager(models.Manager):
+    """StaffRuleShift Manager."""
+
+    def get_queryset(self):
+        """Select additional related object data."""
+        query_set = super().get_queryset()
+        return query_set.select_related("staffrule", "shift")
+
+
 class StaffRuleShift(models.Model):
     """StaffRuleShift."""
 
+    objects = StaffRuleShiftManager()
     staffrule = models.ForeignKey(StaffRule, on_delete=models.CASCADE)
     shift = models.ForeignKey(
         Shift, on_delete=models.CASCADE, null=True, blank=True
@@ -266,9 +318,19 @@ class TimeSlot(models.Model):
         return reverse("timeslot_list")
 
 
+class StaffRequestManager(models.Manager):
+    """StaffRequest Manager."""
+
+    def get_queryset(self):
+        """Select additional related object data."""
+        query_set = super().get_queryset()
+        return query_set.select_related("shift", "staff_member")
+
+
 class StaffRequest(models.Model):
     """StaffRequest."""
 
+    objects = StaffRequestManager()
     priority = models.IntegerField(null=False, blank=False)
     date = models.DateField(null=False, blank=False)
     like = models.BooleanField(null=False, blank=False, default=True)
