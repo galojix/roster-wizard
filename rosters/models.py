@@ -5,9 +5,19 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 
+class LeaveManager(models.Manager):
+    """Leave Manager."""
+
+    def get_queryset(self):
+        """Select additional related object data."""
+        query_set = super().get_queryset()
+        return query_set.select_related("staff_member")
+
+
 class Leave(models.Model):
     """Leave."""
 
+    objects = LeaveManager()
     date = models.DateField(null=False, blank=False)
     description = models.CharField(
         max_length=15, null=False, blank=False, default="Leave"
