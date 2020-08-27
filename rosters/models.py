@@ -225,9 +225,19 @@ class StaffRuleShift(models.Model):
         return reverse("staffrule_list")
 
 
+class TimeSlotManager(models.Manager):
+    """TimeSlot Manager."""
+
+    def get_queryset(self):
+        """Select additional related object data."""
+        query_set = super().get_queryset()
+        return query_set.select_related("shift").prefetch_related("staff")
+
+
 class TimeSlot(models.Model):
     """Time Slot."""
 
+    objects = TimeSlotManager()
     date = models.DateField(null=False, blank=False)
     staff = models.ManyToManyField(get_user_model())
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)

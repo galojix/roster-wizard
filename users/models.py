@@ -4,6 +4,15 @@ from django.db import models
 from django.urls import reverse
 
 
+class CustomUserManager(models.Manager):
+    """CustomUser Manager."""
+
+    def get_queryset(self):
+        """Select additional related object data."""
+        query_set = super().get_queryset()
+        return query_set.prefetch_related("roles")
+
+
 class CustomUser(AbstractUser):
     """Custom user model."""
 
@@ -12,6 +21,7 @@ class CustomUser(AbstractUser):
 
         ordering = ("last_name", "first_name")
 
+    objects = CustomUserManager()
     available = models.BooleanField(null=False, blank=False, default=True)
     shifts_per_roster = models.IntegerField(null=False, blank=False, default=0)
     max_shifts = models.BooleanField(null=False, blank=False, default=True)
