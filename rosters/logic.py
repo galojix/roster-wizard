@@ -639,18 +639,26 @@ class RosterGenerator:
 
 def get_roster_by_staff(start_date):
     """Create data structures for roster grouped by staff."""
+    num_days = Day.objects.count()
     dates = []
+    for day in range(num_days):
+        date = start_date + datetime.timedelta(days=day)
+        date = date.date()
+        dates.append(date)
+    date_range = [
+        start_date.date(),
+        start_date.date() + datetime.timedelta(days=num_days - 1),
+    ]
     roster = OrderedDict()
     workers = (
         get_user_model()
         .objects.all()
         .order_by("roles__role_name", "last_name", "first_name")
     )
-    num_days = Day.objects.count()
     for worker in workers:
         roster[worker.last_name + ", " + worker.first_name] = OrderedDict()
         staff_roles = ""
-        for role in worker.roles.all().order_by("role_name"):
+        for role in worker.roles.order_by("role_name"):
             staff_roles += role.role_name + " "
         roster[worker.last_name + ", " + worker.first_name][
             "roles"
@@ -658,20 +666,8 @@ def get_roster_by_staff(start_date):
         roster[worker.last_name + ", " + worker.first_name][
             "shifts_per_roster"
         ] = worker.shifts_per_roster
-        dates = []
-        for day in range(num_days):
-            date = start_date + datetime.timedelta(days=day)
-            date = date.date()
-            dates.append(date)
-        date_range = [
-            start_date.date(),
-            start_date.date() + datetime.timedelta(days=num_days - 1),
-        ]
-        all_timeslots = TimeSlot.objects.filter(date__range=date_range)
-        for timeslot in all_timeslots:
-            roster[worker.last_name + ", " + worker.first_name][
-                timeslot.date
-            ] = "X"
+        for date in dates:
+            roster[worker.last_name + ", " + worker.first_name][date] = "X"
         worker_timeslots = worker.timeslot_set.filter(date__range=date_range)
         for timeslot in worker_timeslots:
             roster[worker.last_name + ", " + worker.first_name][
