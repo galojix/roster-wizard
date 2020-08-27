@@ -658,33 +658,28 @@ def get_roster_by_staff(start_date):
         roster[worker.last_name + ", " + worker.first_name][
             "shifts_per_roster"
         ] = worker.shifts_per_roster
-        leaves = Leave.objects.filter(staff_member=worker)
         dates = []
         for day in range(num_days):
             date = start_date + datetime.timedelta(days=day)
             date = date.date()
             dates.append(date)
-            try:
-                roster[worker.last_name + ", " + worker.first_name][
-                    date
-                ] = TimeSlot.objects.get(
-                    date=date, staff=worker.id
-                ).shift.shift_type
-            except TimeSlot.DoesNotExist:
-                leave = leaves.filter(date=date).count()
-                if leave == 0:
-                    roster[worker.last_name + ", " + worker.first_name][
-                        date
-                    ] = "X"
-                else:
-                    roster[worker.last_name + ", " + worker.first_name][
-                        date
-                    ] = leaves.get(date=date).description
-            except TimeSlot.MultipleObjectsReturned:
-                timeslots = TimeSlot.objects.filter(date=date, staff=worker.id)
-                roster[worker.last_name + ", " + worker.first_name][date] = ""
-                for timeslot in timeslots:
-                    roster[worker.last_name + ", " + worker.first_name][
-                        date
-                    ] += (timeslot.shift.shift_type + " ")
+        date_range = [
+            start_date.date(),
+            start_date.date() + datetime.timedelta(days=num_days - 1),
+        ]
+        all_timeslots = TimeSlot.objects.filter(date__range=date_range)
+        for timeslot in all_timeslots:
+            roster[worker.last_name + ", " + worker.first_name][
+                timeslot.date
+            ] = "X"
+        worker_timeslots = worker.timeslot_set.filter(date__range=date_range)
+        for timeslot in worker_timeslots:
+            roster[worker.last_name + ", " + worker.first_name][
+                timeslot.date
+            ] = timeslot.shift.shift_type
+        worker_leave = worker.leave_set.filter(date__range=date_range)
+        for leave in worker_leave:
+            roster[worker.last_name + ", " + worker.first_name][
+                leave.date
+            ] = leave.description
     return dates, roster
