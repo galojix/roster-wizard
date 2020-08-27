@@ -84,9 +84,19 @@ class Day(models.Model):
         return reverse("day_detail", args=[str(self.id)])
 
 
+class DayGroupDayManager(models.Manager):
+    """DayGroupDay Manager."""
+
+    def get_queryset(self):
+        """Select additional related object data."""
+        query_set = super().get_queryset()
+        return query_set.select_related("daygroup", "day")
+
+
 class DayGroupDay(models.Model):
     """Day Group Day."""
 
+    objects = DayGroupDayManager()
     daygroup = models.ForeignKey(DayGroup, on_delete=models.CASCADE)
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
 
