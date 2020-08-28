@@ -241,7 +241,7 @@ class StaffRule(models.Model):
 
     def __str__(self):
         """Return a meaningful string representation."""
-        return self.staff_name
+        return self.staffrule_name
 
     def get_absolute_url(self):
         """URL."""
