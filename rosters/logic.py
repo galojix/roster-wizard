@@ -64,12 +64,12 @@ class RosterGenerator:
 
     def _create_timeslots(self):
         # Create timeslots
-        for day, date in enumerate(self.dates):
-            for shift in self.shifts:
-                daygroupdays = shift.daygroup.daygroupday_set.all()
-                for daygroupday in daygroupdays:
-                    if daygroupday.day.number == day + 1:
-                        TimeSlot.objects.create(date=date, shift=shift)
+        for shift in self.shifts:
+            daygroupdays = shift.daygroup.daygroupday_set.all()
+            for daygroupday in daygroupdays:
+                TimeSlot.objects.create(
+                    date=self.dates[daygroupday.day.number - 1], shift=shift
+                )
         self.timeslots = TimeSlot.objects.filter(date__range=self.date_range)
 
     def _check_if_too_many_staff(self):
