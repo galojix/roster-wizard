@@ -8,7 +8,7 @@ from collections import OrderedDict
 from ortools.sat.python import cp_model
 from django.contrib.auth import get_user_model
 
-from .models import Leave, Role, Shift, ShiftRule, TimeSlot, Day
+from .models import Leave, Role, Shift, ShiftRule, TimeSlot, Day, StaffRequest
 
 
 log = logging.getLogger("django")
@@ -32,7 +32,14 @@ class RosterGenerator:
     def __init__(self, start_date):
         """Create starting conditions."""
         self.workers = get_user_model().objects.filter(available=True)
+        self.worker_lookup = {
+            worker.id: worker_num
+            for worker_num, worker in enumerate(self.workers)
+        }
         self.shifts = Shift.objects.all().order_by("shift_type")
+        self.shift_lookup = {
+            shift.id: shift_num for shift_num, shift in enumerate(self.shifts)
+        }
         self.num_days = Day.objects.count()
         self.date_range = [
             start_date.date(),
@@ -43,10 +50,17 @@ class RosterGenerator:
             start_date.date() - datetime.timedelta(days=1),
         ]
         self.leaves = Leave.objects.filter(date__range=self.date_range)
+        self.staffrequests = StaffRequest.objects.filter(
+            date__range=self.date_range
+        )
+        self.days = [day.number for day in Day.objects.order_by("number")]
         self.dates = [
             (start_date + datetime.timedelta(days=n)).date()
             for n in range(self.num_days)
         ]
+        self.date_lookup = {
+            date: day_num for day_num, date in enumerate(self.dates)
+        }
         self.extended_dates = [
             (
                 start_date
@@ -93,30 +107,21 @@ class RosterGenerator:
         log.info("Too many staff check completed...")
 
     def _collect_shift_requests(self):
-        # Collect shift requests into friendly data structure
+        """Collect shift requests into friendly data structure."""
         log.info("Shift request collection started...")
-        self.shift_requests = []
-        for worker in self.workers:
-            worker_shift_requests = []
-            staffrequests = worker.staffrequest_set.all()
-            for date in self.dates:
-                worker_shift_requests_for_day = []
-                for timeslot in TimeSlot.objects.filter(date=date).order_by(
-                    "shift__shift_type"
-                ):
-                    priority = 0
-                    for staffrequest in staffrequests:
-                        if (
-                            staffrequest.date == date
-                            and staffrequest.shift == timeslot.shift
-                        ):
-                            if staffrequest.like:
-                                priority = staffrequest.priority
-                            else:
-                                priority = -staffrequest.priority
-                    worker_shift_requests_for_day.append(priority)
-                worker_shift_requests.append(worker_shift_requests_for_day)
-            self.shift_requests.append(worker_shift_requests)
+        self.shift_requests = [
+            [[0 for shift in self.shifts] for day in self.days]
+            for worker in self.workers
+        ]
+        for staffrequest in self.staffrequests:
+            worker_num = self.worker_lookup[staffrequest.staff_member.id]
+            day_num = self.date_lookup[staffrequest.date]
+            shift_num = self.shift_lookup[staffrequest.shift.id]
+            self.shift_requests[worker_num][day_num][shift_num] = (
+                staffrequest.priority
+                if staffrequest.like
+                else -staffrequest.priority
+            )
         log.info("Shift request collection completed...")
         log.debug(self.shift_requests)
 
