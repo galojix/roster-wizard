@@ -424,18 +424,18 @@ class RosterGenerator:
     def _enforce_one_shift_per_day(self):
         """Assign at most one shift per day per worker."""
         log.info("Restriction of staff to one shift per day started...")
-        for worker in self.workers:
-            for date in self.dates:
+        for date in self.dates:
+            timeslots = TimeSlot.objects.filter(date=date)
+            for worker in self.workers:
+                roles = worker.roles.all()
                 if worker.shifts_per_roster != 0:  # Zero is unlimited shifts
                     self.model.Add(
                         sum(
                             self.shift_vars[
                                 (worker.id, role.id, date, timeslot.id)
                             ]
-                            for role in worker.roles.all()
-                            for timeslot in TimeSlot.objects.filter(
-                                date=date
-                            ).order_by("shift__shift_type")
+                            for role in roles
+                            for timeslot in timeslots
                         )
                         <= 1
                     )
