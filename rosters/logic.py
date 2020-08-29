@@ -49,6 +49,10 @@ class RosterGenerator:
             start_date.date() - datetime.timedelta(days=self.num_days),
             start_date.date() - datetime.timedelta(days=1),
         ]
+        self.extended_date_range = [
+            start_date.date() - datetime.timedelta(days=self.num_days),
+            start_date.date() + datetime.timedelta(days=self.num_days - 1),
+        ]
         self.leaves = Leave.objects.filter(date__range=self.date_range)
         self.staffrequests = StaffRequest.objects.filter(
             date__range=self.date_range
@@ -188,16 +192,24 @@ class RosterGenerator:
 
     def _get_timeslot_ids(self):
         """Map date and shift to timeslot ID."""
+        # timeslot_ids = {}
+        # for date in self.extended_dates:
+        #     timeslot_ids[date] = {}
+        #     for shift in self.shifts:
+        #         try:
+        #             timeslot_ids[date][shift] = TimeSlot.objects.get(
+        #                 date=date, shift=shift
+        #             ).id
+        #         except TimeSlot.DoesNotExist:
+        #             continue
+        # return timeslot_ids
+
+        timeslots = TimeSlot.objects.filter(
+            date__range=self.extended_date_range
+        )
         timeslot_ids = {}
-        for date in self.extended_dates:
-            timeslot_ids[date] = {}
-            for shift in self.shifts:
-                try:
-                    timeslot_ids[date][shift] = TimeSlot.objects.get(
-                        date=date, shift=shift
-                    ).id
-                except TimeSlot.DoesNotExist:
-                    continue
+        for timeslot in timeslots:
+            timeslot_ids[(timeslot.date, timeslot.shift)] = timeslot.id
         return timeslot_ids
 
     def _get_invalid_shift_seq(self, staffrule):
@@ -289,7 +301,7 @@ class RosterGenerator:
                                     worker.id,
                                     role.id,
                                     day_to_test,
-                                    timeslot_ids[day_to_test][invalid_shift],
+                                    timeslot_ids[(day_to_test, invalid_shift)],
                                 )
                             ]
                         )
@@ -302,7 +314,7 @@ class RosterGenerator:
 
         Need to look at previous roster period also
         """
-        log.info("Addition of shift sequence rules started...")
+        log.info("Enforcement of shift sequence rules started...")
 
         timeslot_ids = self._get_timeslot_ids()
 
@@ -339,7 +351,7 @@ class RosterGenerator:
                         self.model.Add(
                             sum(shift_vars_in_seq_on) < work_days_in_seq
                         ).OnlyEnforceIf(shift_vars_in_seq_off)
-        log.info("Addition of shift sequence rules completed...")
+        log.info("Enforcement of shift sequence rules completed...")
 
     def _collect_skill_mix_rules(self):
         """Collect shift rules into friendly structure."""
