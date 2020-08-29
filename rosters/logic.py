@@ -168,23 +168,22 @@ class RosterGenerator:
         )
 
     def _exclude_leave_dates(self):
-        # Exclude leave dates from roster
+        """Exclude leave dates from roster."""
         log.info("Exclusion of leave dates started...")
-        for timeslot in self.timeslots:
-            for leave in self.leaves:
-                if timeslot.date == leave.date:
-                    for role in leave.staff_member.roles.all():
-                        self.model.Add(
-                            self.shift_vars[
-                                (
-                                    leave.staff_member.id,
-                                    role.id,
-                                    timeslot.date,
-                                    timeslot.id,
-                                )
-                            ]
-                            == 0
-                        )
+        for leave in self.leaves:
+            for role in leave.staff_member.roles.all():
+                for timeslot in self.timeslots.filter(date=leave.date):
+                    self.model.Add(
+                        self.shift_vars[
+                            (
+                                leave.staff_member.id,
+                                role.id,
+                                timeslot.date,
+                                timeslot.id,
+                            )
+                        ]
+                        == 0
+                    )
         log.info("Exclusion of leave dates completed...")
 
     def _get_timeslot_ids(self):
@@ -395,13 +394,13 @@ class RosterGenerator:
         """Enforce one skill mix rule per shift per timeslot."""
         log.info("Enforcement of skill mix rules started...")
         for shift_id in self.shiftrules:
+            shift_timeslots = self.timeslots.filter(shift__id=shift_id)
             if len(self.shiftrules[shift_id]) >= 1:
                 for rule_num, rule in enumerate(self.shiftrules[shift_id]):
                     for role_id in rule:
+                        workers = self.workers.filter(roles__id=role_id)
                         role_count = rule[role_id]
-                        for timeslot in self.timeslots.filter(
-                            shift__id=shift_id
-                        ):
+                        for timeslot in shift_timeslots:
                             self.model.Add(
                                 sum(
                                     self.shift_vars[
@@ -412,9 +411,7 @@ class RosterGenerator:
                                             timeslot.id,
                                         )
                                     ]
-                                    for worker in self.workers.filter(
-                                        roles__id=role_id
-                                    )
+                                    for worker in workers
                                 )
                                 == role_count
                             ).OnlyEnforceIf(

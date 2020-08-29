@@ -16,6 +16,7 @@ from rosters.models import (
     StaffRequest,
     StaffRule,
     StaffRuleShift,
+    Leave,
 )
 from rosters.logic import (
     RosterGenerator,
@@ -123,6 +124,11 @@ def init_feasible_db():
     )
     StaffRuleShift.objects.create(
         shift=early_shift, staffrule=staff_rule1, position=2
+    )
+    Leave.objects.create(
+        date=datetime.datetime.now(),
+        description="Leave",
+        staff_member=staff_member2,
     )
 
 
