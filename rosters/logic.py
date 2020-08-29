@@ -136,12 +136,12 @@ class RosterGenerator:
             (worker.id, role.id, date, timeslot.id): self.model.NewBoolVar(
                 f"shift_n{worker.id}r{role.id}d{date}t{timeslot.id}"
             )
-            for worker in self.workers
-            for role in worker.roles.all()
             for date in self.dates
             for timeslot in self.timeslots.filter(date=date).order_by(
                 "shift__shift_type"
             )
+            for worker in self.workers
+            for role in worker.roles.all()
         }
         log.info("Shift variable creation completed...")
         log.debug(self.shift_vars.keys())
