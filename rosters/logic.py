@@ -90,6 +90,17 @@ class RosterGenerator:
                 )
         self.timeslots = TimeSlot.objects.filter(date__range=self.date_range)
 
+    def _create_timeslot_ids_lookup(self):
+        # Create timeslot id lookup
+        self.timeslot_ids_lookup = {}
+        for date in self.dates:
+            timeslot_ids_for_date = []
+            for timeslot in TimeSlot.objects.filter(date=date).order_by(
+                "shift__shift_type"
+            ):
+                timeslot_ids_for_date.append(timeslot)
+            self.timeslot_ids_lookup[date] = timeslot_ids_for_date
+
     def _check_if_too_many_staff(self):
         # Check if too many staff
         log.info("Too many staff check started...")
@@ -464,9 +475,7 @@ class RosterGenerator:
                 self.shift_vars[(worker.id, role.id, date, timeslot.id)]
                 for role in worker.roles.all()
                 for date in self.dates
-                for timeslot in TimeSlot.objects.filter(date=date).order_by(
-                    "shift__shift_type"
-                )
+                for timeslot in self.timeslot_ids_lookup[date]
             )
             if worker.shifts_per_roster != 0:  # Zero means unlimited shifts
                 shifts_per_roster = self._get_shifts_per_roster(worker)
@@ -496,9 +505,7 @@ class RosterGenerator:
                 self.shift_vars[(worker.id, role.id, date, timeslot.id)]
                 for role in worker.roles.all()
                 for date in dates1
-                for timeslot in TimeSlot.objects.filter(date=date).order_by(
-                    "shift__shift_type"
-                )
+                for timeslot in self.timeslot_ids_lookup[date]
             )
             if worker.shifts_per_roster != 0:  # Zero means unlimited shifts
                 shifts_per_roster = self._get_shifts_per_roster(worker)
@@ -519,11 +526,7 @@ class RosterGenerator:
                 for n, worker in enumerate(self.workers)
                 for role in worker.roles.all()
                 for d, date in enumerate(self.dates)
-                for s, timeslot in enumerate(
-                    TimeSlot.objects.filter(date=date).order_by(
-                        "shift__shift_type"
-                    )
-                )
+                for s, timeslot in enumerate(self.timeslot_ids_lookup[date])
             )
         )
         log.info("Maximising of staff requests completed...")
@@ -621,6 +624,7 @@ class RosterGenerator:
         """Create roster as per constraints."""
         self._clear_existing_timeslots()
         self._create_timeslots()
+        self._create_timeslot_ids_lookup()
         self._check_if_too_many_staff()
         self._collect_shift_requests()
         self._create_shift_vars()
