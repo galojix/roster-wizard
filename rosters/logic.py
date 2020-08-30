@@ -556,9 +556,7 @@ class RosterGenerator:
             for n, worker in enumerate(self.workers):
                 for role in worker.roles.all():
                     for s, timeslot in enumerate(
-                        TimeSlot.objects.filter(date=date).order_by(
-                            "shift__shift_type"
-                        )
+                        self.timeslot_ids_lookup[date]
                     ):
                         if (
                             self.solver.Value(
