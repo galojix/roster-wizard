@@ -834,6 +834,12 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
     form_class = GenerateRosterForm
     success_url = reverse_lazy("timeslot_list")
 
+    def get_form_kwargs(self):
+        """Pass request to form."""
+        kwargs = super().get_form_kwargs()
+        kwargs.update(request=self.request)
+        return kwargs
+
     def form_valid(self, form):
         """Process generate roster form."""
         start_date = form.cleaned_data["start_date"]

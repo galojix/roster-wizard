@@ -1,5 +1,6 @@
 """Forms."""
 
+import datetime
 from django import forms
 from django.forms import ModelForm
 
@@ -65,7 +66,15 @@ class TimeSlotUpdateForm(ModelForm):
 class GenerateRosterForm(forms.Form):
     """Generate Roster Form."""
 
-    start_date = forms.DateTimeField(widget=DateInput())
+    def __init__(self, request, *args, **kwargs):
+        """Get default start date from session."""
+        super().__init__(*args, **kwargs)
+        start_date = datetime.datetime.strptime(
+            request.session["start_date"], "%d-%b-%Y"
+        )
+        self.fields["start_date"] = forms.DateTimeField(
+            widget=DateInput(), initial=start_date
+        )
 
 
 class SelectRosterForm(forms.Form):
