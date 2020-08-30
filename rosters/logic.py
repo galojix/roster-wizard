@@ -192,18 +192,6 @@ class RosterGenerator:
 
     def _get_timeslot_ids(self):
         """Map date and shift to timeslot ID."""
-        # timeslot_ids = {}
-        # for date in self.extended_dates:
-        #     timeslot_ids[date] = {}
-        #     for shift in self.shifts:
-        #         try:
-        #             timeslot_ids[date][shift] = TimeSlot.objects.get(
-        #                 date=date, shift=shift
-        #             ).id
-        #         except TimeSlot.DoesNotExist:
-        #             continue
-        # return timeslot_ids
-
         timeslots = TimeSlot.objects.filter(
             date__range=self.extended_date_range
         )
@@ -218,8 +206,7 @@ class RosterGenerator:
         Example: { 1: [ "E", "L", "N"], 2: ["E", "L"] }
         """
         invalid_shift_sequence = OrderedDict()
-        staffruleshifts = staffrule.staffruleshift_set.all()
-        staffruleshifts = staffruleshifts.order_by("position")
+        staffruleshifts = staffrule.staffruleshift_set.order_by("position")
         for staffruleshift in staffruleshifts:
             invalid_shift_sequence.setdefault(
                 staffruleshift.position, []
@@ -243,9 +230,14 @@ class RosterGenerator:
         return all_days_in_seq
 
     def _get_shift_vars_in_seq_off(
-        self, date, invalid_shift_seq, roles, worker,
+        self, date, invalid_shift_seq, roles, worker
     ):
-        """Find non-working shift variables in invalid sequence."""
+        """Find non-working shift variables in invalid sequence.
+
+        A blank position (no shift) in a staff rule means no shift worked
+        that day.
+
+        """
         shift_vars_in_seq_off = []
         for day_num in invalid_shift_seq:
             if invalid_shift_seq[day_num][0] is None:
