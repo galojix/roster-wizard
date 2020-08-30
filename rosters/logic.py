@@ -255,9 +255,7 @@ class RosterGenerator:
                 day_to_test = date + datetime.timedelta(days=day_num - 1)
                 for role in roles:
                     try:
-                        for timeslot in self.timeslots.filter(
-                            date=day_to_test
-                        ):
+                        for timeslot in self.timeslot_ids_lookup[day_to_test]:
                             shift_vars_in_seq_off.append(
                                 self.shift_vars[
                                     (
