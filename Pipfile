@@ -10,6 +10,7 @@ django-environ = "*"
 ortools = "*"
 gunicorn = "*"
 django-admin-rangefilter = "*"
+django-crispy-forms = "*"
 
 [dev-packages]
 pylint = "*"
@@ -18,8 +19,11 @@ flake8 = "*"
 pydocstyle = "*"
 pytest-django = "*"
 pytest-cov = "*"
-black = "*"
 django-debug-toolbar = "*"
+black = "*"
 
 [requires]
 python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true

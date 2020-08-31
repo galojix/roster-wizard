@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
   <h3>Set number of days in roster period:</h3>
   <form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
+    {{ form|crispy }}
     <button class="btn btn-info ml-2 btn-process" type="submit">Submit</button>
   </form>
 {% endblock content %}

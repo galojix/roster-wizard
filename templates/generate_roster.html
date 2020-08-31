@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
   <h3>Generate New Roster:</h3>
 
   <form id="generate" action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
+    {{ form|crispy }}
     <button class="btn btn-success ml-2 btn-process" type="submit">Submit</button>
   </form>
 
