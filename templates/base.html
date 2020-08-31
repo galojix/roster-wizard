@@ -11,13 +11,13 @@
     <link rel="icon" href="{% static "img/favicon.ico" %}" type="image/x-icon">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
 
     <title>{% block title %}Roster Wizard{% endblock title %}</title>
   </head>
 
   <body>
-    <nav class="navbar fixed-top navbar-expand-xl navbar-dark bg-dark mb-4">
+    <nav class="navbar fixed-top navbar-expand-xl navbar-dark bg-primary mb-4">
       <a class="navbar-brand" href="{% url 'home' %}">Roster Wizard</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -27,7 +27,7 @@
           <ul class="navbar-nav">
             <li class="nav-item">
               <div class="dropdown">
-                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Staff
                 </button>  
                 <div class="dropdown-menu">
@@ -43,7 +43,7 @@
             </li>
             <li class="nav-item">
               <div class="dropdown">
-                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Day Groups
                 </button>  
                 <div class="dropdown-menu">
@@ -57,7 +57,7 @@
             </li>
             <li class="nav-item">
               <div class="dropdown">
-                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Shifts
                 </button>  
                 <div class="dropdown-menu">
@@ -69,7 +69,7 @@
             </li>
             <li class="nav-item">
               <div class="dropdown">
-                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Skill Mix
                 </button>  
                 <div class="dropdown-menu">
@@ -81,7 +81,7 @@
             </li>
             <li class="nav-item">
               <div class="dropdown">
-                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Shift Sequences
                 </button>  
                 <div class="dropdown-menu">
@@ -93,7 +93,7 @@
             </li>
             <li class="nav-item">
               <div class="dropdown">
-                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Leave
                 </button>  
                 <div class="dropdown-menu">
@@ -105,7 +105,7 @@
             </li>
             <li class="nav-item">
               <div class="dropdown">
-                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Staff Requests
                 </button>  
                 <div class="dropdown-menu">
@@ -117,7 +117,7 @@
             </li>
             <li class="nav-item">
               <div class="dropdown">
-                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Roster
                 </button>  
                 <div class="dropdown-menu">
@@ -152,7 +152,7 @@
           </ul>
         {% else %}
           <form class="form-inline ml-auto">
-            <a href="{% url 'login' %}" class="btn btn-outline-secondary">
+            <a href="{% url 'login' %}" class="btn btn-outline-primary">
             Log In</a>
           </form>
         {% endif %}
