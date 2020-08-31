@@ -1,8 +1,5 @@
-from django.http import HttpRequest
 from django.test import SimpleTestCase
 from django.urls import reverse
-
-from .. import views
 
 
 class HomePageTests(SimpleTestCase):
@@ -22,7 +19,7 @@ class HomePageTests(SimpleTestCase):
     def test_home_page_contains_correct_html(self):
         response = self.client.get("/")
         self.assertContains(
-            response, '<h1 class="display-4">Roster Wizard</h1>'
+            response, '<h1 class="display-4 text-center">Roster Wizard</h1>'
         )
 
     def test_home_page_does_not_contain_incorrect_html(self):
