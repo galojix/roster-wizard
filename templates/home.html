@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
   <div class="jumbotron">
     <h1 class="display-4 text-center">Roster Wizard</h1>
-    <p class="lead">Automatically generated rosters that handle skill mix requirements, shift sequences and staff requests.</p>
+    <div class="text-center">
+      <img src="{% static "img/logo.png" %}?v=1"/>
+    </div> 
+    <p></p>
+    <p class="lead text-center">Automatically generated rosters that handle skill mix requirements, shift sequences and staff requests.</p>
   </div>
 {% endblock content %}
