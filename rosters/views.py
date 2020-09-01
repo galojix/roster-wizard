@@ -3,7 +3,7 @@
 import datetime
 import csv
 
-from collections import OrderedDict
+from collections import namedtuple
 
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import (
@@ -705,38 +705,37 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
         num_days = datetime.timedelta(days=Day.objects.count() - 1)
         end_date = start_date + num_days
         date_range = [start_date, end_date]
-        shift_days = OrderedDict()
-        for shift in Shift.objects.all():
-            shift_days[shift.shift_type] = []
-            for daygroupday in shift.daygroup.daygroupday_set.all():
-                shift_days[shift.shift_type].append(daygroupday.day.number)
         self.dates = []
         self.shifts = []
         self.requests = []
         self.priorities = []
         staffrequests = StaffRequest.objects.filter(
-            staff_member=self.staff_member, date__range=date_range
+            date__range=date_range, staff_member=self.staff_member
         )
-        for day in Day.objects.all():
-            for shift in shift_days:
-                if day.number in shift_days[shift]:
-                    date = start_date + datetime.timedelta(days=day.number - 1)
-                    date = date.date()
-                    self.dates.append(date)
-                    self.shifts.append(shift)
-                    # Check for existing staff request here
-                    staffrequest = staffrequests.filter(
-                        date=date, shift__shift_type=shift,
-                    ).first()
-                    if staffrequest is None:
-                        self.requests.append("Don't Care")
-                        self.priorities.append(1)
-                    else:
-                        if staffrequest.like:
-                            self.requests.append("Yes")
-                        else:
-                            self.requests.append("No")
-                        self.priorities.append(staffrequest.priority)
+        request_lookup = {}
+        RequestDetail = namedtuple("RequestDetail", "like priority")
+        for staffrequest in staffrequests:
+            request_lookup[
+                (staffrequest.date, staffrequest.shift)
+            ] = RequestDetail(
+                like=staffrequest.like,
+                priority=staffrequest.priority,
+            )
+        for timeslot in TimeSlot.objects.filter(
+            date__range=date_range
+        ).order_by("date", "shift"):
+            self.dates.append(timeslot.date)
+            self.shifts.append(timeslot.shift)
+            request_id = (timeslot.date, timeslot.shift)
+            if request_id in request_lookup:
+                if request_lookup[request_id].like:
+                    self.requests.append("Yes")
+                else:
+                    self.requests.append("No")
+                self.priorities.append(request_lookup[request_id].priority)
+            else:
+                self.requests.append("Don't Care")
+                self.priorities.append(1)
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -754,7 +753,9 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
             # Delete existing requests for date and shift
             shift = shifts.get(shift_type=self.shifts[i])
             StaffRequest.objects.filter(
-                date=date, shift=shift, staff_member=self.staff_member,
+                date=date,
+                shift=shift,
+                staff_member=self.staff_member,
             ).delete()
             if form.cleaned_data[f"request_{i}"] == "Yes":
                 StaffRequest.objects.create(
