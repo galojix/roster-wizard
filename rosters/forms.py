@@ -69,9 +69,12 @@ class GenerateRosterForm(forms.Form):
     def __init__(self, request, *args, **kwargs):
         """Get default start date from session."""
         super().__init__(*args, **kwargs)
-        start_date = datetime.datetime.strptime(
-            request.session["start_date"], "%d-%b-%Y"
-        )
+        if "start_date" in request.session:
+            start_date = datetime.datetime.strptime(
+                request.session["start_date"], "%d-%b-%Y"
+            )
+        else:
+            start_date = datetime.datetime.now()
         self.fields["start_date"] = forms.DateTimeField(
             widget=DateInput(), initial=start_date
         )
@@ -124,7 +127,10 @@ class StaffRequestUpdateForm(forms.Form):
                 ("Don't Care", "Don't Care"),
             )
             self.fields[f"request_{i}"] = forms.ChoiceField(
-                choices=choices, label="", initial=requests[i], required=False,
+                choices=choices,
+                label="",
+                initial=requests[i],
+                required=False,
             )
             self.fields[f"priority_{i}"] = forms.IntegerField(
                 label="", initial=priorities[i], required=False
