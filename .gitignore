@@ -1,7 +1,7 @@
 *.pyc
 *.pyo
 *.db
-.env
+.env*
 .vscode
 .coverage
 htmlcov
