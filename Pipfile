@@ -5,12 +5,12 @@ name = "pypi"
 
 [packages]
 django = "*"
-django-environ = "*"
 "psycopg2-binary" = "*"
 ortools = "*"
 gunicorn = "*"
 django-admin-rangefilter = "*"
 django-crispy-forms = "*"
+environs = {extras = ["django"], version = "*"}
 
 [dev-packages]
 pylint = "*"

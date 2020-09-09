@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  db_dev:
+    image: postgres:11
+    env_file:
+      - .env_dev_db
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data/
+  web_dev:
+    build:
+      context: .
+      dockerfile: Dockerfile_dev
+    command: python /code/manage.py runserver 0.0.0.0:8000
+    env_file:
+      - .env_dev_web
+    volumes:
+      - .:/code
+    ports:
+      - 8000:8000
+    depends_on:
+      - db_dev
+
+volumes:
+  postgres_data_dev:

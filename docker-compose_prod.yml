@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  db_prod:
+    image: postgres:11
+    env_file:
+      - .env_prod_db
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data/
+  web_prod:
+    build:
+      context: .
+      dockerfile: Dockerfile_prod
+    env_file:
+      - .env_prod_web
+    command: gunicorn roster_project.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/code/webserver/static/
+    expose:
+      - 8000
+    depends_on:
+      - db_prod
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
+    volumes:
+      - static_volume:/code/webserver/static/
+    depends_on:
+      - web_prod
+
+volumes:
+  postgres_data_prod:
+  static_volume:
