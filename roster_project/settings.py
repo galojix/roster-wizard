@@ -149,7 +149,8 @@ LOGOUT_REDIRECT_URL = "home"
 LOGIN_URL = "login"
 
 # Security
-if not DEBUG:
+SECURE = env.bool("SECURE")
+if not DEBUG and SECURE:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_HSTS_SECONDS = 60
