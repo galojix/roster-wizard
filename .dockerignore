@@ -1,0 +1,7 @@
+.env*
+*/.env*
+logs/*
+.vscode
+.coverage
+.git
+.pytest_cache
