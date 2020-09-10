@@ -12,7 +12,7 @@ services:
       dockerfile: Dockerfile_prod
     env_file:
       - .env_prod_web
-    command: gunicorn roster_project.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn roster_project.wsgi:application --workers 3 --bind 0.0.0.0:8000
     volumes:
       - static_volume:/code/webserver/static/
     expose:
