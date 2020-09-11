@@ -1,4 +1,4 @@
-version: "3.8"
+version: "2.4"
 
 services:
   db:
@@ -27,7 +27,13 @@ services:
 
 networks:
   net:
+    enable_ipv6: true
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: fd01::/64
+          gateway: fd01::1
 
 volumes:
   db:
