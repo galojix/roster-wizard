@@ -44,7 +44,6 @@ networks:
       config:
         - subnet: fd02::/64
           gateway: fd02::1
-    driver: bridge
 
 volumes:
   db:
