@@ -1,12 +1,15 @@
 version: "3.8"
+
 services:
-  db_dev:
+  db:
     image: postgres:11
     env_file:
       - .env_dev_db
     volumes:
-      - postgres_data_dev:/var/lib/postgresql/data/
-  web_dev:
+      - db:/var/lib/postgresql/data/
+    networks:
+      - net
+  web:
     build:
       context: .
       dockerfile: Dockerfile_dev
@@ -15,10 +18,16 @@ services:
       - .env_dev_web
     volumes:
       - .:/code
+    networks:
+      - net
     ports:
       - 8000:8000
     depends_on:
-      - db_dev
+      - db
+
+networks:
+  net:
+    driver: bridge
 
 volumes:
-  postgres_data_dev:
+  db:

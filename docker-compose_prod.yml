@@ -1,12 +1,15 @@
 version: "3.8"
+
 services:
-  db_prod:
+  db:
     image: postgres:11
     env_file:
       - .env_prod_db
     volumes:
-      - postgres_data_prod:/var/lib/postgresql/data/
-  web_prod:
+      - db:/var/lib/postgresql/data/
+    networks:
+      - net
+  web:
     build:
       context: .
       dockerfile: Dockerfile_prod
@@ -14,20 +17,28 @@ services:
       - .env_prod_web
     command: gunicorn roster_project.wsgi:application --workers 3 --bind 0.0.0.0:8000
     volumes:
-      - static_volume:/code/webserver/static/
+      - static:/code/webserver/static/
+    networks:
+      - net
     expose:
       - 8000
     depends_on:
-      - db_prod
+      - db
   nginx:
     build: ./nginx
     ports:
       - 80:80
     volumes:
-      - static_volume:/code/webserver/static/
+      - static:/code/webserver/static/
+    networks:
+      - net
     depends_on:
-      - web_prod
+      - web
+
+networks:
+  net:
+    driver: bridge
 
 volumes:
-  postgres_data_prod:
-  static_volume:
+  db:
+  static:
