@@ -330,7 +330,10 @@ class RosterGenerator:
 
                 for date in self.extended_dates:
                     shift_vars_in_seq_off = self._get_shift_vars_in_seq_off(
-                        date, invalid_shift_seq, roles, worker,
+                        date,
+                        invalid_shift_seq,
+                        roles,
+                        worker,
                     )
                     shift_vars_in_seq_on = self._get_shift_vars_in_seq_on(
                         date,
@@ -481,7 +484,11 @@ class RosterGenerator:
         log.info("Enforcement of shifts per roster completed...")
 
     def _split_list(self, alist, wanted_parts=1):
-        """Split list into parts."""
+        """Split list into parts.
+
+        If length is odd then first half is smaller.
+
+        """
         length = len(alist)
         return [
             alist[
@@ -508,10 +515,7 @@ class RosterGenerator:
             if worker.shifts_per_roster != 0:  # Zero means unlimited shifts
                 shifts_per_roster = self._get_shifts_per_roster(worker)
                 num_shifts = shifts_per_roster // 2
-                if shifts_per_roster % 2 == 0:
-                    self.model.Add(num_shifts_worked1 == num_shifts)
-                else:
-                    self.model.Add(num_shifts_worked1 == num_shifts + 1)
+                self.model.Add(num_shifts_worked1 == num_shifts)
         log.info("Enforcement of balanced shifts completed...")
 
     def _maximise_staff_requests(self):
