@@ -12,12 +12,12 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile_prod
+      dockerfile: Dockerfile
     env_file:
       - .env_prod_web
     command: gunicorn roster_project.wsgi:application --workers 3 --bind 0.0.0.0:8000
     volumes:
-      - static:/code/webserver/static/
+      - static:/roster/webserver/static/
     networks:
       - net
     expose:
@@ -29,7 +29,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - static:/code/webserver/static/
+      - static:/roster/webserver/static/
     networks:
       - net
     depends_on:

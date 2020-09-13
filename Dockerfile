@@ -4,11 +4,10 @@ FROM python:3.8
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 # Set work directory
-WORKDIR /code
+WORKDIR /roster
 # Install dependencies
-COPY Pipfile Pipfile.lock /code/
-RUN pip install pipenv && pipenv install --system
+COPY Pipfile Pipfile.lock /roster/
+RUN pip install pipenv && pipenv install --system --dev
 # Copy project
-COPY . /code/
-RUN mkdir -p /code/webserver/static
-
+COPY . /roster/
+RUN mkdir -p /roster/webserver/static
