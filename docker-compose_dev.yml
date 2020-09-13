@@ -13,11 +13,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python /code/manage.py runserver 0.0.0.0:8000
+    command: python /roster/manage.py runserver 0.0.0.0:8000
     env_file:
       - .env_dev_web
     volumes:
-      - .:/code
+      - .:/roster
     networks:
       - net
     ports:
