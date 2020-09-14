@@ -234,10 +234,18 @@ else:
         },
     }
 
+# IPs that can access Debug Toolbar
 INTERNAL_IPS = [
-    # ...
     "127.0.0.1",
-    # ...
 ]
+
+
+def show_toolbar(request):
+    """Determine if toolbar will be displayed."""
+    return DEBUG
+
+
+DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": show_toolbar}
+
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
