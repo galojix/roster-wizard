@@ -162,62 +162,77 @@ if not DEBUG and SECURE:
 
 # Logging
 LOGLEVEL = env("LOGLEVEL")
-LOGSIZE = 1024 * 1024 * 15  # 15MB
-LOGCOUNT = 10
-LOGFILENAME = os.path.join(BASE_DIR, "logs/django.log")
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "filters": {
-        "require_debug_false": {"()": "django.utils.log.RequireDebugFalse"},
-        "require_debug_true": {"()": "django.utils.log.RequireDebugTrue"},
-    },
-    "formatters": {
-        "simple": {
-            "format": "[%(asctime)s] %(levelname)s %(message)s",
-            "datefmt": "%Y-%m-%d %H:%M:%S",
+LOGFORMAT = env("LOGFORMAT")
+LOGTOFILE = env.bool("LOGTOFILE")
+if not LOGTOFILE:
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "simple": {
+                "format": "[%(asctime)s] [DJANGO] %(levelname)s %(message)s",
+                "datefmt": "%Y-%m-%d %H:%M:%S",
+            },
+            "verbose": {
+                "format": "[%(asctime)s] [DJANGO] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
+                "datefmt": "%Y-%m-%d %H:%M:%S",
+            },
         },
-        "verbose": {
-            "format": "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
-            "datefmt": "%Y-%m-%d %H:%M:%S",
+        "handlers": {
+            "console": {
+                "level": LOGLEVEL,
+                "class": "logging.StreamHandler",
+                "formatter": LOGFORMAT,
+            },
         },
-    },
-    "handlers": {
-        "console": {
-            "level": LOGLEVEL,
-            "filters": ["require_debug_true"],
-            "class": "logging.StreamHandler",
-            "formatter": "simple",
+        "loggers": {
+            "": {
+                "handlers": ["console"],
+                "level": LOGLEVEL,
+                "propagate": True,
+            }
         },
-        "mail_admins": {
-            "level": "ERROR",
-            "filters": ["require_debug_false"],
-            "class": "django.utils.log.AdminEmailHandler",
-            "formatter": "simple",
+    }
+else:
+    LOGSIZE = 1024 * 1024 * 15  # 15MB
+    LOGCOUNT = 10
+    LOGFILENAME = os.path.join(BASE_DIR, "logs/django.log")
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "simple": {
+                "format": "[%(asctime)s] [DJANGO] %(levelname)s %(message)s",
+                "datefmt": "%Y-%m-%d %H:%M:%S",
+            },
+            "verbose": {
+                "format": "[%(asctime)s] [DJANGO] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
+                "datefmt": "%Y-%m-%d %H:%M:%S",
+            },
         },
-        "file": {
-            "level": LOGLEVEL,
-            "filters": ["require_debug_false"],
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": LOGFILENAME,
-            "maxBytes": LOGSIZE,
-            "backupCount": LOGCOUNT,
-            "formatter": "simple",
+        "handlers": {
+            "console": {
+                "level": LOGLEVEL,
+                "class": "logging.StreamHandler",
+                "formatter": LOGFORMAT,
+            },
+            "file": {
+                "level": LOGLEVEL,
+                "class": "logging.handlers.RotatingFileHandler",
+                "filename": LOGFILENAME,
+                "maxBytes": LOGSIZE,
+                "backupCount": LOGCOUNT,
+                "formatter": LOGFORMAT,
+            },
         },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console", "file", "mail_admins"],
-            "level": LOGLEVEL,
-            "propagate": True,
+        "loggers": {
+            "": {
+                "handlers": ["console", "file"],
+                "level": LOGLEVEL,
+                "propagate": True,
+            },
         },
-        "django.server": {
-            "handlers": ["console", "file"],
-            "level": LOGLEVEL,
-            "propagate": False,
-        },
-    },
-}
+    }
 
 INTERNAL_IPS = [
     # ...

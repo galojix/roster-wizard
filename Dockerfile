@@ -11,4 +11,3 @@ RUN pip install pipenv && pipenv install --system --dev
 # Copy project
 COPY . /roster/
 RUN mkdir -p /roster/webserver/static
-RUN mkdir -p /logs

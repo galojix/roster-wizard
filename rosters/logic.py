@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 from .models import Leave, Role, Shift, ShiftRule, TimeSlot, Day, StaffRequest
 
 
-log = logging.getLogger("django")
+log = logging.getLogger(__name__)
 
 
 class SolutionNotFeasible(Exception):

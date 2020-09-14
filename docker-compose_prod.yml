@@ -10,22 +10,33 @@ services:
       - dumps:/roster/dumps/
     networks:
       - net
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
   web:
     build:
       context: .
       dockerfile: Dockerfile
     env_file:
       - .env_prod_web
-    command: gunicorn roster_project.wsgi:application --disable-redirect-access-to-syslog --error-logfile '/roster/logs/gunicorn_error.log' --access-logfile '/roster/logs/gunicorn_access.log' --workers 3 --bind 0.0.0.0:8000
+    command: gunicorn roster_project.wsgi:application --disable-redirect-access-to-syslog --error-logfile '-' --access-logfile '-' --access-logformat '%(t)s [GUNICORN] %(h)s %(l)s %(u)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"' --workers 3 --bind 0.0.0.0:8000
     volumes:
       - static:/roster/webserver/static/
-      - logs:/roster/logs/
     networks:
       - net
     expose:
       - 8000
     depends_on:
       - db
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
   nginx:
     build: ./nginx
     ports:
@@ -36,6 +47,11 @@ services:
       - net
     depends_on:
       - web
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
 networks:
   net:
@@ -50,5 +66,4 @@ networks:
 volumes:
   db:
   static:
-  logs:
   dumps:

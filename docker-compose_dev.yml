@@ -9,6 +9,12 @@ services:
       - db:/var/lib/postgresql/data/
     networks:
       - net
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
   web:
     build:
       context: .
@@ -24,6 +30,11 @@ services:
       - 8000:8000
     depends_on:
       - db
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
 networks:
   net:
