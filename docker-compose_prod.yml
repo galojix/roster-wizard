@@ -7,7 +7,6 @@ services:
       - .env_prod_db
     volumes:
       - db:/var/lib/postgresql/data/
-      - dumps:/roster/dumps/
     networks:
       - net
     logging:
@@ -66,4 +65,3 @@ networks:
 volumes:
   db:
   static:
-  dumps:
