@@ -3,8 +3,6 @@ version: "2.4"
 services:
   db:
     image: postgres:11
-    env_file:
-      - .env_dev_db
     volumes:
       - db:/var/lib/postgresql/data/
     networks:
@@ -16,25 +14,21 @@ services:
         max-size: "10m"
 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: python /roster/manage.py runserver 0.0.0.0:8000
-    env_file:
-      - .env_dev_web
-    volumes:
-      - .:/roster
+    image: galojix/roster-wizard:latest
     networks:
       - net
     ports:
       - 8000:8000
-    depends_on:
-      - db
     logging:
       driver: "json-file"
       options:
         max-file: "5"
         max-size: "10m"
+    depends_on:
+      - db
+
+volumes:
+  db:
 
 networks:
   net:
@@ -45,6 +39,3 @@ networks:
       config:
         - subnet: fd01::/64
           gateway: fd01::1
-
-volumes:
-  db:
