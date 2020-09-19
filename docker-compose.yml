@@ -12,6 +12,7 @@ services:
       options:
         max-file: "5"
         max-size: "10m"
+    restart: always
 
   web:
     image: galojix/roster-wizard:latest
@@ -26,6 +27,7 @@ services:
         max-size: "10m"
     depends_on:
       - db
+    restart: always
 
 volumes:
   db:

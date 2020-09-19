@@ -8,6 +8,6 @@ services:
   web:
     env_file:
       - .env_prod_web
-    command: gunicorn roster_project.wsgi:application --disable-redirect-access-to-syslog --error-logfile '-' --access-logfile '-' --access-logformat '%(t)s [GUNICORN] %(h)s %(l)s %(u)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"' --workers 3 --bind 0.0.0.0:8000
+    command: gunicorn roster_project.wsgi:application --disable-redirect-access-to-syslog --error-logfile '-' --access-logfile '-' --access-logformat '%(t)s [GUNICORN] %(h)s %(l)s %(u)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"' --workers 3 --bind '[::]:8000'
     volumes:
       - /opt/roster/static:/roster/webserver/static/
