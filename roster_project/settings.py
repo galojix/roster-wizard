@@ -82,6 +82,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "rosters.context_processors.get_roster_name",
             ]
         },
     }
@@ -249,3 +250,6 @@ DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": show_toolbar}
 
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+# Roster name
+ROSTER_NAME = env("ROSTER_NAME")

@@ -13,7 +13,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
 
-    <title>{% block title %}Roster Wizard{% endblock title %}</title>
+    <title>{% block title %}Roster: {{roster_name}}{% endblock title %}</title>
   </head>
 
   <body>
@@ -133,9 +133,6 @@
                 </div>
               </div>
             </li>
-            <li class="nav-item">
-              <a class="navlink btn btn-primary" href="{% url 'select_roster_period' %}"><span class="font-weight-bold text-nowrap">Period: {{ request.session.start_date }}</span></a>
-            </li>
           </ul>
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -158,7 +155,10 @@
         {% endif %}
       </div>
     </nav>
-    <div class="container-fluid" style="margin-top:80px">
+    <div class="container" style="margin-top:80px">
+      {{roster_name}}, Period:{{ request.session.start_date }}
+    </div>
+    <div class="container-fluid">
       {% if messages %}
         <div class="messages alert alert-danger">
           <button type="button" class="close" data-dismiss="alert">&times;</button>
