@@ -1,35 +1,40 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="{% static "img/favicon.ico" %}?v=3" type="image/x-icon">
-    <link rel="icon" href="{% static "img/favicon.ico" %}?v=3" type="image/x-icon">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{% static "img/favicon.ico" %}?v=3" type="image/x-icon">
+  <link rel="icon" href="{% static "img/favicon.ico" %}?v=3" type="image/x-icon">
 
-    <title>{% block title %}Roster: {{roster_name}}{% endblock title %}</title>
-  </head>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
 
-  <body>
-    <nav class="navbar fixed-top navbar-expand-xl navbar-dark bg-primary mb-4">
-      <a class="navbar-brand" href="{% url 'home' %}">Roster Wizard</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        {% if user.is_authenticated %}
+  <title>{% block title %}Roster: {{roster_name}}{% endblock title %}</title>
+</head>
+
+<body>
+
+  <nav class="navbar fixed-top navbar-expand-xl navbar-dark bg-primary">
+    <a class="navbar-brand" href="{% url 'home' %}">Roster Wizard</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+      aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <div class="d-flex flex-column flex-grow-1">
+        <div class="flex-grow-1">
+          {% if user.is_authenticated %}
           <ul class="navbar-nav">
             <li class="nav-item">
               <div class="dropdown">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Staff
-                </button>  
+                </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'customuser_list' %}">Display Staff</a>
                   <div class="dropdown-divider"></div>
@@ -45,7 +50,7 @@
               <div class="dropdown">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Day Groups
-                </button>  
+                </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'daygroup_list' %}">Display Day Groups</a>
                   <div class="dropdown-divider"></div>
@@ -59,7 +64,7 @@
               <div class="dropdown">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Shifts
-                </button>  
+                </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'shift_list' %}">Display Shifts</a>
                   <div class="dropdown-divider"></div>
@@ -71,7 +76,7 @@
               <div class="dropdown">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Skill Mix
-                </button>  
+                </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'shiftrule_list' %}">Display Skill Mix Rules</a>
                   <div class="dropdown-divider"></div>
@@ -83,7 +88,7 @@
               <div class="dropdown">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Shift Sequences
-                </button>  
+                </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'staffrule_list' %}">Display Shift Sequences</a>
                   <div class="dropdown-divider"></div>
@@ -95,7 +100,7 @@
               <div class="dropdown">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Leave
-                </button>  
+                </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'leave_list' %}">Display Leave</a>
                   <div class="dropdown-divider"></div>
@@ -107,7 +112,7 @@
               <div class="dropdown">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Staff Requests
-                </button>  
+                </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'staffrequest_list' %}">Display Staff Requests</a>
                   <div class="dropdown-divider"></div>
@@ -115,11 +120,11 @@
                 </div>
               </div>
             </li>
-            <li class="nav-item">
+            <li class="nav-item mr-auto">
               <div class="dropdown">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   Roster
-                </button>  
+                </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'timeslot_list' %}">Display Roster by Day</a>
                   <div class="dropdown-divider"></div>
@@ -133,54 +138,72 @@
                 </div>
               </div>
             </li>
-          </ul>
-          <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ user.username }}
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
-                <a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'logout' %}">
-                Log Out</a>
+              <div class="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  {{ user.username }}
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
+                  <a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'logout' %}">
+                    Log Out</a>
+                </div>
               </div>
             </li>
           </ul>
-        {% else %}
-          <form class="form-inline ml-auto">
+          {% else %}
+          <form class="form-inline justify-content-end">
             <a href="{% url 'login' %}" class="btn btn-primary">
-            Log In</a>
+              Log In</a>
           </form>
+          {% endif %}
+        </div>
+        {% if user.is_authenticated %}
+        <div class="text-white bg-primary">
+          {% if request.session.start_date %}
+          <a type="button" class="btn btn-primary" href="{% url 'select_roster_period' %}">{{roster_name}},
+            Period:{{ request.session.start_date }}</a>
+          </button>
+          {% else %}
+          <a type="button" class="btn btn-primary" href="{% url 'select_roster_period' %}">{{roster_name}}, Period: Not
+            Set</a>
+          {% endif %}
+        </div>
         {% endif %}
       </div>
-    </nav>
-    <div class="container" style="margin-top:80px">
-      {{roster_name}}, Period:{{ request.session.start_date }}
     </div>
-    <div class="container-fluid">
-      {% if messages %}
-        <div class="messages alert alert-danger">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          {% for message in messages %}
-          <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-          {% endfor %}
-        </div>
-      {% endif %}
-      {% block content-wide %}
-        <div class="container">
-          {% block content %}
-          {% endblock content %}
-        </div>
-      {% endblock content-wide %}
+  </nav>
+  <div class="container-fluid" style="margin-top:100px">
+    {% if messages %}
+    <div class="messages alert alert-danger">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for message in messages %}
+      <p{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
+        {% endfor %}
     </div>
+    {% endif %}
+    {% block content-wide %}
+    <div class="container">
+      {% block content %}
+      {% endblock content %}
+    </div>
+    {% endblock content-wide %}
+  </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-    <script src="{% static "js/processing.js" %}"></script>
-  </body>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+    crossorigin="anonymous"></script>
+  <script src="{% static "js/processing.js" %}"></script>
+</body>
+
 </html>
