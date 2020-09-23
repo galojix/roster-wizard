@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from django.conf import settings
 from pathlib import Path
 from environs import Env
 
@@ -243,7 +244,7 @@ INTERNAL_IPS = [
 
 def show_toolbar(request):
     """Determine if toolbar will be displayed."""
-    return DEBUG
+    return settings.DEBUG
 
 
 DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": show_toolbar}
