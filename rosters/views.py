@@ -853,7 +853,6 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
             result = generate_roster.delay(start_date=start_date)
             while not result.ready():
                 time.sleep(1)
-            print("hello")
             result.get()
             # roster = RosterGenerator(start_date=start_date)
             # roster.create()

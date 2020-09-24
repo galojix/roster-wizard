@@ -10,5 +10,4 @@ def generate_roster(start_date):
     start_date = parser.isoparse(start_date)
     roster = RosterGenerator(start_date=start_date)
     roster.create()
-    print("Hi!!!")
     return "Task finished"
