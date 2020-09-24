@@ -14,6 +14,33 @@ services:
         max-size: "10m"
     restart: always
 
+  rabbitmq:
+    image: rabbitmq:latest
+    hostname: rabbitmq1
+    networks:
+      - net
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+    restart: always
+
+  celery:
+    image: galojix/roster-wizard:latest
+    networks:
+      - net
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+    command: celery -A roster_project worker -l info
+    depends_on:
+      - db
+      - rabbitmq
+    restart: always
+
   web:
     image: galojix/roster-wizard:latest
     networks:
@@ -27,6 +54,7 @@ services:
         max-size: "10m"
     depends_on:
       - db
+      - rabbitmq
     restart: always
 
 volumes:

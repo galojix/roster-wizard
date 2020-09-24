@@ -12,3 +12,10 @@ services:
     command: python /roster/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/roster
+
+  celery:
+    env_file:
+      - .env_dev_web
+    build: .
+    volumes:
+      - .:/roster

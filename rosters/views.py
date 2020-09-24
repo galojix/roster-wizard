@@ -2,6 +2,7 @@
 
 import datetime
 import csv
+import time
 
 from collections import namedtuple
 
@@ -52,6 +53,7 @@ from .logic import (
     RosterGenerator,
     get_roster_by_staff,
 )
+from .tasks import generate_roster
 
 
 class LeaveListView(LoginRequiredMixin, ListView):
@@ -848,8 +850,13 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
             "%d-%b-%Y"
         )
         try:
-            roster = RosterGenerator(start_date=start_date)
-            roster.create()
+            result = generate_roster.delay(start_date=start_date)
+            while not result.ready():
+                time.sleep(1)
+            print("hello")
+            result.get()
+            # roster = RosterGenerator(start_date=start_date)
+            # roster.create()
         except SolutionNotFeasible:
             messages.error(
                 self.request,
