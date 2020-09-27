@@ -12,7 +12,6 @@ services:
       options:
         max-file: "5"
         max-size: "10m"
-    restart: always
 
   rabbitmq:
     image: rabbitmq:latest
@@ -24,7 +23,6 @@ services:
       options:
         max-file: "5"
         max-size: "10m"
-    restart: always
 
   celery:
     image: galojix/roster-wizard:latest
@@ -39,7 +37,6 @@ services:
     depends_on:
       - db
       - rabbitmq
-    restart: always
 
   web:
     image: galojix/roster-wizard:latest
@@ -55,7 +52,6 @@ services:
     depends_on:
       - db
       - rabbitmq
-    restart: always
 
 volumes:
   db:
