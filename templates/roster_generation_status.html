@@ -3,11 +3,15 @@
 
 {% block content %}
 <h2>Roster Generation Status</h2>
-{% for result in results.values %}
-{{result}}<br>
-{% endfor %}
+<p>
+  {% for result in results.values %}
+  {{result}}<br>
+  {% endfor %}
+</p>
 {% endblock content %}
 
 {% block extra-js %}
+{% if refresh %}
 <script src="{% static "js/refresh.js" %}"></script>
+{% endif %}
 {% endblock extra-js %}

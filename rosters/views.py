@@ -854,9 +854,6 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         try:
             result = generate_roster.delay(start_date=start_date)
             self.task_id = result.task_id
-            # while not result.ready():
-            #     time.sleep(1)
-            # result.get()
             # roster = RosterGenerator(start_date=start_date)
             # roster.create()
         except SolutionNotFeasible:
@@ -883,10 +880,17 @@ def roster_generation_status(request, task_id):
     """Display roster generation status."""
     result = AsyncResult(task_id)
     if result.ready():
-        result.get()
-    return render(
-        request, "roster_generation_status.html", {"results": result.info}
-    )
+        return render(
+            request,
+            "roster_generation_status.html",
+            {"results": result.get(), "refresh": False},
+        )
+    else:
+        return render(
+            request,
+            "roster_generation_status.html",
+            {"results": result.info, "refresh": True},
+        )
 
 
 @login_required
