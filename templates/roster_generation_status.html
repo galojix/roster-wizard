@@ -2,12 +2,12 @@
 {% load static %}
 
 {% block content %}
-  <h2>Roster Generation Status</h2>
-      {% for result in results.values %}
-        {{result}}<br>
-      {% endfor %}
+<h2>Roster Generation Status</h2>
+{% for result in results.values %}
+{{result}}<br>
+{% endfor %}
 {% endblock content %}
 
 {% block extra-js %}
-<script src="{% static "js/refresh.js" %}"></script>  
+<script src="{% static "js/refresh.js" %}"></script>
 {% endblock extra-js %}
