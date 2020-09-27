@@ -29,7 +29,7 @@ class TooManyStaff(Exception):
 class RosterGenerator:
     """Roster generator."""
 
-    def __init__(self, start_date):
+    def __init__(self, start_date, current_task):
         """Create starting conditions."""
         self.workers = get_user_model().objects.filter(available=True)
         self.worker_lookup = {
@@ -75,6 +75,17 @@ class RosterGenerator:
         ]
         self.model = cp_model.CpModel()
         self.complete = False
+        self.current_task = current_task
+        self.task_status = []
+
+    def _update_task_status(self, message):
+        """Update task status."""
+        log.info(message)
+        self.task_status.append(message)
+        task_status = {
+            key: value for key, value in enumerate(self.task_status)
+        }
+        self.current_task.update_state(state="IN_PROGESS", meta=task_status)
 
     def _clear_existing_timeslots(self):
         # Delete existing timeslots in date range
@@ -103,7 +114,7 @@ class RosterGenerator:
 
     def _check_if_too_many_staff(self):
         # Check if too many staff
-        log.info("Too many staff check started...")
+        self._update_task_status("Too many staff check started...")
         total_staff_shifts = 0
         for worker in self.workers:
             leave_days = self.leaves.filter(staff_member=worker).count()
@@ -114,16 +125,20 @@ class RosterGenerator:
         total_shifts = 0
         for timeslot in self.timeslots:
             total_shifts += timeslot.shift.max_staff
-        log.info("Total staff shifts: " + str(total_staff_shifts))
-        log.info("Total shifts: " + str(total_shifts))
+
+        self._update_task_status(
+            "Total staff shifts: " + str(total_staff_shifts)
+        )
+        self._update_task_status("Total shifts: " + str(total_shifts))
+
         if total_staff_shifts > total_shifts:
-            log.info("Error: there are too many staff...")
+            self._update_task_status("Error: there are too many staff...")
             raise TooManyStaff("Too many staff.")
-        log.info("Too many staff check completed...")
+        self._update_task_status("Too many staff check completed...")
 
     def _collect_shift_requests(self):
         """Collect shift requests into friendly data structure."""
-        log.info("Shift request collection started...")
+        self._update_task_status("Shift request collection started...")
         self.shift_requests = [
             [[0 for shift in self.shifts] for day in self.days]
             for worker in self.workers
@@ -137,8 +152,7 @@ class RosterGenerator:
                 if staffrequest.like
                 else -staffrequest.priority
             )
-        log.info("Shift request collection completed...")
-        log.debug(self.shift_requests)
+        self._update_task_status("Shift request collection completed...")
 
     def _create_shift_vars(self):
         """Create shift variables.
@@ -146,7 +160,7 @@ class RosterGenerator:
         shift_vars[(n, r, d, t)]:
         worker 'n' with role 'r' works on date 'd' in timeslot 't'
         """
-        log.info("Shift variable creation started...")
+        self._update_task_status("Shift variable creation started...")
         self.shift_vars = {
             (worker.id, role.id, date, timeslot.id): self.model.NewBoolVar(
                 f"shift_n{worker.id}r{role.id}d{date}t{timeslot.id}"
@@ -158,13 +172,14 @@ class RosterGenerator:
             for worker in self.workers
             for role in worker.roles.all()
         }
-        log.info("Shift variable creation completed...")
-        log.debug(self.shift_vars.keys())
+        self._update_task_status("Shift variable creation completed...")
 
     def _create_previous_shift_vars(self):
         # Create shift variables and fixed constraints
         # for previous roster period
-        log.info("Creation of shift variables for previous period started...")
+        self._update_task_status(
+            "Creation of shift variables for previous period started..."
+        )
         previous_timeslots = TimeSlot.objects.filter(
             date__range=self.previous_date_range
         )
@@ -178,13 +193,13 @@ class RosterGenerator:
                     f"shift_n{n}r{r}d{d}t{t}"
                 )
                 self.model.Add(self.shift_vars[(n, r, d, t)] == 1)
-        log.info(
+        self._update_task_status(
             "Creation of shift variables for previous period completed..."
         )
 
     def _exclude_leave_dates(self):
         """Exclude leave dates from roster."""
-        log.info("Exclusion of leave dates started...")
+        self._update_task_status("Exclusion of leave dates started...")
         for leave in self.leaves:
             for role in leave.staff_member.roles.all():
                 for timeslot in self.timeslots.filter(date=leave.date):
@@ -199,7 +214,7 @@ class RosterGenerator:
                         ]
                         == 0
                     )
-        log.info("Exclusion of leave dates completed...")
+        self._update_task_status("Exclusion of leave dates completed...")
 
     def _get_timeslot_ids(self):
         """Map date and shift to timeslot ID."""
@@ -315,7 +330,9 @@ class RosterGenerator:
 
         Need to look at previous roster period also
         """
-        log.info("Enforcement of shift sequence rules started...")
+        self._update_task_status(
+            "Enforcement of shift sequence rules started..."
+        )
 
         timeslot_ids = self._get_timeslot_ids()
 
@@ -355,11 +372,13 @@ class RosterGenerator:
                         self.model.Add(
                             sum(shift_vars_in_seq_on) < work_days_in_seq
                         ).OnlyEnforceIf(shift_vars_in_seq_off)
-        log.info("Enforcement of shift sequence rules completed...")
+        self._update_task_status(
+            "Enforcement of shift sequence rules completed..."
+        )
 
     def _collect_skill_mix_rules(self):
         """Collect shift rules into friendly structure."""
-        log.info("Collection of skill mix rules started...")
+        self._update_task_status("Collection of skill mix rules started...")
         self.shiftrules = {}
         for shift in self.shifts:
             self.shiftrules[shift.id] = []
@@ -372,12 +391,14 @@ class RosterGenerator:
                 for shiftrulerole in shiftruleroles:
                     role_count[shiftrulerole.role.id] = shiftrulerole.count
                 self.shiftrules[shift.id].append(role_count)
-        log.info("Collection of skill mix rules completed...")
+        self._update_task_status("Collection of skill mix rules completed...")
         log.debug(self.shiftrules)
 
     def _create_intermediate_skill_mix_vars(self):
         # Intermediate shift rule variables
-        log.info("Creation of skill mix intermediate variables started...")
+        self._update_task_status(
+            "Creation of skill mix intermediate variables started..."
+        )
         self.intermediate_skill_mix_vars = {
             (timeslot.id, rule_num): self.model.NewBoolVar(
                 f"t{timeslot.id}r{rule_num}"
@@ -385,12 +406,16 @@ class RosterGenerator:
             for timeslot in self.timeslots
             for rule_num, rule in enumerate(self.shiftrules[timeslot.shift.id])
         }
-        log.info("Creation of skill mix intermediate variables completed...")
+        self._update_task_status(
+            "Creation of skill mix intermediate variables completed..."
+        )
         log.debug(self.intermediate_skill_mix_vars)
 
     def _enforce_one_skill_mix_rule_at_a_time(self):
         """Only one skill mix rule at a time should be enforced."""
-        log.info("Enforcement of one shift rule at a time started...")
+        self._update_task_status(
+            "Enforcement of one shift rule at a time started..."
+        )
         for timeslot in self.timeslots:
             if len(self.shiftrules[timeslot.shift.id]) >= 1:
                 self.model.Add(
@@ -404,11 +429,13 @@ class RosterGenerator:
                     )
                     == 1
                 )
-        log.info("Enforcement of one shift rule at a time completed...")
+        self._update_task_status(
+            "Enforcement of one shift rule at a time completed..."
+        )
 
     def _enforce_skill_mix_rules(self):
         """Enforce one skill mix rule per shift per timeslot."""
-        log.info("Enforcement of skill mix rules started...")
+        self._update_task_status("Enforcement of skill mix rules started...")
         for shift_id in self.shiftrules:
             shift_timeslots = self.timeslots.filter(shift__id=shift_id)
             if len(self.shiftrules[shift_id]) >= 1:
@@ -435,11 +462,13 @@ class RosterGenerator:
                                     (timeslot.id, rule_num)
                                 ]
                             )
-        log.info("Enforcement of skill mix rules completed...")
+        self._update_task_status("Enforcement of skill mix rules completed...")
 
     def _enforce_one_shift_per_day(self):
         """Assign at most one shift per day per worker."""
-        log.info("Restriction of staff to one shift per day started...")
+        self._update_task_status(
+            "Restriction of staff to one shift per day started..."
+        )
         for date in self.dates:
             timeslots = TimeSlot.objects.filter(date=date)
             for worker in self.workers:
@@ -455,7 +484,9 @@ class RosterGenerator:
                         )
                         <= 1
                     )
-        log.info("Restriction of staff to one shift per day completed...")
+        self._update_task_status(
+            "Restriction of staff to one shift per day completed..."
+        )
 
     def _get_shifts_per_roster(self, worker):
         """Get number of shifts to work in roster period."""
@@ -470,7 +501,7 @@ class RosterGenerator:
 
     def _enforce_shifts_per_roster(self):
         """Enforce shifts per roster for each worker."""
-        log.info("Enforcement of shifts per roster started...")
+        self._update_task_status("Enforcement of shifts per roster started...")
         for worker in self.workers:
             num_shifts_worked = sum(
                 self.shift_vars[(worker.id, role.id, date, timeslot.id)]
@@ -481,7 +512,9 @@ class RosterGenerator:
             if worker.shifts_per_roster != 0:  # Zero means unlimited shifts
                 shifts_per_roster = self._get_shifts_per_roster(worker)
                 self.model.Add(num_shifts_worked == shifts_per_roster)
-        log.info("Enforcement of shifts per roster completed...")
+        self._update_task_status(
+            "Enforcement of shifts per roster completed..."
+        )
 
     def _split_list(self, alist, wanted_parts=1):
         """Split list into parts.
@@ -499,7 +532,7 @@ class RosterGenerator:
 
     def _enforce_balanced_shifts(self):
         """Enforce balanced shifts for each worker."""
-        log.info("Enforcement of balanced shifts started...")
+        self._update_task_status("Enforcement of balanced shifts started...")
         for worker in self.workers:
             leave_dates = [
                 leave.date for leave in self.leaves.filter(staff_member=worker)
@@ -516,11 +549,11 @@ class RosterGenerator:
                 shifts_per_roster = self._get_shifts_per_roster(worker)
                 num_shifts = shifts_per_roster // 2
                 self.model.Add(num_shifts_worked1 == num_shifts)
-        log.info("Enforcement of balanced shifts completed...")
+        self._update_task_status("Enforcement of balanced shifts completed...")
 
     def _maximise_staff_requests(self):
         """Maximise the number of satisfied staff requests."""
-        log.info("Maximising of staff requests started...")
+        self._update_task_status("Maximising of staff requests started...")
         self.model.Maximize(
             sum(
                 self.shift_requests[n][d][s]
@@ -531,31 +564,33 @@ class RosterGenerator:
                 for s, timeslot in enumerate(self.timeslot_ids_lookup[date])
             )
         )
-        log.info("Maximising of staff requests completed...")
+        self._update_task_status("Maximising of staff requests completed...")
 
     def _solve_roster(self):
         """Create the solver and solve."""
         self.solver = cp_model.CpSolver()
         self.solver.parameters.max_time_in_seconds = 120
-        log.info("Solver started...")
+        self._update_task_status("Solver started...")
         solution_status = self.solver.Solve(self.model)
-        log.info("Solver finished...")
+        self._update_task_status("Solver finished...")
         if solution_status == cp_model.INFEASIBLE:
-            log.info("Solution is INFEASIBLE")
+            self._update_task_status("Solution is INFEASIBLE")
         if solution_status == cp_model.MODEL_INVALID:
-            log.info("Solution is MODEL_INVALID")
+            self._update_task_status("Solution is MODEL_INVALID")
         if solution_status == cp_model.UNKNOWN:
-            log.info("Solution is UNKNOWN")
+            self._update_task_status("Solution is UNKNOWN")
         if (
             solution_status != cp_model.FEASIBLE
             and solution_status != cp_model.OPTIMAL
         ):
-            log.info("No feasible solution, raising exception...")
+            self._update_task_status(
+                "No feasible solution, raising exception..."
+            )
             raise SolutionNotFeasible("No feasible solutions.")
 
     def _populate_roster(self):
         """Poulate roster."""
-        log.info("Population of roster started...")
+        self._update_task_status("Population of roster started...")
         for d, date in enumerate(self.dates):
             for n, worker in enumerate(self.workers):
                 for role in worker.roles.all():
@@ -574,7 +609,7 @@ class RosterGenerator:
                                 date=date, shift=timeslot.shift
                             ).staff.add(worker)
                             if self.shift_requests[n][d][s] > 0:
-                                log.info(
+                                self._update_task_status(
                                     f"Request Successful: "
                                     f"{worker.last_name}, {worker.first_name}"
                                     f" {role.role_name}"
@@ -585,7 +620,7 @@ class RosterGenerator:
                                     f" and was assigned."
                                 )
                             elif self.shift_requests[n][d][s] < 0:
-                                log.info(
+                                self._update_task_status(
                                     f"Request Failed: "
                                     f"{worker.last_name}, {worker.first_name}"
                                     f" {role.role_name}"
@@ -597,7 +632,7 @@ class RosterGenerator:
                                 )
                         else:
                             if self.shift_requests[n][d][s] > 0:
-                                log.info(
+                                self._update_task_status(
                                     f"Request Failed: "
                                     f"{worker.last_name}, {worker.first_name}"
                                     f" {role.role_name}"
@@ -608,7 +643,7 @@ class RosterGenerator:
                                     f" but was not assigned."
                                 )
                             elif self.shift_requests[n][d][s] < 0:
-                                log.info(
+                                self._update_task_status(
                                     f"Request Succeeded: "
                                     f"{worker.last_name}, {worker.first_name}"
                                     f" {role.role_name}"
@@ -618,7 +653,7 @@ class RosterGenerator:
                                     f" {timeslot.date}"
                                     f" and was not assigned."
                                 )
-        log.info("Population of roster completed...")
+        self._update_task_status("Population of roster completed...")
 
     def create(self):
         """Create roster as per constraints."""
@@ -642,6 +677,10 @@ class RosterGenerator:
         self._solve_roster()
         self._populate_roster()
         self.complete = True
+        task_status = {
+            key: value for key, value in enumerate(self.task_status)
+        }
+        return task_status
 
 
 def get_roster_by_staff(start_date):

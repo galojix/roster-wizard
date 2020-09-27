@@ -68,6 +68,7 @@ from .views import (
     DayDeleteView,
     DayCreateView,
     DaySetCreateView,
+    roster_generation_status,
 )
 
 urlpatterns = [
@@ -241,7 +242,9 @@ urlpatterns = [
         name="daygroup_create",
     ),
     path(
-        "daygroupday/", DayGroupDayListView.as_view(), name="daygroupday_list",
+        "daygroupday/",
+        DayGroupDayListView.as_view(),
+        name="daygroupday_list",
     ),
     path(
         "daygroupday/<int:pk>/update/",
@@ -264,7 +267,9 @@ urlpatterns = [
         name="daygroupday_create",
     ),
     path(
-        "daygroupday/", DayGroupDayListView.as_view(), name="daygroupday_list",
+        "daygroupday/",
+        DayGroupDayListView.as_view(),
+        name="daygroupday_list",
     ),
     path("day/<int:pk>/update/", DayUpdateView.as_view(), name="day_update"),
     path("day/<int:pk>/", DayDetailView.as_view(), name="day_detail"),
@@ -316,4 +321,9 @@ urlpatterns = [
         name="generate_roster",
     ),
     path("download_csv/", download_csv, name="download_csv"),
+    path(
+        "roster_status/<str:task_id>/",
+        roster_generation_status,
+        name="roster_generation_status",
+    ),
 ]

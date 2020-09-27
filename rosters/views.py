@@ -2,7 +2,6 @@
 
 import datetime
 import csv
-import time
 
 from collections import namedtuple
 
@@ -13,10 +12,10 @@ from django.views.generic.edit import (
     CreateView,
     FormView,
 )
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
@@ -50,10 +49,10 @@ from .forms import (
 from .logic import (
     SolutionNotFeasible,
     TooManyStaff,
-    RosterGenerator,
     get_roster_by_staff,
 )
 from .tasks import generate_roster
+from celery.result import AsyncResult
 
 
 class LeaveListView(LoginRequiredMixin, ListView):
@@ -835,13 +834,16 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
 
     template_name = "generate_roster.html"
     form_class = GenerateRosterForm
-    success_url = reverse_lazy("timeslot_list")
 
     def get_form_kwargs(self):
         """Pass request to form."""
         kwargs = super().get_form_kwargs()
         kwargs.update(request=self.request)
         return kwargs
+
+    def get_success_url(self):
+        """Get success URL."""
+        return reverse("roster_generation_status", args=(self.task_id,))
 
     def form_valid(self, form):
         """Process generate roster form."""
@@ -851,9 +853,10 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         )
         try:
             result = generate_roster.delay(start_date=start_date)
-            while not result.ready():
-                time.sleep(1)
-            result.get()
+            self.task_id = result.task_id
+            # while not result.ready():
+            #     time.sleep(1)
+            # result.get()
             # roster = RosterGenerator(start_date=start_date)
             # roster.create()
         except SolutionNotFeasible:
@@ -873,6 +876,17 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
                 ),
             )
         return super().form_valid(form)
+
+
+@login_required
+def roster_generation_status(request, task_id):
+    """Display roster generation status."""
+    result = AsyncResult(task_id)
+    if result.ready():
+        result.get()
+    return render(
+        request, "roster_generation_status.html", {"results": result.info}
+    )
 
 
 @login_required
