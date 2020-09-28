@@ -24,6 +24,8 @@ from rosters.logic import (
     TooManyStaff,
 )
 
+from rosters.tasks import generate_roster
+
 pytestmark = pytest.mark.django_db
 
 
@@ -200,9 +202,12 @@ def init_too_many_staff_db():
 
 def test_feasible_roster_generation(init_feasible_db):
     """Test feasible roster generation."""
-    roster = RosterGenerator(start_date=datetime.datetime.now())
-    roster.create()
-    assert roster.complete
+    task = generate_roster.delay(start_date=datetime.datetime.now())
+    result = task.get()
+    # roster = RosterGenerator(start_date=datetime.datetime.now())
+    # roster.create()
+    # assert roster.complete
+    assert result.status == "SUCCESS"
 
 
 def test_infeasible_roster_generation(init_infeasible_db):
