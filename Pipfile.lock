@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3266513539c38704c0d105cd7e46c6c78feae9b803887070507f8bf0faf6288b"
+            "sha256": "dc189472405147939c3a73f5f3d05b9ab8e2583550da23b9f988e13bc9ed511f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -233,14 +233,6 @@
             ],
             "index": "pypi",
             "version": "==2.8.6"
-        },
-        "pytest-celery": {
-            "hashes": [
-                "sha256:2fa8d0ae0d573fb2ee51902bfa220e891044eafadbfb132b28b7087295c3004f",
-                "sha256:3e0e0817c2d3f2870dafebd915bf13100fc12920b5d42dfe5fdc35844fe42e62"
-            ],
-            "index": "pypi",
-            "version": "==0.0.0a1"
         },
         "python-dateutil": {
             "hashes": [

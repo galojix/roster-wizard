@@ -200,9 +200,7 @@ def init_too_many_staff_db():
     ShiftRuleRole.objects.create(shiftrule=shiftrule, role=role, count=2)
 
 
-def test_feasible_roster_generation(
-    init_feasible_db, celery_app, celery_worker
-):
+def test_feasible_roster_generation(init_feasible_db):
     """Test feasible roster generation."""
     task = generate_roster.delay(start_date="2020-09-28T08:13:10Z")
     result = task.get()
@@ -212,9 +210,7 @@ def test_feasible_roster_generation(
     assert result.state == "SUCCESS"
 
 
-def test_infeasible_roster_generation(
-    init_infeasible_db, celery_app, celery_worker
-):
+def test_infeasible_roster_generation(init_infeasible_db):
     """Test infeasible roster generation."""
     task = generate_roster.delay(start_date=datetime.datetime.now())
     # roster = RosterGenerator(start_date=datetime.datetime.now())
@@ -223,9 +219,7 @@ def test_infeasible_roster_generation(
         task.get()
 
 
-def test_too_many_staff_roster_generation(
-    init_too_many_staff_db, celery_app, celery_worker
-):
+def test_too_many_staff_roster_generation(init_too_many_staff_db):
     """Test too many staff roster generation."""
     task = generate_roster.delay(start_date=datetime.datetime.now())
     # roster = RosterGenerator(start_date=datetime.datetime.now())

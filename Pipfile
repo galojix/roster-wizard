@@ -13,7 +13,6 @@ django-crispy-forms = "*"
 environs = {extras = ["django"], version = "*"}
 celery = "*"
 python-dateutil = "*"
-pytest-celery = "*"
 
 [dev-packages]
 pylint = "*"
