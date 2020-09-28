@@ -256,5 +256,5 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 ROSTER_NAME = env("ROSTER_NAME")
 
 # Celery
-CELERY_BROKER_URL = env("CELERY_BROKER_URL")
-CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
+CELERY_broker_url = env("CELERY_broker_url")
+CELERY_result_backend = env("CELERY_result_backend")

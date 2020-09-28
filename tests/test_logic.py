@@ -19,7 +19,7 @@ from rosters.models import (
     Leave,
 )
 from rosters.logic import (
-    RosterGenerator,
+    # RosterGenerator,
     SolutionNotFeasible,
     TooManyStaff,
 )
@@ -200,25 +200,35 @@ def init_too_many_staff_db():
     ShiftRuleRole.objects.create(shiftrule=shiftrule, role=role, count=2)
 
 
-def test_feasible_roster_generation(init_feasible_db):
+def test_feasible_roster_generation(
+    init_feasible_db, celery_app, celery_worker
+):
     """Test feasible roster generation."""
-    task = generate_roster.delay(start_date=datetime.datetime.now())
+    task = generate_roster.delay(start_date="2020-09-28T08:13:10Z")
     result = task.get()
     # roster = RosterGenerator(start_date=datetime.datetime.now())
     # roster.create()
     # assert roster.complete
-    assert result.status == "SUCCESS"
+    assert result.state == "SUCCESS"
 
 
-def test_infeasible_roster_generation(init_infeasible_db):
+def test_infeasible_roster_generation(
+    init_infeasible_db, celery_app, celery_worker
+):
     """Test infeasible roster generation."""
-    roster = RosterGenerator(start_date=datetime.datetime.now())
+    task = generate_roster.delay(start_date=datetime.datetime.now())
+    # roster = RosterGenerator(start_date=datetime.datetime.now())
     with pytest.raises(SolutionNotFeasible):
-        roster.create()
+        # roster.create()
+        task.get()
 
 
-def test_too_many_staff_roster_generation(init_too_many_staff_db):
+def test_too_many_staff_roster_generation(
+    init_too_many_staff_db, celery_app, celery_worker
+):
     """Test too many staff roster generation."""
-    roster = RosterGenerator(start_date=datetime.datetime.now())
+    task = generate_roster.delay(start_date=datetime.datetime.now())
+    # roster = RosterGenerator(start_date=datetime.datetime.now())
     with pytest.raises(TooManyStaff):
-        roster.create()
+        # roster.create()
+        task.get()

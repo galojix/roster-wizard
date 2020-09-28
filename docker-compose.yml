@@ -33,7 +33,7 @@ services:
       options:
         max-file: "5"
         max-size: "10m"
-    command: celery -A roster_project worker -l info
+    command: celery -A roster_project worker -l INFO
     depends_on:
       - db
       - rabbitmq
