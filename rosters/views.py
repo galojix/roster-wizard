@@ -878,19 +878,27 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
 @login_required
 def roster_generation_status(request, task_id):
     """Display roster generation status."""
-    result = AsyncResult(task_id)
-    if result.ready():
-        return render(
-            request,
-            "roster_generation_status.html",
-            {"results": result.get(), "refresh": False},
-        )
+    task = AsyncResult(task_id)
+    if task.ready():
+        try:
+            results = task.get()
+        except SolutionNotFeasible:
+            results = {
+                1: "Could not generate roster, try putting more staff on leave or changing rules..."
+            }
+        except TooManyStaff:
+            results = {
+                1: "There are too many staff available, put more staff on leave..."
+            }
+        refresh = False
     else:
-        return render(
-            request,
-            "roster_generation_status.html",
-            {"results": result.info, "refresh": True},
-        )
+        results = task.info
+        refresh = True
+    return render(
+        request,
+        "roster_generation_status.html",
+        {"results": results, "refresh": refresh},
+    )
 
 
 @login_required
