@@ -2,29 +2,33 @@
 {% load static %}
 
 {% block content %}
-<h3>Roster Generation Status</h2>
-{% if refresh %}
-<div class="generating mt-3">
-  <p>Processing, please wait...</p>
-  <div class="spinner-border text-success"></div>
-</div>  
-<p>
-  {% for result in results.values %}
-  {{result}}<br>
-  {% endfor %}
-</p>
-{% else %}
-<p>
-  Roster generation complete...
-</p>
-<div><a href="{% url 'timeslot_list' %}">Display Roster by Day</a></div>
-<div><a href="{% url 'roster_by_staff' %}">Display Roster by Staff</a></div>
-{% endif %}
+<h3>Roster Generation:</h2>
+  {% if status == "PROCESSING" %}
+  <div class="generating mt-3">
+    <div class="spinner-border text-success"></div>
+  </div>
+  {% endif %}
 
-{% endblock content %}
+  {% if status == "SUCCEEDED" %}
+  <p>Roster is complete...</p>
+  <a type="button" class="btn btn-success" href="{% url 'timeslot_list' %}">Display Roster by Day</a>
+  <a type="button" class="btn btn-success" href="{% url 'roster_by_staff' %}">Display Roster by Staff</a>
+  {% endif %}
 
-{% block extra-js %}
-{% if refresh %}
-<script src="{% static "js/refresh.js" %}"></script>
-{% endif %}
-{% endblock extra-js %}
+  {% if status == "FAILED" %}
+  <p class="text-danger">Roster failed...</p>
+  {% endif %}
+
+  <p></p>
+  <p>
+    {% for result in results.values %}
+    {{result}}<br>
+    {% endfor %}
+  </p>
+  {% endblock content %}
+
+  {% block extra-js %}
+  {% if status == "PROCESSING" %}
+  <script src="{% static "js/refresh.js" %}"></script>
+  {% endif %}
+  {% endblock extra-js %}
