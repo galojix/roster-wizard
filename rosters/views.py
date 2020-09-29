@@ -854,6 +854,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         try:
             result = generate_roster.delay(start_date=start_date)
             self.task_id = result.task_id
+            # Synchronous / No Celery
             # roster = RosterGenerator(start_date=start_date)
             # roster.create()
         except SolutionNotFeasible:
@@ -882,25 +883,21 @@ def roster_generation_status(request, task_id):
     status = "PROCESSING"
     if task.ready():
         try:
-            results = task.get()
+            status_message = task.get()
             status = "SUCCEEDED"
         except SolutionNotFeasible:
             status = "FAILED"
-            results = {
-                1: "Could not generate roster, try putting more staff on leave or changing rules..."
-            }
+            status_message = "Could not generate roster, try putting more staff on leave or changing rules..."
         except TooManyStaff:
             status = "FAILED"
-            results = {
-                1: "There are too many staff available, put more staff on leave..."
-            }
+            status_message = "There are too many staff available, put more staff on leave..."
     else:
-        results = task.info
         status = "PROCESSING"
+        status_message = "Processing..."
     return render(
         request,
         "roster_generation_status.html",
-        {"results": results, "status": status},
+        {"status_message": status_message, "status": status},
     )
 
 

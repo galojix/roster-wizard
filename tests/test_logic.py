@@ -19,12 +19,10 @@ from rosters.models import (
     Leave,
 )
 from rosters.logic import (
-    # RosterGenerator,
+    RosterGenerator,
     SolutionNotFeasible,
     TooManyStaff,
 )
-
-from rosters.tasks import generate_roster
 
 pytestmark = pytest.mark.django_db
 
@@ -202,27 +200,20 @@ def init_too_many_staff_db():
 
 def test_feasible_roster_generation(init_feasible_db):
     """Test feasible roster generation."""
-    task = generate_roster.delay(start_date="2020-09-28T08:13:10Z")
-    result = task.get()
-    # roster = RosterGenerator(start_date=datetime.datetime.now())
-    # roster.create()
-    # assert roster.complete
-    assert result.state == "SUCCESS"
+    roster = RosterGenerator(start_date=datetime.datetime.now())
+    roster.create()
+    assert roster.complete
 
 
 def test_infeasible_roster_generation(init_infeasible_db):
     """Test infeasible roster generation."""
-    task = generate_roster.delay(start_date=datetime.datetime.now())
-    # roster = RosterGenerator(start_date=datetime.datetime.now())
+    roster = RosterGenerator(start_date=datetime.datetime.now())
     with pytest.raises(SolutionNotFeasible):
-        # roster.create()
-        task.get()
+        roster.create()
 
 
 def test_too_many_staff_roster_generation(init_too_many_staff_db):
     """Test too many staff roster generation."""
-    task = generate_roster.delay(start_date=datetime.datetime.now())
-    # roster = RosterGenerator(start_date=datetime.datetime.now())
+    roster = RosterGenerator(start_date=datetime.datetime.now())
     with pytest.raises(TooManyStaff):
-        # roster.create()
-        task.get()
+        roster.create()
