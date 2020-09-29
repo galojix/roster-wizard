@@ -242,6 +242,7 @@ INTERNAL_IPS = [
 ]
 
 
+# Ensure toobar runs in debug mode
 def show_toolbar(request):
     """Determine if toolbar will be displayed."""
     return settings.DEBUG
@@ -249,12 +250,12 @@ def show_toolbar(request):
 
 DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": show_toolbar}
 
-
+# Crispy forms
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # Roster name
 ROSTER_NAME = env("ROSTER_NAME")
 
 # Celery
-CELERY_broker_url = env("CELERY_broker_url")
-CELERY_result_backend = env("CELERY_result_backend")
+CELERY_BROKER_URL = "pyamqp://guest@rabbitmq//"
+CELERY_RESULT_BACKEND = "rpc://"
