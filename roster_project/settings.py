@@ -255,7 +255,3 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # Roster name
 ROSTER_NAME = env("ROSTER_NAME")
-
-# Celery
-CELERY_BROKER_URL = "pyamqp://guest@rabbitmq//"
-CELERY_RESULT_BACKEND = "rpc://"
