@@ -242,10 +242,13 @@ INTERNAL_IPS = [
 ]
 
 
-# Ensure toobar runs in debug mode
+# Django Debug Toolbar
+DJANGO_DEBUG_TOOLBAR = env.bool("DJANGO_DEBUG_TOOLBAR")
+
+
 def show_toolbar(request):
     """Determine if toolbar will be displayed."""
-    return settings.DEBUG
+    return DJANGO_DEBUG_TOOLBAR
 
 
 DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": show_toolbar}

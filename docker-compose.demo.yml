@@ -1,0 +1,15 @@
+version: "2.4"
+
+services:
+  db:
+    env_file:
+      - .env_demo_db
+
+  web:
+    env_file:
+      - .env_demo_web
+    command: python /roster/manage.py runserver 0.0.0.0:8000
+
+  celery:
+    env_file:
+      - .env_demo_web
