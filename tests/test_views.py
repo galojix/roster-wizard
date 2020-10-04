@@ -49,3 +49,12 @@ def test_roster_list_redirect_if_not_logged_in(client):
     SimpleTestCase().assertRedirects(
         response, "/accounts/login/?next=/rosters/roster_by_staff/"
     )
+
+
+def test_home_view(init_db, client):
+    """Test home page view."""
+    client.login(username="temporary", password="temporary")
+    response = client.get(reverse("home"))
+    assert response.status_code == 200
+    assert "Automatically generated rosters" in response.rendered_content
+    assert "home.html" in [t.name for t in response.templates]
