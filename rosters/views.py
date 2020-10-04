@@ -722,21 +722,35 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
                 like=staffrequest.like,
                 priority=staffrequest.priority,
             )
-        for timeslot in TimeSlot.objects.filter(
-            date__range=date_range
-        ).order_by("date", "shift"):
-            self.dates.append(timeslot.date)
-            self.shifts.append(timeslot.shift)
-            request_id = (timeslot.date, timeslot.shift)
-            if request_id in request_lookup:
-                if request_lookup[request_id].like:
-                    self.requests.append("Yes")
+        daygroup_shifts_map = {}
+        for daygroup in DayGroup.objects.all():
+            daygroup_shifts_map[daygroup] = [
+                shift for shift in daygroup.shift_set.all()
+            ]
+        day_shifts_map = {}
+        days = Day.objects.all()
+        for day in days:
+            day_shifts_map[day.number] = []
+            for daygroupday in day.daygroupday_set.all():
+                for shift in daygroup_shifts_map[daygroupday.daygroup]:
+                    day_shifts_map[day.number].append(shift)
+        for day in days:
+            for shift in day_shifts_map[day.number]:
+                date = (
+                    start_date + datetime.timedelta(days=(day.number - 1))
+                ).date()
+                self.dates.append(date)
+                self.shifts.append(shift)
+                request_id = (date, shift)
+                if request_id in request_lookup:
+                    if request_lookup[request_id].like:
+                        self.requests.append("Yes")
+                    else:
+                        self.requests.append("No")
+                    self.priorities.append(request_lookup[request_id].priority)
                 else:
-                    self.requests.append("No")
-                self.priorities.append(request_lookup[request_id].priority)
-            else:
-                self.requests.append("Don't Care")
-                self.priorities.append(1)
+                    self.requests.append("Don't Care")
+                    self.priorities.append(1)
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
