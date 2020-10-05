@@ -15,6 +15,8 @@ services:
 
   rabbitmq:
     image: rabbitmq:latest
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq/
     hostname: rabbitmq1
     networks:
       - net
@@ -55,6 +57,7 @@ services:
 
 volumes:
   db:
+  rabbitmq:
 
 networks:
   net:
