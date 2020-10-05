@@ -3,7 +3,7 @@
 {% block content %}
   <h4>Delete Day Group:</h4>
   <form action="" method="post">{% csrf_token %}
-    <p class="text-danger">Warning!!! If you proceed with this operation, you must assign a new Day Group to each of the affected Shifts.</p>
+    <p class="text-danger">Warning!!! If you proceed with this operation, you must assign a new Day Group to each of the affected Shifts and Shift Sequences.</p>
     <p>Are you sure you want to delete day group: "{{ daygroup.name }}"?</p>
     <button class="btn btn-danger ml-2" type="submit">Confirm</button>
   </form>
