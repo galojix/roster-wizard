@@ -13,7 +13,7 @@ urlpatterns = [
     path("", include("pages.urls")),
 ]
 
-if settings.DJANGO_DEBUG_TOOLBAR:
+if settings.DEBUG:
     import debug_toolbar
 
     urlpatterns = [
