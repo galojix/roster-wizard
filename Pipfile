@@ -22,10 +22,7 @@ pydocstyle = "*"
 pytest-django = "*"
 pytest-cov = "*"
 django-debug-toolbar = "*"
-black = "*"
+black = "==20.8b1"
 
 [requires]
 python_version = "3.8"
-
-[pipenv]
-allow_prereleases = true
