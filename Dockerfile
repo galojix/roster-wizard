@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /roster
 # Install dependencies
 COPY Pipfile Pipfile.lock /roster/
-RUN pip install pipenv && pipenv install --system --dev
+RUN python -m pip install --upgrade pip && python -m pip install pipenv && pipenv install --system --dev
 # Copy project
 COPY . /roster/
 RUN mkdir -p /roster/webserver/static
