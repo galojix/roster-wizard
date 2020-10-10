@@ -20,4 +20,5 @@ services:
   celery:
     env_file:
       - .env_prod_web
+    command: celery -A roster_project worker -l INFO
     restart: always

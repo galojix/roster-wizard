@@ -23,6 +23,7 @@ pytest-django = "*"
 pytest-cov = "*"
 django-debug-toolbar = "*"
 black = "==20.8b1"
+watchdog = {extras = ["watchmedo"], version = "*"}
 
 [requires]
 python_version = "3.8"

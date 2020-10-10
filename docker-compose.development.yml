@@ -17,5 +17,6 @@ services:
     env_file:
       - .env_dev_web
     build: .
+    command: watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A roster_project worker -l INFO
     volumes:
       - .:/roster

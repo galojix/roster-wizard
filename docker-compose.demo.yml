@@ -13,3 +13,4 @@ services:
   celery:
     env_file:
       - .env_demo_web
+    command: celery -A roster_project worker -l INFO
