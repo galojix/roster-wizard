@@ -1,6 +1,7 @@
 """View Testing."""
 
 import pytest
+import datetime
 
 from django.urls import reverse
 from django.test import SimpleTestCase
@@ -62,3 +63,14 @@ def test_leave_list_view(init_feasible_db, client):
     assert response.status_code == 200
     assert "Leave:" in response.rendered_content
     assert "leave_list.html" in [t.name for t in response.templates]
+
+
+def test_generate_roster_view_post(init_db, client, mocker):
+    """Test generate roster view post."""
+    client.login(username="temporary", password="temporary")
+    mocker.patch("rosters.tasks.generate_roster.delay")
+    response = client.post(
+        reverse("generate_roster"), {"start_date": datetime.datetime.now()}
+    )
+    assert response.status_code == 302
+    assert "/rosters/roster_status/" in response.url
