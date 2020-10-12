@@ -69,7 +69,9 @@ def test_leave_list_view(init_feasible_db, client):
 def test_generate_roster_view_post(init_db, client, mocker):
     """Test generate roster view post."""
     client.login(username="temporary", password="temporary")
-    mocker.patch.object(generate_roster, "delay")
+    delay_result = mocker.stub(name="delay_result")
+    delay_result.task_id = 12345
+    mocker.patch.object(generate_roster, "delay", return_value=delay_result)
     response = client.post(
         reverse("generate_roster"), {"start_date": datetime.datetime.now()}
     )
