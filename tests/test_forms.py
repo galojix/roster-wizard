@@ -5,12 +5,11 @@ from unittest.mock import Mock
 
 from rosters.forms import GenerateRosterForm
 
-pytestmark = pytest.mark.django_db
+# pytestmark = pytest.mark.django_db
 
 
-def test_generate_roster_form(init_feasible_db, client):
+def test_generate_roster_form():
     """Test generate roster form."""
-    client.login(username="temporary", password="temporary")
     request = Mock()
     request.session = {"start_date": "22-MAR-2010"}
     form = GenerateRosterForm(
