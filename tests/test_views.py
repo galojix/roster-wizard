@@ -37,6 +37,15 @@ def test_roster_list_redirect_if_not_logged_in(client):
     )
 
 
+def test_generate_roster_view(init_db, client):
+    """Test generate roster view."""
+    client.login(username="temporary", password="temporary")
+    response = client.get(reverse("generate_roster"))
+    assert response.status_code == 200
+    assert "Generate New Roster:" in response.rendered_content
+    assert "generate_roster.html" in [t.name for t in response.templates]
+
+
 def test_home_view(init_feasible_db, client):
     """Test home page view."""
     client.login(username="temporary", password="temporary")
