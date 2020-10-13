@@ -16,7 +16,6 @@ from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 
@@ -865,28 +864,8 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         self.request.session["start_date"] = start_date.date().strftime(
             "%d-%b-%Y"
         )
-        try:
-            result = generate_roster.delay(start_date=start_date)
-            self.task_id = result.task_id
-            # Synchronous / No Celery
-            # roster = RosterGenerator(start_date=start_date)
-            # roster.create()
-        except SolutionNotFeasible:
-            messages.error(
-                self.request,
-                (
-                    "Could not generate roster,"
-                    " try putting more staff on leave or changing rules."
-                ),
-            )
-        except TooManyStaff:
-            messages.error(
-                self.request,
-                (
-                    "There are too many staff available,"
-                    " put more staff on leave."
-                ),
-            )
+        result = generate_roster.delay(start_date=start_date)
+        self.task_id = result.task_id
         return super().form_valid(form)
 
 
