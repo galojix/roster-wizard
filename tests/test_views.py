@@ -155,6 +155,17 @@ def test_leave_create_view_post(init_feasible_db, client):
     assert reverse("leave_list") in response.url
 
 
+def test_staff_request_update_view_(init_feasible_db, client):
+    """Test leave create view post."""
+    client.login(username="temporary", password="temporary")
+    staff_member = get_user_model().objects.first()
+    response = client.get(
+        reverse("staffrequest_update", args=(staff_member.id,))
+    )
+    assert response.status_code == 200
+    assert "staffrequest_update.html" in [t.name for t in response.templates]
+
+
 def test_staff_request_update_view_post(init_feasible_db, client):
     """Test leave create view post."""
     client.login(username="temporary", password="temporary")
