@@ -24,13 +24,34 @@ def test_day_detail_view(init_feasible_db, client):
     assert "day_detail.html" in [t.name for t in response.templates]
 
 
-def test_roster_list_view(init_db, client):
-    """Test roster list view."""
+def test_roster_by_staff_view(init_db, client):
+    """Test roster by staff view."""
     client.login(username="temporary", password="temporary")
     response = client.get(reverse("roster_by_staff"))
     assert response.status_code == 200
     assert "Roster By Staff:" in response.rendered_content
     assert "roster_by_staff.html" in [t.name for t in response.templates]
+
+
+def test_roster_by_day_view(init_db, client):
+    """Test roster by day view."""
+    client.login(username="temporary", password="temporary")
+    response = client.get(reverse("timeslot_list"))
+    assert response.status_code == 200
+    assert "Roster By Day:" in response.rendered_content
+    assert "timeslot_list.html" in [t.name for t in response.templates]
+
+
+def test_roster_by_day_view_start_date(init_db, client):
+    """Test roster by day view."""
+    client.login(username="temporary", password="temporary")
+    session = client.session
+    session["start_date"] = "22-MAR-2010"
+    session.save()
+    response = client.get(reverse("timeslot_list"))
+    assert response.status_code == 200
+    assert "Roster By Day:" in response.rendered_content
+    assert "timeslot_list.html" in [t.name for t in response.templates]
 
 
 def test_roster_list_redirect_if_not_logged_in(client):
@@ -62,6 +83,18 @@ def test_home_view(init_feasible_db, client):
 def test_leave_list_view(init_feasible_db, client):
     """Test leave list view."""
     client.login(username="temporary", password="temporary")
+    response = client.get(reverse("leave_list"))
+    assert response.status_code == 200
+    assert "Leave:" in response.rendered_content
+    assert "leave_list.html" in [t.name for t in response.templates]
+
+
+def test_leave_list_view_start_date(init_feasible_db, client, mocker):
+    """Test leave list view."""
+    client.login(username="temporary", password="temporary")
+    session = client.session
+    session["start_date"] = "22-MAR-2010"
+    session.save()
     response = client.get(reverse("leave_list"))
     assert response.status_code == 200
     assert "Leave:" in response.rendered_content
