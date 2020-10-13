@@ -5,6 +5,7 @@ import datetime
 
 from django.urls import reverse
 from django.test import SimpleTestCase
+from django.contrib.auth import get_user_model
 
 from rosters.models import Day
 from rosters.views import generate_roster, AsyncResult
@@ -137,3 +138,18 @@ def test_roster_generation_status_view_processing(init_db, client, mocker):
     assert "roster_generation_status.html" in [
         t.name for t in response.templates
     ]
+
+
+def test_leave_create_view_post(init_feasible_db, client):
+    """Test leave create view post."""
+    client.login(username="temporary", password="temporary")
+    staff_member = get_user_model().objects.first()
+    data = {
+        "staff_member": staff_member.id,
+        "description": "Leave",
+        "start_date": datetime.datetime.now(),
+        "end_date": datetime.datetime.now() + datetime.timedelta(days=2),
+    }
+    response = client.post(reverse("leave_create"), data)
+    assert response.status_code == 302
+    assert reverse("leave_list") in response.url
