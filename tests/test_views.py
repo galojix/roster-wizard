@@ -168,3 +168,11 @@ def test_staff_request_update_view_post(init_feasible_db, client):
     )
     assert response.status_code == 302
     assert reverse("staffrequest_list") in response.url
+
+
+def test_download_csv(init_feasible_db, client):
+    """Test download CSV."""
+    client.login(username="temporary", password="temporary")
+    response = client.get(reverse("download_csv"))
+    assert response.status_code == 200
+    assert "Staff Member" in str(response.content)
