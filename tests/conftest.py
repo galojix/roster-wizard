@@ -123,6 +123,13 @@ def init_feasible_db(init_db):
         shift=early_shift,
         staff_member=staff_member1,
     )
+    StaffRequest.objects.create(
+        priority=10,
+        like=False,
+        date=datetime.datetime.now() + datetime.timedelta(days=1),
+        shift=early_shift,
+        staff_member=staff_member1,
+    )
     staff_rule1 = StaffRule.objects.create(
         staffrule_name="No Early after Late", daygroup=daygroup
     )

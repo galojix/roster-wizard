@@ -202,7 +202,7 @@ def test_staff_request_update_view_(init_feasible_db, client):
 def test_staff_request_update_view_post(init_feasible_db, client):
     """Test leave create view post."""
     client.login(username="temporary", password="temporary")
-    staff_member = get_user_model().objects.first()
+    staff_member = get_user_model().objects.get(username="one")
     data = {
         "request_1": "Yes",
         "priority_1": 10,
