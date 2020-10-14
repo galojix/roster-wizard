@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.test import SimpleTestCase
 from django.contrib.auth import get_user_model
 
-from rosters.models import Day
+from rosters.models import Day, Role, ShiftRule, StaffRule, Shift, DayGroup
 from rosters.views import generate_roster, AsyncResult
 from rosters.logic import SolutionNotFeasible, TooManyStaff
 
@@ -27,6 +27,18 @@ def test_day_detail_view(init_feasible_db, client):
 def test_roster_by_staff_view(init_db, client):
     """Test roster by staff view."""
     client.login(username="temporary", password="temporary")
+    response = client.get(reverse("roster_by_staff"))
+    assert response.status_code == 200
+    assert "Roster By Staff:" in response.rendered_content
+    assert "roster_by_staff.html" in [t.name for t in response.templates]
+
+
+def test_roster_by_staff_view_start_date(init_roster_db, client):
+    """Test roster by staff view."""
+    client.login(username="temporary", password="temporary")
+    session = client.session
+    session["start_date"] = datetime.datetime.now().date().strftime("%d-%b-%Y")
+    session.save()
     response = client.get(reverse("roster_by_staff"))
     assert response.status_code == 200
     assert "Roster By Staff:" in response.rendered_content
@@ -206,6 +218,8 @@ def test_staff_request_update_view_post(init_feasible_db, client):
     data = {
         "request_1": "Yes",
         "priority_1": 10,
+        "request_2": "No",
+        "priority_2": 10,
     }
     response = client.post(
         reverse("staffrequest_update", args=(staff_member.id,)), data
@@ -220,3 +234,93 @@ def test_download_csv(init_feasible_db, client):
     response = client.get(reverse("download_csv"))
     assert response.status_code == 200
     assert "Staff Member" in str(response.content)
+
+
+def test_shift_rule_role_create_view_post(init_feasible_db, client):
+    """Test shift rule role create view post."""
+    client.login(username="temporary", password="temporary")
+    shiftrule = ShiftRule.objects.first()
+    role = Role.objects.first()
+    data = {
+        "role": role.id,
+        "count": 2,
+    }
+    response = client.post(
+        reverse("shiftrulerole_create", args=(shiftrule.id,)), data
+    )
+    assert response.status_code == 302
+    assert reverse("shiftrule_list") in response.url
+
+
+def test_staff_rule_shift_create_view_post(init_feasible_db, client):
+    """Test staff rule shift create view post."""
+    client.login(username="temporary", password="temporary")
+    staffrule = StaffRule.objects.first()
+    shift = Shift.objects.first()
+    data = {
+        "shift": shift.id,
+        "position": 2,
+    }
+    response = client.post(
+        reverse("staffruleshift_create", args=(staffrule.id,)), data
+    )
+    assert response.status_code == 302
+    assert reverse("staffrule_list") in response.url
+
+
+def test_day_group_create_view_post(init_feasible_db, client):
+    """Test day group create view post."""
+    client.login(username="temporary", password="temporary")
+    data = {
+        "name": "NewGroup",
+    }
+    response = client.post(reverse("daygroup_create"), data)
+    assert response.status_code == 302
+    assert reverse("daygroup_list") in response.url
+
+
+def test_day_group_day_create_view_post(init_feasible_db, client):
+    """Test day group day create view post."""
+    client.login(username="temporary", password="temporary")
+    daygroup = DayGroup.objects.first()
+    day = Day.objects.last()
+    data = {
+        "day": day.id,
+    }
+    response = client.post(
+        reverse("daygroupday_create", args=(daygroup.id,)), data
+    )
+    assert response.status_code == 302
+    assert "/rosters/daygroupday" in response.url
+
+
+def test_day_set_create_view_post(init_feasible_db, client):
+    """Test day group create view post."""
+    client.login(username="temporary", password="temporary")
+    data = {
+        "number_of_days": 10,
+    }
+    response = client.post(reverse("day_set_create"), data)
+    assert response.status_code == 302
+    assert "/rosters/day/" in response.url
+
+
+def test_staff_request_list_view(init_feasible_db, client):
+    """Test staff request list view."""
+    client.login(username="temporary", password="temporary")
+    response = client.get(reverse("staffrequest_list"))
+    assert response.status_code == 200
+    assert "Staff Requests:" in response.rendered_content
+    assert "staffrequest_list.html" in [t.name for t in response.templates]
+
+
+def test_staff_request_list_view_start_date(init_feasible_db, client):
+    """Test staff request list view."""
+    client.login(username="temporary", password="temporary")
+    session = client.session
+    session["start_date"] = "22-MAR-2010"
+    session.save()
+    response = client.get(reverse("staffrequest_list"))
+    assert response.status_code == 200
+    assert "Staff Requests:" in response.rendered_content
+    assert "staffrequest_list.html" in [t.name for t in response.templates]

@@ -17,8 +17,9 @@ from rosters.models import (
     StaffRule,
     StaffRuleShift,
     Leave,
+    TimeSlot,
 )
-
+from rosters.logic import RosterGenerator
 
 pytestmark = pytest.mark.django_db
 
@@ -124,12 +125,34 @@ def init_feasible_db(init_db):
         staff_member=staff_member1,
     )
     StaffRequest.objects.create(
+        priority=2,
+        like=True,
+        date=datetime.datetime.now(),
+        shift=late_shift,
+        staff_member=staff_member1,
+    )
+    StaffRequest.objects.create(
+        priority=100,
+        like=True,
+        date=datetime.datetime.now() + datetime.timedelta(days=1),
+        shift=late_shift,
+        staff_member=staff_member1,
+    )
+    StaffRequest.objects.create(
+        priority=1,
+        like=False,
+        date=datetime.datetime.now() + datetime.timedelta(days=1),
+        shift=late_shift,
+        staff_member=staff_member1,
+    )
+    StaffRequest.objects.create(
         priority=10,
         like=False,
         date=datetime.datetime.now() + datetime.timedelta(days=1),
         shift=early_shift,
         staff_member=staff_member1,
     )
+
     staff_rule1 = StaffRule.objects.create(
         staffrule_name="No Early after Late", daygroup=daygroup
     )
@@ -141,11 +164,17 @@ def init_feasible_db(init_db):
     StaffRuleShift.objects.create(
         shift=early_shift, staffrule=staff_rule1, position=2
     )
+    StaffRuleShift.objects.create(staffrule=staff_rule1, position=3)
     Leave.objects.create(
         date=datetime.datetime.now(),
         description="Leave",
         staff_member=staff_member2,
     )
+    timeslot = TimeSlot.objects.create(
+        date=datetime.datetime.now() - datetime.timedelta(days=1),
+        shift=early_shift,
+    )
+    timeslot.staff.set([staff_member1, staff_member2])
 
 
 @pytest.fixture()
@@ -212,3 +241,11 @@ def init_too_many_staff_db(init_db):
         shiftrule_name="Early Option A", shift=shift
     )
     ShiftRuleRole.objects.create(shiftrule=shiftrule, role=role, count=2)
+
+
+@pytest.fixture()
+def init_roster_db(init_feasible_db):
+    """Initialise a database with a populated roster."""
+    roster = RosterGenerator(start_date=datetime.datetime.now())
+    roster.create()
+    assert roster.complete
