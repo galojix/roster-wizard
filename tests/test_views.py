@@ -200,9 +200,23 @@ def test_leave_create_view_post(init_feasible_db, client):
     assert reverse("leave_list") in response.url
 
 
-def test_staff_request_update_view_(init_feasible_db, client):
+def test_staff_request_update_view(init_feasible_db, client):
     """Test leave create view post."""
     client.login(username="temporary", password="temporary")
+    staff_member = get_user_model().objects.first()
+    response = client.get(
+        reverse("staffrequest_update", args=(staff_member.id,))
+    )
+    assert response.status_code == 200
+    assert "staffrequest_update.html" in [t.name for t in response.templates]
+
+
+def test_staff_request_update_view_start_date(init_feasible_db, client):
+    """Test leave create view post."""
+    client.login(username="temporary", password="temporary")
+    session = client.session
+    session["start_date"] = datetime.datetime.now().date().strftime("%d-%b-%Y")
+    session.save()
     staff_member = get_user_model().objects.first()
     response = client.get(
         reverse("staffrequest_update", args=(staff_member.id,))
@@ -231,6 +245,17 @@ def test_staff_request_update_view_post(init_feasible_db, client):
 def test_download_csv(init_feasible_db, client):
     """Test download CSV."""
     client.login(username="temporary", password="temporary")
+    response = client.get(reverse("download_csv"))
+    assert response.status_code == 200
+    assert "Staff Member" in str(response.content)
+
+
+def test_download_csv_start_date(init_feasible_db, client):
+    """Test download CSV."""
+    client.login(username="temporary", password="temporary")
+    session = client.session
+    session["start_date"] = datetime.datetime.now().date().strftime("%d-%b-%Y")
+    session.save()
     response = client.get(reverse("download_csv"))
     assert response.status_code == 200
     assert "Staff Member" in str(response.content)
@@ -318,9 +343,83 @@ def test_staff_request_list_view_start_date(init_feasible_db, client):
     """Test staff request list view."""
     client.login(username="temporary", password="temporary")
     session = client.session
-    session["start_date"] = "22-MAR-2010"
+    session["start_date"] = datetime.datetime.now().date().strftime("%d-%b-%Y")
     session.save()
     response = client.get(reverse("staffrequest_list"))
     assert response.status_code == 200
     assert "Staff Requests:" in response.rendered_content
     assert "staffrequest_list.html" in [t.name for t in response.templates]
+
+
+def test_role_list_view(init_feasible_db, client):
+    """Test role list view."""
+    client.login(username="temporary", password="temporary")
+    response = client.get(reverse("role_list"))
+    assert response.status_code == 200
+    assert "Staff by Role:" in response.rendered_content
+    assert "role_list.html" in [t.name for t in response.templates]
+
+
+def test_shift_rule_list_view(init_feasible_db, client):
+    """Test shift rule list view."""
+    client.login(username="temporary", password="temporary")
+    response = client.get(reverse("shiftrule_list"))
+    assert response.status_code == 200
+    assert "Skill Mix Rules:" in response.rendered_content
+    assert "shiftrule_list.html" in [t.name for t in response.templates]
+
+
+def test_shift_rule_role_list_view(init_feasible_db, client):
+    """Test shift rule role list view."""
+    client.login(username="temporary", password="temporary")
+    response = client.get(reverse("shiftrulerole_list"))
+    assert response.status_code == 200
+    assert "Shift Rule Roles:" in response.rendered_content
+    assert "shiftrulerole_list.html" in [t.name for t in response.templates]
+
+
+def test_staff_rule_list_view(init_feasible_db, client):
+    """Test staff rule list view."""
+    client.login(username="temporary", password="temporary")
+    response = client.get(reverse("staffrule_list"))
+    assert response.status_code == 200
+    assert "Shift Sequences:" in response.rendered_content
+    assert "staffrule_list.html" in [t.name for t in response.templates]
+
+
+def test_day_group_list_view(init_feasible_db, client):
+    """Test day group list view."""
+    client.login(username="temporary", password="temporary")
+    response = client.get(reverse("daygroup_list"))
+    assert response.status_code == 200
+    assert "Day Groups:" in response.rendered_content
+    assert "daygroup_list.html" in [t.name for t in response.templates]
+
+
+def test_day_list_view(init_feasible_db, client):
+    """Test day list view."""
+    client.login(username="temporary", password="temporary")
+    response = client.get(reverse("day_list"))
+    assert response.status_code == 200
+    assert "Days:" in response.rendered_content
+    assert "day_list.html" in [t.name for t in response.templates]
+
+
+def test_select_roster_period_view_post(init_roster_db, client):
+    """Test roster by staff view."""
+    client.login(username="temporary", password="temporary")
+    data = {
+        "start_date": datetime.datetime.now().date(),
+    }
+    response = client.post(reverse("select_roster_period"), data)
+    assert response.status_code == 302
+    assert reverse("timeslot_list") in response.url
+
+
+def test_custom_user_list_view(init_feasible_db, client):
+    """Test custom user list view."""
+    client.login(username="temporary", password="temporary")
+    response = client.get(reverse("customuser_list"))
+    assert response.status_code == 200
+    assert "Staff:" in response.rendered_content
+    assert "customuser_list.html" in [t.name for t in response.templates]

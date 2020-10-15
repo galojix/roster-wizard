@@ -75,6 +75,14 @@ def init_feasible_db(init_db):
         available=True,
         shifts_per_roster=0,
     )
+    staff_member6 = get_user_model().objects.create_user(
+        username="six",
+        last_name="Six",
+        first_name="Six",
+        available=True,
+        max_shifts=False,
+        shifts_per_roster=1,
+    )
     rn = Role.objects.create(role_name="RN")
     srn = Role.objects.create(role_name="SRN")
     jrn = Role.objects.create(role_name="JRN")
@@ -152,7 +160,48 @@ def init_feasible_db(init_db):
         shift=early_shift,
         staff_member=staff_member1,
     )
-
+    StaffRequest.objects.create(
+        priority=10,
+        like=False,
+        date=datetime.datetime.now() + datetime.timedelta(days=2),
+        shift=early_shift,
+        staff_member=staff_member1,
+    )
+    StaffRequest.objects.create(
+        priority=10,
+        like=False,
+        date=datetime.datetime.now() + datetime.timedelta(days=2),
+        shift=late_shift,
+        staff_member=staff_member1,
+    )
+    StaffRequest.objects.create(
+        priority=10,
+        like=False,
+        date=datetime.datetime.now() + datetime.timedelta(days=3),
+        shift=early_shift,
+        staff_member=staff_member1,
+    )
+    StaffRequest.objects.create(
+        priority=10,
+        like=False,
+        date=datetime.datetime.now() + datetime.timedelta(days=3),
+        shift=late_shift,
+        staff_member=staff_member1,
+    )
+    StaffRequest.objects.create(
+        priority=10,
+        like=False,
+        date=datetime.datetime.now() + datetime.timedelta(days=4),
+        shift=early_shift,
+        staff_member=staff_member1,
+    )
+    StaffRequest.objects.create(
+        priority=10,
+        like=False,
+        date=datetime.datetime.now() + datetime.timedelta(days=4),
+        shift=late_shift,
+        staff_member=staff_member1,
+    )
     staff_rule1 = StaffRule.objects.create(
         staffrule_name="No Early after Late", daygroup=daygroup
     )
@@ -170,6 +219,12 @@ def init_feasible_db(init_db):
         description="Leave",
         staff_member=staff_member2,
     )
+    for i in range(0, 13):
+        Leave.objects.create(
+            date=datetime.datetime.now() + datetime.timedelta(days=i),
+            description="Leave",
+            staff_member=staff_member6,
+        )
     timeslot = TimeSlot.objects.create(
         date=datetime.datetime.now() - datetime.timedelta(days=1),
         shift=early_shift,

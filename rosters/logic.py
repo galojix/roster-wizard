@@ -542,10 +542,6 @@ class RosterGenerator:
         log.info("Solver finished...")
         if solution_status == cp_model.INFEASIBLE:
             log.info("Solution is INFEASIBLE")
-        if solution_status == cp_model.MODEL_INVALID:
-            log.info("Solution is MODEL_INVALID")
-        if solution_status == cp_model.UNKNOWN:
-            log.info("Solution is UNKNOWN")
         if (
             solution_status != cp_model.FEASIBLE
             and solution_status != cp_model.OPTIMAL
