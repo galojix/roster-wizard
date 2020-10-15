@@ -1,6 +1,7 @@
 """Model testing."""
 import pytest
 
+from users.models import CustomUser
 from rosters.models import (
     Leave,
     Role,
@@ -168,4 +169,22 @@ def test_staffrequest_get_absolute_url(init_feasible_db):
     assert (
         staffrequest.get_absolute_url()
         == f"/rosters/staffrequest/{staffrequest.id}/"
+    )
+
+
+def test_customuser_object_name(init_feasible_db):
+    """Test customuser object name."""
+    customuser = CustomUser.objects.first()
+    expected_object_name = (
+        f"{customuser.last_name}," f"{customuser.first_name}"
+    )
+    assert expected_object_name == str(customuser)
+
+
+def test_customuser_get_absolute_url(init_feasible_db):
+    """Test customuser_get_absolute_url custom method."""
+    customuser = CustomUser.objects.first()
+    # This will also fail if the urlconf is not defined.
+    assert (
+        customuser.get_absolute_url() == f"/users/customuser/{customuser.id}/"
     )
