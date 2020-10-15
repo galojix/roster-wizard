@@ -275,7 +275,7 @@ class StaffRuleShift(models.Model):
     def __str__(self):
         """Return a meaningful string representation."""
         return (
-            self.staffrule.staff_name
+            self.staffrule.staffrule_name
             + ":"
             + self.shift.shift_type
             + ":"
