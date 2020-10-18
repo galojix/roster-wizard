@@ -319,6 +319,22 @@ def test_day_group_day_create_view_post(init_feasible_db, client):
     assert "/rosters/daygroupday" in response.url
 
 
+def test_day_group_day_create_view_post_invalid(init_feasible_db, client):
+    """Test day group day create view post with invalid data."""
+    client.login(username="temporary", password="temporary")
+    daygroup = DayGroup.objects.first()
+    day = Day.objects.last()
+    data = {
+        "day": day.id,
+    }
+    response = client.post(
+        reverse("daygroupday_create", args=(daygroup.id,)), data
+    )
+    assert response.status_code == 200
+    assert "is already in the Day Group" in response.rendered_content
+    assert "daygroupday_create.html" in [t.name for t in response.templates]
+
+
 def test_day_set_create_view_post(init_feasible_db, client):
     """Test day group create view post."""
     client.login(username="temporary", password="temporary")
