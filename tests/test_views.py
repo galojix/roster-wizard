@@ -307,7 +307,7 @@ def test_day_group_create_view_post(init_feasible_db, client):
 def test_day_group_day_create_view_post(init_feasible_db, client):
     """Test day group day create view post."""
     client.login(username="temporary", password="temporary")
-    daygroup = DayGroup.objects.first()
+    daygroup = DayGroup.objects.create(name="Test")
     day = Day.objects.last()
     data = {
         "day": day.id,

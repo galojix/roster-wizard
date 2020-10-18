@@ -64,7 +64,9 @@ class Role(models.Model):
 class DayGroup(models.Model):
     """Day Group."""
 
-    name = models.CharField(max_length=20, null=False, blank=False)
+    name = models.CharField(
+        max_length=20, unique=True, null=False, blank=False
+    )
 
     def __str__(self):
         """Return a meaningful string representation."""
@@ -114,6 +116,10 @@ class DayGroupDay(models.Model):
         """Meta."""
 
         ordering = ("day__number",)
+        unique_together = (
+            "daygroup",
+            "day",
+        )
 
     def __str__(self):
         """Return a meaningful string representation."""

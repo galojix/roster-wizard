@@ -34,6 +34,7 @@ from .models import (
     DayGroupDay,
 )
 from .forms import (
+    DayGroupDayCreateForm,
     LeaveCreateForm,
     LeaveUpdateForm,
     TimeSlotUpdateForm,
@@ -570,7 +571,7 @@ class DayGroupDayCreateView(LoginRequiredMixin, CreateView):
 
     model = DayGroupDay
     template_name = "daygroupday_create.html"
-    fields = ("day",)
+    form_class = DayGroupDayCreateForm
     login_url = "login"
 
     def form_valid(self, form):
@@ -578,6 +579,12 @@ class DayGroupDayCreateView(LoginRequiredMixin, CreateView):
         daygroup = get_object_or_404(DayGroup, id=self.kwargs["daygroup"])
         form.instance.daygroup = daygroup
         return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        """Pass daygroup to form."""
+        kwargs = super().get_form_kwargs()
+        kwargs["daygroup"] = self.kwargs["daygroup"]
+        return kwargs
 
 
 class DayListView(LoginRequiredMixin, ListView):

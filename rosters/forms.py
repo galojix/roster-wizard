@@ -3,8 +3,9 @@
 import datetime
 from django import forms
 from django.forms import ModelForm
+from django.core.exceptions import ValidationError
 
-from .models import Leave, TimeSlot, StaffRule
+from .models import Leave, TimeSlot, StaffRule, DayGroupDay, DayGroup
 
 
 class DateInput(forms.DateInput):
@@ -135,3 +136,30 @@ class StaffRequestUpdateForm(forms.Form):
             self.fields[f"priority_{i}"] = forms.IntegerField(
                 label="", initial=priorities[i], required=False
             )
+
+
+class DayGroupDayCreateForm(ModelForm):
+    """Day Group Day Create Form."""
+
+    def __init__(self, daygroup, *args, **kwargs):
+        """Get daygroup."""
+        super().__init__(*args, **kwargs)
+        self.daygroup = daygroup
+
+    class Meta:
+        """Meta."""
+
+        model = DayGroupDay
+        fields = ("day",)
+
+    def clean(self):
+        """Ensure day not already in day group."""
+        cleaned_data = super().clean()
+        day = cleaned_data["day"]
+        daygroup = DayGroup.objects.get(id=self.daygroup)
+        # if day already in day group raise Validation error
+        if DayGroupDay.objects.filter(day=day, daygroup=daygroup):
+            raise ValidationError(
+                f"Day {day} is already in the Day Group {daygroup.name}."
+            )
+        return cleaned_data
