@@ -1,6 +1,6 @@
 """Serializers."""
 
-# from django.contrib.auth import get_user_model # new
+from datetime import datetime
 from rest_framework import serializers
 from rosters.models import TimeSlot, Leave
 
@@ -33,3 +33,18 @@ class TimeSlotSerializer(serializers.ModelSerializer):
             "staff",
             "shift",
         )
+
+
+class DateTimeSerializer(serializers.Serializer):
+    """DateTime Serializer."""
+
+    date = serializers.DateTimeField()
+
+    def create(self, validated_data):
+        """Create date."""
+        return datetime(**validated_data)
+
+    def update(self, instance, validated_data):
+        """Update date."""
+        instance.date = validated_data.get("date", instance.date)
+        return instance
