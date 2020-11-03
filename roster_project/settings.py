@@ -42,6 +42,7 @@ ALLOWED_HOSTS = tuple(env.list("ALLOWED_HOSTS", default=[]))
 INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "rosters.apps.RostersConfig",
+    "api.apps.ApiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rangefilter",
     "crispy_forms",
+    "rest_framework",
 ]
 
 if DEBUG:
@@ -258,3 +260,10 @@ ROSTER_NAME = env("ROSTER_NAME")
 # Celery
 CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
+
+# DRF
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ]
+}
