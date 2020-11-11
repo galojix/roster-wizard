@@ -714,9 +714,19 @@ def get_roster_by_staff(start_date):
             roster[worker.last_name + ", " + worker.first_name][date] = "X"
         worker_timeslots = worker.timeslot_set.filter(date__range=date_range)
         for timeslot in worker_timeslots:
-            roster[worker.last_name + ", " + worker.first_name][
-                timeslot.date
-            ] = timeslot.shift.shift_type
+            if (
+                roster[worker.last_name + ", " + worker.first_name][
+                    timeslot.date
+                ]
+                == "X"
+            ):
+                roster[worker.last_name + ", " + worker.first_name][
+                    timeslot.date
+                ] = timeslot.shift.shift_type
+            else:
+                roster[worker.last_name + ", " + worker.first_name][
+                    timeslot.date
+                ] += (", " + timeslot.shift.shift_type)
         worker_leave = worker.leave_set.filter(date__range=date_range)
         for leave in worker_leave:
             roster[worker.last_name + ", " + worker.first_name][
