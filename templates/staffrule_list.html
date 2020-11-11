@@ -8,7 +8,11 @@
       <th>Staff</th>
       <th>Day Group</th>
       <th>Action</th>
-      <th>Invalid Shift Sequences</th>
+      {% if shift_seq_valid %}
+        <th>Valid Shift Sequences</th>
+      {% else %}
+        <th>Invalid Shift Sequences</th>
+      {% endif %}
     </tr>
     {% for staffrule in staffrule_list %}
       <tr>

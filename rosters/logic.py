@@ -7,6 +7,7 @@ from collections import OrderedDict
 
 from ortools.sat.python import cp_model
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 from .models import Leave, Role, Shift, ShiftRule, TimeSlot, Day, StaffRequest
 
@@ -310,12 +311,17 @@ class RosterGenerator:
                         continue
         return shift_vars_in_seq_on
 
-    def _enforce_shift_sequences(self):
-        """Enforce shift sequences / staff rules.
+    def _enforce_valid_shift_sequences(self):
+        """Enforce valid shift sequences / staff rules."""
+        log.info("Enforcement of valid shift sequence rules started...")
+        log.info("Enforcement of valid shift sequence rules completed...")
+
+    def _enforce_invalid_shift_sequences(self):
+        """Enforce invalid shift sequences / staff rules.
 
         Need to look at previous roster period also
         """
-        log.info("Enforcement of shift sequence rules started...")
+        log.info("Enforcement of invalid shift sequence rules started...")
 
         timeslot_ids = self._get_timeslot_ids()
 
@@ -355,7 +361,7 @@ class RosterGenerator:
                         self.model.Add(
                             sum(shift_vars_in_seq_on) < work_days_in_seq
                         ).OnlyEnforceIf(shift_vars_in_seq_off)
-        log.info("Enforcement of shift sequence rules completed...")
+        log.info("Enforcement of invalid shift sequence rules completed...")
 
     def _collect_skill_mix_rules(self):
         """Collect shift rules into friendly structure."""
@@ -536,7 +542,7 @@ class RosterGenerator:
     def _solve_roster(self):
         """Create the solver and solve."""
         self.solver = cp_model.CpSolver()
-        self.solver.parameters.max_time_in_seconds = 120
+        # self.solver.parameters.max_time_in_seconds = 120
         log.info("Solver started...")
         solution_status = self.solver.Solve(self.model)
         log.info("Solver finished...")
@@ -626,7 +632,10 @@ class RosterGenerator:
         self._create_shift_vars()
         self._create_previous_shift_vars()
         self._exclude_leave_dates()
-        self._enforce_shift_sequences()
+        if settings.SHIFT_SEQ_VALID:
+            self._enforce_valid_shift_sequences()
+        else:
+            self._enforce_invalid_shift_sequences()
         self._collect_skill_mix_rules()
         self._create_intermediate_skill_mix_vars()
         self._enforce_one_skill_mix_rule_at_a_time()
