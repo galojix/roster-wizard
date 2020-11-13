@@ -257,7 +257,6 @@ class RosterGenerator:
         """
         shift_vars_in_seq_off = []
         for day_num in shift_seq:
-            # print(f"shift seq day {day_num}: {shift_seq[day_num]}")
             for shift in shift_seq[day_num]:
                 if shift is None:
                     day_to_test = date + datetime.timedelta(days=day_num - 1)
@@ -276,7 +275,6 @@ class RosterGenerator:
                             for timeslot in self.timeslot_ids_lookup[
                                 day_to_test
                             ]:
-                                # print(timeslot.shift.shift_type)
                                 shift_vars_in_seq_off.append(
                                     self.shift_vars[
                                         (
@@ -305,7 +303,6 @@ class RosterGenerator:
         for day_num in shift_seq:
             for shift in shift_seq[day_num]:
                 if shift is not None:
-                    # print(shift.shift_type)
                     day_to_test = date + datetime.timedelta(days=day_num - 1)
 
                     # Skip if day not in day group for sequence
@@ -362,14 +359,11 @@ class RosterGenerator:
                         timeslot_ids,
                     )
 
-                    print("off", shift_vars_in_seq_off)
-                    print("on", shift_vars_in_seq_on)
-
                     # Apply constraints
-                    # self.model.Add(sum(shift_vars_in_seq_off) == 0)
-                    # self.model.Add(
-                    #     sum(shift_vars_in_seq_on) == work_days_in_seq
-                    # )
+                    self.model.Add(sum(shift_vars_in_seq_off) == 0)
+                    self.model.Add(
+                        sum(shift_vars_in_seq_on) == work_days_in_seq
+                    )
         log.info("Enforcement of valid shift sequence rules completed...")
 
     def _enforce_invalid_shift_sequences(self):
@@ -385,10 +379,10 @@ class RosterGenerator:
             roles = worker.roles.all()
             for staffrule in worker.staffrule_set.all():
                 invalid_shift_seq = self._get_shift_seq(staffrule)
-                # work_days_in_seq = self._get_work_days_in_seq(
-                #     invalid_shift_seq
-                # )
-                days_in_seq = len(invalid_shift_seq)
+                # days_in_seq = len(invalid_shift_seq)
+                work_days_in_seq = self._get_work_days_in_seq(
+                    invalid_shift_seq
+                )
                 all_days_in_seq = self._get_all_days_in_seq(staffrule)
 
                 for date in self.extended_dates:
@@ -409,30 +403,30 @@ class RosterGenerator:
                     )
 
                     # Apply constraints
-                    # if len(shift_vars_in_seq_off) == 0:
-                    #     self.model.Add(
-                    #         sum(shift_vars_in_seq_on) < work_days_in_seq
-                    #     )
-                    # else:
-                    #     for item, var in enumerate(shift_vars_in_seq_off):
-                    #         shift_vars_in_seq_off[item] = var.Not()
-                    #     self.model.Add(
-                    #         sum(shift_vars_in_seq_on) < work_days_in_seq
-                    #     ).OnlyEnforceIf(shift_vars_in_seq_off)
-
-                    shift_vars_in_seq_diff = list(
-                        set(shift_vars_in_seq_off) - set(shift_vars_in_seq_on)
-                    )
-                    for item, var in enumerate(shift_vars_in_seq_diff):
-                        shift_vars_in_seq_diff[item] = var.Not()
-
-                    self.model.Add(
-                        (
-                            sum(shift_vars_in_seq_on)
-                            + sum(shift_vars_in_seq_diff)
+                    if len(shift_vars_in_seq_off) == 0:
+                        self.model.Add(
+                            sum(shift_vars_in_seq_on) < work_days_in_seq
                         )
-                        < days_in_seq
-                    )
+                    else:
+                        for item, var in enumerate(shift_vars_in_seq_off):
+                            shift_vars_in_seq_off[item] = var.Not()
+                        self.model.Add(
+                            sum(shift_vars_in_seq_on) < work_days_in_seq
+                        ).OnlyEnforceIf(shift_vars_in_seq_off)
+
+                    # shift_vars_in_seq_diff = list(
+                    #     set(shift_vars_in_seq_off) - set(shift_vars_in_seq_on)
+                    # )
+                    # for item, var in enumerate(shift_vars_in_seq_diff):
+                    #     shift_vars_in_seq_diff[item] = var.Not()
+
+                    # self.model.Add(
+                    #     (
+                    #         sum(shift_vars_in_seq_on)
+                    #         + sum(shift_vars_in_seq_diff)
+                    #     )
+                    #     < days_in_seq
+                    # )
 
         log.info("Enforcement of invalid shift sequence rules completed...")
 
