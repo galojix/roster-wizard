@@ -241,32 +241,54 @@ class RosterGenerator:
         ]
         return all_days_in_seq
 
-    def _get_shift_vars_in_seq_off(self, date, shift_seq, roles, worker):
+    def _get_shift_vars_in_seq_off(
+        self,
+        date,
+        shift_seq,
+        all_days_in_seq,
+        roles,
+        worker,
+    ):
         """Find non-working shift variables in shift sequence.
 
-        A blank position (no shift) in a staff rule means no shift worked
+        A blank/None position (no shift) in a staff rule means no shift worked
         that day.
 
         """
         shift_vars_in_seq_off = []
         for day_num in shift_seq:
-            if shift_seq[day_num][0] is None:
-                day_to_test = date + datetime.timedelta(days=day_num - 1)
-                for role in roles:
-                    try:
-                        for timeslot in self.timeslot_ids_lookup[day_to_test]:
-                            shift_vars_in_seq_off.append(
-                                self.shift_vars[
-                                    (
-                                        worker.id,
-                                        role.id,
-                                        day_to_test,
-                                        timeslot.id,
-                                    )
-                                ]
-                            )
-                    except KeyError:
-                        continue
+            # print(f"shift seq day {day_num}: {shift_seq[day_num]}")
+            for shift in shift_seq[day_num]:
+                if shift is None:
+                    day_to_test = date + datetime.timedelta(days=day_num - 1)
+
+                    # Skip if day not in day group for sequence
+                    delta = (day_to_test - self.dates[0]).days
+                    if delta < 0:
+                        daygroupday_num = delta + self.num_days + 1
+                    else:
+                        daygroupday_num = delta + 1
+                    if daygroupday_num not in all_days_in_seq:
+                        break
+
+                    for role in roles:
+                        try:
+                            for timeslot in self.timeslot_ids_lookup[
+                                day_to_test
+                            ]:
+                                # print(timeslot.shift.shift_type)
+                                shift_vars_in_seq_off.append(
+                                    self.shift_vars[
+                                        (
+                                            worker.id,
+                                            role.id,
+                                            day_to_test,
+                                            timeslot.id,
+                                        )
+                                    ]
+                                )
+                        except KeyError:
+                            continue
         return shift_vars_in_seq_off
 
     def _get_shift_vars_in_seq_on(
@@ -282,31 +304,33 @@ class RosterGenerator:
         shift_vars_in_seq_on = []
         for day_num in shift_seq:
             for shift in shift_seq[day_num]:
-                day_to_test = date + datetime.timedelta(days=day_num - 1)
+                if shift is not None:
+                    # print(shift.shift_type)
+                    day_to_test = date + datetime.timedelta(days=day_num - 1)
 
-                # Skip if day not in day group for sequence
-                delta = (day_to_test - self.dates[0]).days
-                if delta < 0:
-                    daygroupday_num = delta + self.num_days + 1
-                else:
-                    daygroupday_num = delta + 1
-                if daygroupday_num not in all_days_in_seq:
-                    break
+                    # Skip if day not in day group for sequence
+                    delta = (day_to_test - self.dates[0]).days
+                    if delta < 0:
+                        daygroupday_num = delta + self.num_days + 1
+                    else:
+                        daygroupday_num = delta + 1
+                    if daygroupday_num not in all_days_in_seq:
+                        break
 
-                for role in roles:
-                    try:
-                        shift_vars_in_seq_on.append(
-                            self.shift_vars[
-                                (
-                                    worker.id,
-                                    role.id,
-                                    day_to_test,
-                                    timeslot_ids[(day_to_test, shift)],
-                                )
-                            ]
-                        )
-                    except KeyError:
-                        continue
+                    for role in roles:
+                        try:
+                            shift_vars_in_seq_on.append(
+                                self.shift_vars[
+                                    (
+                                        worker.id,
+                                        role.id,
+                                        day_to_test,
+                                        timeslot_ids[(day_to_test, shift)],
+                                    )
+                                ]
+                            )
+                        except KeyError:
+                            continue
         return shift_vars_in_seq_on
 
     def _enforce_valid_shift_sequences(self):
@@ -361,15 +385,17 @@ class RosterGenerator:
             roles = worker.roles.all()
             for staffrule in worker.staffrule_set.all():
                 invalid_shift_seq = self._get_shift_seq(staffrule)
-                work_days_in_seq = self._get_work_days_in_seq(
-                    invalid_shift_seq
-                )
+                # work_days_in_seq = self._get_work_days_in_seq(
+                #     invalid_shift_seq
+                # )
+                days_in_seq = len(invalid_shift_seq)
                 all_days_in_seq = self._get_all_days_in_seq(staffrule)
 
                 for date in self.extended_dates:
                     shift_vars_in_seq_off = self._get_shift_vars_in_seq_off(
                         date,
                         invalid_shift_seq,
+                        all_days_in_seq,
                         roles,
                         worker,
                     )
@@ -383,16 +409,31 @@ class RosterGenerator:
                     )
 
                     # Apply constraints
-                    if len(shift_vars_in_seq_off) == 0:
-                        self.model.Add(
-                            sum(shift_vars_in_seq_on) < work_days_in_seq
+                    # if len(shift_vars_in_seq_off) == 0:
+                    #     self.model.Add(
+                    #         sum(shift_vars_in_seq_on) < work_days_in_seq
+                    #     )
+                    # else:
+                    #     for item, var in enumerate(shift_vars_in_seq_off):
+                    #         shift_vars_in_seq_off[item] = var.Not()
+                    #     self.model.Add(
+                    #         sum(shift_vars_in_seq_on) < work_days_in_seq
+                    #     ).OnlyEnforceIf(shift_vars_in_seq_off)
+
+                    shift_vars_in_seq_diff = list(
+                        set(shift_vars_in_seq_off) - set(shift_vars_in_seq_on)
+                    )
+                    for item, var in enumerate(shift_vars_in_seq_diff):
+                        shift_vars_in_seq_diff[item] = var.Not()
+
+                    self.model.Add(
+                        (
+                            sum(shift_vars_in_seq_on)
+                            + sum(shift_vars_in_seq_diff)
                         )
-                    else:
-                        for item, var in enumerate(shift_vars_in_seq_off):
-                            shift_vars_in_seq_off[item] = var.Not()
-                        self.model.Add(
-                            sum(shift_vars_in_seq_on) < work_days_in_seq
-                        ).OnlyEnforceIf(shift_vars_in_seq_off)
+                        < days_in_seq
+                    )
+
         log.info("Enforcement of invalid shift sequence rules completed...")
 
     def _collect_skill_mix_rules(self):
