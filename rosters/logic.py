@@ -381,10 +381,6 @@ class RosterGenerator:
             roles = worker.roles.all()
             for staffrule in worker.staffrule_set.all():
                 invalid_shift_seq = self._get_shift_seq(staffrule)
-                # days_in_seq = len(invalid_shift_seq)
-                # work_days_in_seq = self._get_work_days_in_seq(
-                #     invalid_shift_seq
-                # )
                 all_days_in_seq = self._get_all_days_in_seq(staffrule)
 
                 for date in self.extended_dates:
@@ -403,9 +399,6 @@ class RosterGenerator:
                         worker,
                         timeslot_ids,
                     )
-
-                    # print(f"off: {shift_vars_in_seq_off}")
-                    # print(f"on: {shift_vars_in_seq_on}")
 
                     # Create intermediate vars
                     intermediate_vars = {}
@@ -439,36 +432,12 @@ class RosterGenerator:
                             )
 
                     # Enforce one intermediate variable to be true
-                    # Only need to enforce one position
+                    # Only need to enforce one position per rule
                     all_intermediate_vars = []
                     for item in intermediate_vars:
                         all_intermediate_vars.append(intermediate_vars[item])
                     self.model.Add(sum(all_intermediate_vars) == 1)
 
-                    # Apply constraints
-                    # if len(shift_vars_in_seq_off) == 0:
-                    #     self.model.Add(
-                    #         sum(shift_vars_in_seq_on) < work_days_in_seq
-                    #     )
-                    # else:
-                    #     for item, var in enumerate(shift_vars_in_seq_off):
-                    #         shift_vars_in_seq_off[item] = var.Not()
-                    #     self.model.Add(
-                    #         sum(shift_vars_in_seq_on) < work_days_in_seq
-                    #     ).OnlyEnforceIf(shift_vars_in_seq_off)
-
-                    # shift_vars_in_seq_diff = list(
-                    #     set(shift_vars_in_seq_off) - set(shift_vars_in_seq_on)
-                    # )
-                    # for item, var in enumerate(shift_vars_in_seq_diff):
-                    #     shift_vars_in_seq_diff[item] = var.Not()
-                    # self.model.Add(
-                    #     (
-                    #         sum(shift_vars_in_seq_on)
-                    #         + sum(shift_vars_in_seq_diff)
-                    #     )
-                    #     < days_in_seq
-                    # )
         log.info("Enforcement of invalid shift sequence rules completed...")
 
     def _collect_skill_mix_rules(self):
