@@ -26,7 +26,11 @@
         <td><a href="{% url 'staffrule_update' staffrule.pk %}">Edit</a> | <a href="{% url 'staffrule_delete' staffrule.pk %}">Delete</a></td>
         <td>
           {% for staffruleshift in staffrule.staffruleshift_set.all %}
-          {{ staffruleshift.shift.shift_type}}:{{ staffruleshift.position}}
+            {% if staffruleshift.shift.shift_type %}
+              {{ staffruleshift.shift.shift_type}}:{{ staffruleshift.position}}
+            {% else %}
+              X:{{ staffruleshift.position}}
+            {% endif %}
           <a href="{% url 'staffruleshift_update' staffruleshift.pk %}">Edit</a> | <a href="{% url 'staffruleshift_delete' staffruleshift.pk %}">Delete</a>
           <br/>
           {% endfor %}
