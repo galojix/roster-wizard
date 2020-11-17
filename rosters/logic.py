@@ -94,7 +94,7 @@ class RosterGenerator:
     def _create_timeslot_ids_lookup(self):
         # Create timeslot id lookup
         self.timeslot_ids_lookup = {}
-        for date in self.dates:
+        for date in self.extended_dates:
             timeslot_ids_for_date = []
             for timeslot in TimeSlot.objects.filter(date=date).order_by(
                 "shift__shift_type"
@@ -170,15 +170,18 @@ class RosterGenerator:
             date__range=self.previous_date_range
         )
         for timeslot in previous_timeslots:
-            for worker in timeslot.staff.all():
+            for worker in self.workers:
                 n = worker.id
-                r = worker.roles.all()[0]
+                r = worker.roles.all()[0].id
                 d = timeslot.date
                 t = timeslot.id
                 self.shift_vars[(n, r, d, t)] = self.model.NewBoolVar(
                     f"shift_n{n}r{r}d{d}t{t}"
                 )
-                self.model.Add(self.shift_vars[(n, r, d, t)] == 1)
+                if worker in timeslot.staff.all():
+                    self.model.Add(self.shift_vars[(n, r, d, t)] == 1)
+                else:
+                    self.model.Add(self.shift_vars[(n, r, d, t)] == 0)
         log.info(
             "Creation of shift variables for previous period completed..."
         )
@@ -436,7 +439,7 @@ class RosterGenerator:
                     all_intermediate_vars = []
                     for item in intermediate_vars:
                         all_intermediate_vars.append(intermediate_vars[item])
-                    self.model.Add(sum(all_intermediate_vars) == 1)
+                    self.model.Add(sum(all_intermediate_vars) >= 1)
 
         log.info("Enforcement of invalid shift sequence rules completed...")
 
