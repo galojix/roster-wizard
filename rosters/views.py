@@ -838,7 +838,7 @@ class SelectRosterPeriodView(LoginRequiredMixin, FormView):
 
     template_name = "select_roster_period.html"
     form_class = SelectRosterForm
-    success_url = reverse_lazy("timeslot_list")
+    success_url = reverse_lazy("roster_by_staff")
 
     def form_valid(self, form):
         """Process select roster form."""
