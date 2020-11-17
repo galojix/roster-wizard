@@ -93,6 +93,7 @@ def init_feasible_db(init_db):
     staff_member5.roles.add(rn)
     staff_member5.roles.add(srn)
     staff_member5.roles.add(jrn)
+    staff_member6.roles.add(jrn)
     daygroup = DayGroup.objects.create(name="All Days")
     for i in range(1, 15):
         day = Day.objects.create(number=i)
