@@ -86,7 +86,6 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "rosters.context_processors.get_roster_name",
-                "rosters.context_processors.get_shift_seq_valid",
             ]
         },
     }
@@ -268,6 +267,3 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ]
 }
-
-# Shift Sequence Logic
-SHIFT_SEQ_VALID = env.bool("SHIFT_SEQ_VALID")

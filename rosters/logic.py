@@ -7,7 +7,6 @@ from collections import OrderedDict
 
 from ortools.sat.python import cp_model
 from django.contrib.auth import get_user_model
-from django.conf import settings
 
 from .models import Leave, Role, Shift, ShiftRule, TimeSlot, Day, StaffRequest
 
@@ -334,12 +333,6 @@ class RosterGenerator:
                         except KeyError:
                             continue
         return shift_vars_in_seq_on
-
-    def _enforce_valid_shift_sequences(self):
-        """Enforce valid shift sequences / staff rules."""
-        log.info("Enforcement of valid shift sequence rules started...")
-
-        log.info("Enforcement of valid shift sequence rules completed...")
 
     def _enforce_invalid_shift_sequences(self):
         """Enforce invalid shift sequences / staff rules.
@@ -682,10 +675,7 @@ class RosterGenerator:
         self._create_shift_vars()
         self._create_previous_shift_vars()
         self._exclude_leave_dates()
-        if settings.SHIFT_SEQ_VALID:
-            self._enforce_valid_shift_sequences()
-        else:
-            self._enforce_invalid_shift_sequences()
+        self._enforce_invalid_shift_sequences()
         self._collect_skill_mix_rules()
         self._create_intermediate_skill_mix_vars()
         self._enforce_one_skill_mix_rule_at_a_time()
