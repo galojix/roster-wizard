@@ -493,7 +493,7 @@ class RosterGenerator:
             timeslots = TimeSlot.objects.filter(date=date)
             for worker in self.workers:
                 roles = worker.roles.all()
-                if worker.shifts_per_roster != 0:  # Zero is unlimited shifts
+                if worker.enforce_one_shift_per_day:
                     self.model.Add(
                         sum(
                             self.shift_vars[
@@ -527,7 +527,7 @@ class RosterGenerator:
                 for date in self.dates
                 for timeslot in self.timeslot_ids_lookup[date]
             )
-            if worker.shifts_per_roster != 0:  # Zero means unlimited shifts
+            if worker.enforce_shifts_per_roster:
                 shifts_per_roster = self._get_shifts_per_roster(worker)
                 self.model.Add(num_shifts_worked == shifts_per_roster)
         log.info("Enforcement of shifts per roster completed...")
@@ -561,7 +561,7 @@ class RosterGenerator:
                 for date in dates1
                 for timeslot in self.timeslot_ids_lookup[date]
             )
-            if worker.shifts_per_roster != 0:  # Zero means unlimited shifts
+            if worker.enforce_shifts_per_roster:
                 shifts_per_roster = self._get_shifts_per_roster(worker)
                 num_shifts = shifts_per_roster // 2
                 self.model.Add(num_shifts_worked1 == num_shifts)

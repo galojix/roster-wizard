@@ -8,7 +8,9 @@
       <th>Last Name</th>
       <th>First Name</th>
       <th>Shifts Per Roster</th>
-      <th>Max Shifts if Taking Leave</th>
+      <th>Enforce Shifts Per Roster</th>
+      <th>Enforce One Shift Per Day</th>
+      <th>Maximise Shifts if Taking Leave</th>
       <th>Available for Shifts</th>
       <th>Roles</th>
       <th>Action</th>
@@ -18,6 +20,8 @@
         <td>{{ customuser.last_name }}</td>
         <td>{{ customuser.first_name }}</td>
         <td>{{ customuser.shifts_per_roster }}</td>
+        <td>{{ customuser.enforce_shifts_per_roster }}</td>
+        <td>{{ customuser.enforce_one_shift_per_day }}</td>
         <td>{{ customuser.max_shifts }}</td>
         <td>{{ customuser.available }}</td>
         <td>{% for role in customuser.roles.all|dictsort:"role_name" %}

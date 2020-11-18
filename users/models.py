@@ -26,6 +26,12 @@ class CustomUser(AbstractUser):
     shifts_per_roster = models.IntegerField(null=False, blank=False, default=0)
     max_shifts = models.BooleanField(null=False, blank=False, default=True)
     roles = models.ManyToManyField("rosters.Role", blank=True)
+    enforce_shifts_per_roster = models.BooleanField(
+        null=False, blank=False, default=True
+    )
+    enforce_one_shift_per_day = models.BooleanField(
+        null=False, blank=False, default=True
+    )
 
     def __str__(self):
         """How a user object is displayed."""

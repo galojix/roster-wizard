@@ -11,6 +11,8 @@
         <th>First Name</th>
         <th>Email Address</th>
         <th>Shifts per Roster</th>
+        <th>Enforce Shifts per Roster</th>
+        <th>Enforce One Shift per Day</th>
         <th>Max Shifts if Taking Leave</th>
         <th>Available for Shifts</th>
         <th>Roles</th>
@@ -21,6 +23,8 @@
         <td>{{ customuser.first_name }}</td>
         <td>{{ customuser.email }}</td>
         <td>{{ customuser.shifts_per_roster }}</td>
+        <td>{{ customuser.enforce_shifts_per_roster }}</td>
+        <td>{{ customuser.enforce_one_shift_per_day }}</td>
         <td>{{ customuser.max_shifts }}</td>
         <td>{{ customuser.available }}</td>
         <td>{% for role in customuser.roles.all %}
