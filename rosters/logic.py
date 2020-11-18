@@ -339,36 +339,6 @@ class RosterGenerator:
         """Enforce valid shift sequences / staff rules."""
         log.info("Enforcement of valid shift sequence rules started...")
 
-        timeslot_ids = self._get_timeslot_ids()
-
-        for worker in self.workers:
-            roles = worker.roles.all()
-            for staffrule in worker.staffrule_set.all():
-                valid_shift_seq = self._get_shift_seq(staffrule)
-                work_days_in_seq = self._get_work_days_in_seq(valid_shift_seq)
-                all_days_in_seq = self._get_all_days_in_seq(staffrule)
-
-                for date in self.extended_dates:
-                    shift_vars_in_seq_off = self._get_shift_vars_in_seq_off(
-                        date,
-                        valid_shift_seq,
-                        roles,
-                        worker,
-                    )
-                    shift_vars_in_seq_on = self._get_shift_vars_in_seq_on(
-                        date,
-                        valid_shift_seq,
-                        all_days_in_seq,
-                        roles,
-                        worker,
-                        timeslot_ids,
-                    )
-
-                    # Apply constraints
-                    self.model.Add(sum(shift_vars_in_seq_off) == 0)
-                    self.model.Add(
-                        sum(shift_vars_in_seq_on) == work_days_in_seq
-                    )
         log.info("Enforcement of valid shift sequence rules completed...")
 
     def _enforce_invalid_shift_sequences(self):
