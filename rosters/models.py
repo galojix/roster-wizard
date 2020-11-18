@@ -5,6 +5,14 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 
+class RosterSettings(models.Model):
+    """Roster settings."""
+
+    roster_name = models.CharField(
+        max_length=15, null=False, blank=False, default="Location Name"
+    )
+
+
 class LeaveManager(models.Manager):
     """Leave Manager."""
 

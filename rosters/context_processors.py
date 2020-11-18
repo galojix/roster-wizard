@@ -1,7 +1,11 @@
 """Context Processors."""
-from django.conf import settings
+# from django.conf import settings
+from .models import RosterSettings
 
 
 def get_roster_name(request):
     """Get roster name from settings."""
-    return {"roster_name": settings.ROSTER_NAME}
+    if RosterSettings.objects.exists():
+        return {"roster_name": RosterSettings.objects.first().roster_name}
+    else:
+        return {"roster_name": "No Location Set"}
