@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 from environs import Env
 from django.conf import settings
+from django.contrib.messages import constants as messages
 
 # Use
 env = Env()
@@ -266,4 +267,13 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ]
+}
+
+# Message colours
+MESSAGE_TAGS = {
+    messages.SUCCESS: "alert-success",
+    messages.ERROR: "alert-danger",
+    messages.DEBUG: "alert-secondary",
+    messages.INFO: "alert-info",
+    messages.WARNING: "alert-warning",
 }

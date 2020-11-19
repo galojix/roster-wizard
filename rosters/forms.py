@@ -5,7 +5,33 @@ from django import forms
 from django.forms import ModelForm
 from django.core.exceptions import ValidationError
 
-from .models import Leave, TimeSlot, StaffRule, DayGroupDay, DayGroup
+from .models import (
+    Leave,
+    RosterSettings,
+    TimeSlot,
+    StaffRule,
+    DayGroupDay,
+    DayGroup,
+)
+
+
+class RosterSettingsForm(ModelForm):
+    """Roster Settings Form."""
+
+    def __init__(self, roster_name, not_used, *args, **kwargs):
+        """Set initial form values."""
+        super().__init__(*args, **kwargs)
+        self.fields["roster_name"].initial = roster_name
+        self.fields["not_used"].initial = not_used
+
+    class Meta:
+        """Meta."""
+
+        model = RosterSettings
+        fields = (
+            "roster_name",
+            "not_used",
+        )
 
 
 class DateInput(forms.DateInput):

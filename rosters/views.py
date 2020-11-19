@@ -18,6 +18,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.contrib import messages
 
 from .models import (
     Leave,
@@ -32,6 +33,7 @@ from .models import (
     DayGroup,
     Day,
     DayGroupDay,
+    RosterSettings,
 )
 from .forms import (
     DayGroupDayCreateForm,
@@ -45,6 +47,7 @@ from .forms import (
     GenerateRosterForm,
     SelectRosterForm,
     StaffRequestUpdateForm,
+    RosterSettingsForm,
 )
 from .logic import (
     SolutionNotFeasible,
@@ -53,6 +56,44 @@ from .logic import (
 )
 from .tasks import generate_roster
 from celery.result import AsyncResult
+
+
+class RosterSettingsView(LoginRequiredMixin, FormView):
+    """Roster Settings View."""
+
+    template_name = "roster_settings.html"
+    form_class = RosterSettingsForm
+    success_url = reverse_lazy("roster_settings")
+
+    def get_form_kwargs(self):
+        """Pass current settings to form."""
+        kwargs = super().get_form_kwargs()
+        if RosterSettings.objects.exists():
+            kwargs["roster_name"] = RosterSettings.objects.first().roster_name
+            kwargs["not_used"] = RosterSettings.objects.first().not_used
+        else:
+            kwargs["roster_name"] = "No Roster Name Set"
+            kwargs["not_used"] = "not_used"
+        return kwargs
+
+    def form_valid(self, form):
+        """Process roster settings form."""
+        roster_name = form.cleaned_data["roster_name"]
+        not_used = form.cleaned_data["not_used"]
+        if RosterSettings.objects.exists():
+            new_settings = RosterSettings.objects.first()
+            new_settings.roster_name = roster_name
+            new_settings.not_used = not_used
+        else:
+            new_settings = RosterSettings.objects.create(
+                roster_name=roster_name, not_used=not_used
+            )
+        new_settings.save()
+        # messages.set_level(self.request, messages.DEBUG)
+        messages.add_message(
+            self.request, messages.SUCCESS, "Settings have been updated..."
+        )
+        return super().form_valid(form)
 
 
 class LeaveListView(LoginRequiredMixin, ListView):

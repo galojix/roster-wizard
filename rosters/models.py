@@ -9,7 +9,10 @@ class RosterSettings(models.Model):
     """Roster settings."""
 
     roster_name = models.CharField(
-        max_length=15, null=False, blank=False, default="Location Name"
+        max_length=15, null=False, blank=False, default="No Roster Name Set"
+    )
+    not_used = models.CharField(
+        max_length=15, null=False, blank=False, default="Not Used"
     )
 
 

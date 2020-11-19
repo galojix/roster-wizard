@@ -135,6 +135,8 @@
                   <a class="dropdown-item" href="{% url 'generate_roster' %}">Generate New Roster</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'download_csv' %}">Download Roster as CSV File</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'roster_settings' %}">Settings</a>
                 </div>
               </div>
             </li>
@@ -174,14 +176,14 @@
       </div>
     </div>
   </nav>
-  <div class="container-fluid" style="margin-top:100px">
+  <div class="container" style="margin-top:100px">
     {% if messages %}
-    <div class="messages alert alert-danger">
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
       {% for message in messages %}
-      <p{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
-        {% endfor %}
-    </div>
+        <div class="{% if message.tags %}messages alert {{ message.tags }} {% else %}messages alert alert-danger{% endif %}">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <p>{{ message }}</p>
+        </div>
+      {% endfor %}
     {% endif %}
     {% block content-wide %}
     <div class="container">

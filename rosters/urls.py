@@ -13,6 +13,7 @@ from .views import (
     RoleDetailView,
     RoleDeleteView,
     RoleCreateView,
+    RosterSettingsView,
     ShiftListView,
     ShiftUpdateView,
     ShiftDetailView,
@@ -325,5 +326,10 @@ urlpatterns = [
         "roster_status/<str:task_id>/",
         roster_generation_status,
         name="roster_generation_status",
+    ),
+    path(
+        "roster_settings/",
+        RosterSettingsView.as_view(),
+        name="roster_settings",
     ),
 ]
