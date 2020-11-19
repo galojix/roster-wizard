@@ -69,11 +69,13 @@ def init_feasible_db(init_db):
         shifts_per_roster=10,
     )
     staff_member5 = get_user_model().objects.create_user(
-        username="deficit",
-        last_name="deficit",
-        first_name="deficit",
+        username="casual",
+        last_name="casual",
+        first_name="casual",
         available=True,
         shifts_per_roster=0,
+        enforce_shifts_per_roster=False,
+        enforce_one_shift_per_day=False,
     )
     staff_member6 = get_user_model().objects.create_user(
         username="six",
