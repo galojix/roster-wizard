@@ -48,6 +48,7 @@ from .forms import (
     SelectRosterForm,
     StaffRequestUpdateForm,
     RosterSettingsForm,
+    SelectBulkDeletionPeriodForm,
 )
 from .logic import (
     SolutionNotFeasible,
@@ -887,6 +888,23 @@ class SelectRosterPeriodView(LoginRequiredMixin, FormView):
         self.request.session["start_date"] = start_date.date().strftime(
             "%d-%b-%Y"
         )
+        return super().form_valid(form)
+
+
+class SelectBulkDeletionPeriodView(LoginRequiredMixin, FormView):
+    """Select Bulk Deletion Period View."""
+
+    template_name = "select_bulk_deletion_period.html"
+    form_class = SelectBulkDeletionPeriodForm
+    success_url = reverse_lazy("roster_by_staff")
+
+    def form_valid(self, form):
+        """Process bulk deltion period form."""
+        start_date = form.cleaned_data["start_date"]
+        end_date = form.cleaned_data["end_date"]
+        date_range = [start_date, end_date]
+        timeslots = TimeSlot.objects.filter(date__range=date_range)
+        timeslots.delete()
         return super().form_valid(form)
 
 

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+  <h3>Bulk Deletion Period:</h3>
+  <p class="text-danger">Warning: This will permanently delete all roster timeslots between the specified dates.</p>
+  <form action="" method="post">{% csrf_token %}
+    {{ form|crispy }}
+    <button class="btn btn-danger ml-2 btn-process" type="submit">Delete</button>
+  </form>
+
+{% endblock content %}

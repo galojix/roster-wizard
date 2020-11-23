@@ -113,6 +113,13 @@ class SelectRosterForm(forms.Form):
     start_date = forms.DateTimeField(widget=DateInput())
 
 
+class SelectBulkDeletionPeriodForm(forms.Form):
+    """Select Bulk Deltion Period Form."""
+
+    start_date = forms.DateTimeField(widget=DateInput())
+    end_date = forms.DateTimeField(widget=DateInput())
+
+
 class StaffRuleUpdateForm(ModelForm):
     """Staff Rule Update Form."""
 
