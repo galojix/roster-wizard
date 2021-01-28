@@ -107,6 +107,22 @@ class GenerateRosterForm(forms.Form):
         )
 
 
+class EditRosterForm(forms.Form):
+    """Edit Roster Form."""
+
+    def __init__(self, num_days, shift_types, *args, **kwargs):
+        """Create form fields."""
+        super().__init__(*args, **kwargs)
+        choices = [(shift_type, shift_type) for shift_type in shift_types]
+        for day in range(num_days):
+            self.fields["day-" + str(day)] = forms.ChoiceField(
+                choices=choices,
+                label="",
+                initial="X",
+                required=False,
+            )
+
+
 class SelectRosterForm(forms.Form):
     """Select Roster Form."""
 

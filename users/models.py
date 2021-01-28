@@ -21,7 +21,7 @@ class CustomUser(AbstractUser):
 
         ordering = ("last_name", "first_name")
 
-    objects = CustomUserManager()
+    # objects = CustomUserManager()
     available = models.BooleanField(null=False, blank=False, default=True)
     shifts_per_roster = models.IntegerField(null=False, blank=False, default=0)
     max_shifts = models.BooleanField(null=False, blank=False, default=True)

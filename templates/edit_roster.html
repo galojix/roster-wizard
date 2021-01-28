@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load index %}
+
+{% block content-wide %}
+
+  <h3>Edit Roster:</h3>
+
+  <form id="edit" action="" method="post">{% csrf_token %}
+    {{ formset.management_form }}
+    <table class="table table-bordered table-striped table-hover">
+      <tr>
+        <th>Staff Member</th>
+        {% for date in dates %}
+          <th>{{ date|date:"D" }}<br/>{{ date|date:"d_M" }}<br/>{{ date|date:"Y" }}</th>
+        {% endfor %}
+      </tr>
+      {% for form in formset %}
+        <tr>
+          <td>{{ staff_members|index:forloop.counter0 }}</td>
+          {% for field in form %}
+            <td>{{ field.errors }}{{ field }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </table>
+    <button class="btn btn-primary ml-2 btn-process" type="submit">Submit</button>
+  </form>
+
+{% endblock content-wide %}
+  
+  
+<!--
+  <form id="edit" action="" method="post">{% csrf_token %}
+    {{ form|crispy }}
+  </form>
+
+-->
+
+
+
+<!--
+  <table class="table table-striped table-bordered table-hover">
+    <tr>
+      <th>Staff Member</th>
+      <th>Roles</th>
+      <th>Shifts</th>
+      {% for date in dates %}  
+       <th>{{ date|date:"D" }}<br/>{{ date|date:"d_M" }}<br/>{{ date|date:"Y" }}</th>
+      {% endfor %}
+    </tr>
+    {% for staff_member, staff_roster in roster.items %}
+      <tr>
+        <td>{{ staff_member }}</td>
+        {% for key, value in staff_roster.items %}
+          <td>{{ value }}</td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </table>
+
+-->

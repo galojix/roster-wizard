@@ -45,6 +45,7 @@ from .views import (
     TimeSlotDeleteView,
     TimeSlotCreateView,
     GenerateRosterView,
+    edit_roster,
     SelectRosterPeriodView,
     SelectBulkDeletionPeriodView,
     RosterByStaffView,
@@ -326,6 +327,11 @@ urlpatterns = [
         "generate_roster/",
         GenerateRosterView.as_view(),
         name="generate_roster",
+    ),
+    path(
+        "edit_roster/",
+        edit_roster,
+        name="edit_roster",
     ),
     path("download_csv/", download_csv, name="download_csv"),
     path(

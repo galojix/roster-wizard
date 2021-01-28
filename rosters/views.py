@@ -14,11 +14,14 @@ from django.views.generic.edit import (
 )
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.forms import formset_factory
+from django.db.models.query import prefetch_related_objects
+
 
 from .models import (
     Leave,
@@ -45,6 +48,7 @@ from .forms import (
     StaffRuleCreateForm,
     DaySetCreateForm,
     GenerateRosterForm,
+    EditRosterForm,
     SelectRosterForm,
     StaffRequestUpdateForm,
     RosterSettingsForm,
@@ -476,8 +480,10 @@ class TimeSlotListView(LoginRequiredMixin, ListView):
         num_days = datetime.timedelta(days=Day.objects.count() - 1)
         end_date = start_date + num_days
         date_range = [start_date, end_date]
-        return TimeSlot.objects.filter(date__range=date_range).order_by(
-            "date", "shift__shift_type"
+        return (
+            TimeSlot.objects.filter(date__range=date_range)
+            .order_by("date", "shift__shift_type")
+            .prefetch_related("staff__roles")
         )
 
 
@@ -933,6 +939,122 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
         result = generate_roster.delay(start_date=start_date)
         self.task_id = result.task_id
         return super().form_valid(form)
+
+
+@login_required
+def edit_roster(request):
+    """Edit Roster View."""
+    if "start_date" in request.session:
+        start_date = datetime.datetime.strptime(
+            request.session["start_date"], "%d-%b-%Y"
+        )
+    else:
+        start_date = datetime.datetime.now()
+
+    num_days = Day.objects.count()
+
+    dates = [
+        (start_date + datetime.timedelta(days=day_num)).date()
+        for day_num in range(num_days)
+    ]
+
+    staff_members = get_user_model().objects.all()
+
+    # Create timeslots if they do not already exist
+    for shift in Shift.objects.all():
+        daygroupdays = shift.daygroup.daygroupday_set.all()
+        for daygroupday in daygroupdays:
+            TimeSlot.objects.get_or_create(
+                date=dates[daygroupday.day.number - 1], shift=shift
+            )
+
+    EditRosterFormSet = formset_factory(EditRosterForm, extra=0)
+
+    date_range = [
+        start_date.date(),
+        start_date.date() + datetime.timedelta(days=num_days - 1),
+    ]
+
+    all_timeslots = TimeSlot.objects.filter(date__range=date_range)
+    # print(all_timeslots)
+
+    shift_types = [shift.shift_type for shift in Shift.objects.all()]
+    shift_types.append("X")
+
+    # Form posted
+    if request.method == "POST":
+        formset = EditRosterFormSet(
+            request.POST,
+            form_kwargs={"shift_types": shift_types, "num_days": num_days},
+        )
+        if formset.is_valid():
+            # Process form
+            # Cleaned data from formset is a list of dictionaries
+            timeslots_lookup = {}
+            for date in dates:
+                timeslots_lookup[date] = []
+            for timeslot in all_timeslots:
+                timeslots_lookup[timeslot.date].append(timeslot)
+
+            staff_lookup = {}
+            for timeslot in all_timeslots:
+                staff_lookup[timeslot] = timeslot.staff.all()
+
+            for staff_num, shift_set in enumerate(formset.cleaned_data):
+                for day_num, day_label in enumerate(shift_set):
+                    shift_type = shift_set[day_label]
+                    timeslots = timeslots_lookup[
+                        (start_date + datetime.timedelta(days=day_num)).date()
+                    ]
+                    for timeslot in timeslots:
+                        if timeslot.shift.shift_type == shift_type:
+                            if (
+                                staff_members[staff_num]
+                                not in staff_lookup[timeslot]
+                            ):
+                                timeslot.staff.add(staff_members[staff_num])
+                        else:
+                            if (
+                                staff_members[staff_num]
+                                in staff_lookup[timeslot]
+                            ):
+                                timeslot.staff.remove(staff_members[staff_num])
+            return HttpResponseRedirect(reverse("roster_by_staff"))
+    # Form not posted
+    else:
+        # Create lookup for shift type from staff_member and date
+        shift_types_lookup = {}
+        for staff_member in staff_members:
+            shift_types_lookup[staff_member.id] = {}
+            for timeslot in all_timeslots:
+                shift_types_lookup[staff_member.id][timeslot.date] = "X"
+        for timeslot in all_timeslots:
+            for staff_member in timeslot.staff.all():
+                shift_types_lookup[staff_member.id][
+                    timeslot.date
+                ] = timeslot.shift.shift_type
+        # Populate formset with existing data
+        initial = []
+        for staff_member in staff_members:
+            staff_shifts = {}
+            for day_num, date in enumerate(dates):
+                shift_type = shift_types_lookup[staff_member.id][date]
+                staff_shifts["day-" + str(day_num)] = shift_type
+            initial.append(staff_shifts)
+        formset = EditRosterFormSet(
+            initial=initial,
+            form_kwargs={"shift_types": shift_types, "num_days": num_days},
+        )
+
+    return render(
+        request,
+        "edit_roster.html",
+        {
+            "formset": formset,
+            "staff_members": staff_members,
+            "dates": dates,
+        },
+    )
 
 
 @login_required
