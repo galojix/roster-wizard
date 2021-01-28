@@ -34,6 +34,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 DEBUG = env.bool("DEBUG")
+TOOLBAR = env.bool("TOOLBAR")
 
 ALLOWED_HOSTS = tuple(env.list("ALLOWED_HOSTS", default=[]))
 
@@ -68,7 +69,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-if DEBUG:
+if DEBUG and TOOLBAR:
     MIDDLEWARE = [
         "debug_toolbar.middleware.DebugToolbarMiddleware"
     ] + MIDDLEWARE
