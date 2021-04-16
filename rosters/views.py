@@ -20,7 +20,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.forms import formset_factory
-from django.db.models.query import prefetch_related_objects
+
+# from django.db.models.query import prefetch_related_objects
 
 
 from .models import (
@@ -767,20 +768,18 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
         staffrequests = StaffRequest.objects.filter(
             date__range=date_range, staff_member=self.staff_member
         )
-        request_lookup = {}
         RequestDetail = namedtuple("RequestDetail", "like priority")
-        for staffrequest in staffrequests:
-            request_lookup[
-                (staffrequest.date, staffrequest.shift)
-            ] = RequestDetail(
+        request_lookup = {
+            (staffrequest.date, staffrequest.shift): RequestDetail(
                 like=staffrequest.like,
                 priority=staffrequest.priority,
             )
-        daygroup_shifts_map = {}
-        for daygroup in DayGroup.objects.all():
-            daygroup_shifts_map[daygroup] = [
-                shift for shift in daygroup.shift_set.all()
-            ]
+            for staffrequest in staffrequests
+        }
+        daygroup_shifts_map = {
+            daygroup: [shift for shift in daygroup.shift_set.all()]
+            for daygroup in DayGroup.objects.all()
+        }
         day_shifts_map = {}
         days = Day.objects.all()
         for day in days:
