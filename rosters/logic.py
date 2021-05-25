@@ -90,16 +90,18 @@ class RosterGenerator:
                 )
         self.timeslots = TimeSlot.objects.filter(date__range=self.date_range)
 
-    def _create_timeslot_ids_lookup(self):
+    def _create_timeslots_lookup(self):
         # Create timeslot id lookup
-        self.timeslot_ids_lookup = {}
+        self.timeslots_lookup = {}
         for date in self.extended_dates:
-            timeslot_ids_for_date = []
-            for timeslot in TimeSlot.objects.filter(date=date).order_by(
-                "shift__shift_type"
-            ):
-                timeslot_ids_for_date.append(timeslot)
-            self.timeslot_ids_lookup[date] = timeslot_ids_for_date
+            timeslot_ids_for_date = [
+                timeslot
+                for timeslot in TimeSlot.objects.filter(date=date).order_by(
+                    "shift__shift_type"
+                )
+            ]
+
+            self.timeslots_lookup[date] = timeslot_ids_for_date
 
     def _check_if_too_many_staff(self):
         # Check if too many staff
@@ -111,10 +113,9 @@ class RosterGenerator:
                 total_staff_shifts += 0
             else:
                 total_staff_shifts += worker.shifts_per_roster - leave_days
-        total_shifts = 0
-        for timeslot in self.timeslots:
-            total_shifts += timeslot.shift.max_staff
-
+        total_shifts = sum(
+            timeslot.shift.max_staff for timeslot in self.timeslots
+        )
         log.info("Total staff shifts: " + str(total_staff_shifts))
         log.info("Total shifts: " + str(total_shifts))
 
@@ -209,10 +210,10 @@ class RosterGenerator:
         timeslots = TimeSlot.objects.filter(
             date__range=self.extended_date_range
         )
-        timeslot_ids = {}
-        for timeslot in timeslots:
-            timeslot_ids[(timeslot.date, timeslot.shift)] = timeslot.id
-        return timeslot_ids
+        return {
+            (timeslot.date, timeslot.shift): timeslot.id
+            for timeslot in timeslots
+        }
 
     def _get_shift_seq(self, staffrule):
         """Create shift sequence for each rule.
@@ -229,19 +230,14 @@ class RosterGenerator:
 
     def _get_work_days_in_seq(self, shift_seq):
         """Get number of working days in shift sequence."""
-        work_days_in_seq = 0
-        for position in shift_seq:
-            if shift_seq[position][0] is not None:
-                work_days_in_seq += 1
-        return work_days_in_seq
+        return sum(
+            shift_seq[position][0] is not None for position in shift_seq
+        )
 
     def _get_all_days_in_seq(self, staffrule):
         """Get number of days in staff rule."""
         daygroupday_set = staffrule.daygroup.daygroupday_set.all()
-        all_days_in_seq = [
-            daygroupday.day.number for daygroupday in daygroupday_set
-        ]
-        return all_days_in_seq
+        return [daygroupday.day.number for daygroupday in daygroupday_set]
 
     def _get_shift_vars_in_seq_off(
         self,
@@ -266,18 +262,15 @@ class RosterGenerator:
 
                     # Skip if day not in day group for sequence
                     delta = (day_to_test - self.dates[0]).days
-                    if delta < 0:
-                        daygroupday_num = delta + self.num_days + 1
-                    else:
-                        daygroupday_num = delta + 1
+                    daygroupday_num = (
+                        delta + self.num_days + 1 if delta < 0 else delta + 1
+                    )
                     if daygroupday_num not in all_days_in_seq:
                         break
 
                     for role in roles:
                         try:
-                            for timeslot in self.timeslot_ids_lookup[
-                                day_to_test
-                            ]:
+                            for timeslot in self.timeslots_lookup[day_to_test]:
                                 shift_vars_in_seq_off[day_num].append(
                                     self.shift_vars[
                                         (
@@ -311,10 +304,9 @@ class RosterGenerator:
 
                     # Skip if day not in day group for sequence
                     delta = (day_to_test - self.dates[0]).days
-                    if delta < 0:
-                        daygroupday_num = delta + self.num_days + 1
-                    else:
-                        daygroupday_num = delta + 1
+                    daygroupday_num = (
+                        delta + self.num_days + 1 if delta < 0 else delta + 1
+                    )
                     if daygroupday_num not in all_days_in_seq:
                         break
 
@@ -367,13 +359,17 @@ class RosterGenerator:
                     )
 
                     # Create intermediate vars
-                    intermediate_vars = {}
-                    for position in shift_vars_in_seq_on:
-                        intermediate_vars[
-                            (worker.id, date, staffrule.id, position)
-                        ] = self.model.NewBoolVar(
+                    intermediate_vars = {
+                        (
+                            worker.id,
+                            date,
+                            staffrule.id,
+                            position,
+                        ): self.model.NewBoolVar(
                             f"w{worker.id}d{date}sr{staffrule.id}p{position}"
                         )
+                        for position in shift_vars_in_seq_on
+                    }
 
                     # Enforce "off" rule
                     for position in shift_vars_in_seq_off:
@@ -399,9 +395,9 @@ class RosterGenerator:
 
                     # Enforce one intermediate variable to be true
                     # Only need to enforce one position per rule
-                    all_intermediate_vars = []
-                    for item in intermediate_vars:
-                        all_intermediate_vars.append(intermediate_vars[item])
+                    all_intermediate_vars = [
+                        value for item, value in intermediate_vars.items()
+                    ]
                     self.model.Add(sum(all_intermediate_vars) >= 1)
 
         log.info("Enforcement of invalid shift sequence rules completed...")
@@ -415,9 +411,7 @@ class RosterGenerator:
             shiftrules = ShiftRule.objects.filter(shift=shift)
             for shiftrule in shiftrules:
                 shiftruleroles = shiftrule.shiftrulerole_set.all()
-                role_count = {}
-                for role in Role.objects.all():
-                    role_count[role.id] = 0
+                role_count = {role.id: 0 for role in Role.objects.all()}
                 for shiftrulerole in shiftruleroles:
                     role_count[shiftrulerole.role.id] = shiftrulerole.count
                 self.shiftrules[shift.id].append(role_count)
@@ -525,7 +519,7 @@ class RosterGenerator:
                 self.shift_vars[(worker.id, role.id, date, timeslot.id)]
                 for role in worker.roles.all()
                 for date in self.dates
-                for timeslot in self.timeslot_ids_lookup[date]
+                for timeslot in self.timeslots_lookup[date]
             )
             if worker.enforce_shifts_per_roster:
                 shifts_per_roster = self._get_shifts_per_roster(worker)
@@ -559,7 +553,7 @@ class RosterGenerator:
                 self.shift_vars[(worker.id, role.id, date, timeslot.id)]
                 for role in worker.roles.all()
                 for date in dates1
-                for timeslot in self.timeslot_ids_lookup[date]
+                for timeslot in self.timeslots_lookup[date]
             )
             if worker.enforce_shifts_per_roster:
                 shifts_per_roster = self._get_shifts_per_roster(worker)
@@ -577,7 +571,7 @@ class RosterGenerator:
                 for n, worker in enumerate(self.workers)
                 for role in worker.roles.all()
                 for d, date in enumerate(self.dates)
-                for s, timeslot in enumerate(self.timeslot_ids_lookup[date])
+                for s, timeslot in enumerate(self.timeslots_lookup[date])
             )
         )
         log.info("Maximising of staff requests completed...")
@@ -591,85 +585,89 @@ class RosterGenerator:
         log.info("Solver finished...")
         if solution_status == cp_model.INFEASIBLE:
             log.info("Solution is INFEASIBLE")
-        if (
-            solution_status != cp_model.FEASIBLE
-            and solution_status != cp_model.OPTIMAL
-        ):
+        if solution_status not in [cp_model.FEASIBLE, cp_model.OPTIMAL]:
             log.info("No feasible solution, raising exception...")
             raise SolutionNotFeasible("No feasible solutions.")
 
     def _populate_roster(self):
         """Poulate roster."""
         log.info("Population of roster started...")
-        for d, date in enumerate(self.dates):
-            for n, worker in enumerate(self.workers):
-                for role in worker.roles.all():
-                    for s, timeslot in enumerate(
-                        self.timeslot_ids_lookup[date]
-                    ):
-                        if (
-                            self.solver.Value(
-                                self.shift_vars[
-                                    (worker.id, role.id, date, timeslot.id)
-                                ]
-                            )
-                            == 1
-                        ):
-                            TimeSlot.objects.get(
-                                date=date, shift=timeslot.shift
-                            ).staff.add(worker)
-                            if self.shift_requests[n][d][s] > 0:
-                                log.info(
-                                    f"Request Successful: "
-                                    f"{worker.last_name}, {worker.first_name}"
-                                    f" {role.role_name}"
-                                    f" requested shift"
-                                    f" {timeslot.shift.shift_type}"
-                                    f" on"
-                                    f" {timeslot.date}"
-                                    f" and was assigned."
-                                )
-                            elif self.shift_requests[n][d][s] < 0:
-                                log.info(
-                                    f"Request Failed: "
-                                    f"{worker.last_name}, {worker.first_name}"
-                                    f" {role.role_name}"
-                                    f" requested not to work shift"
-                                    f" {timeslot.shift.shift_type}"
-                                    f" on"
-                                    f" {timeslot.date}"
-                                    f" but was assigned."
-                                )
-                        else:
-                            if self.shift_requests[n][d][s] > 0:
-                                log.info(
-                                    f"Request Failed: "
-                                    f"{worker.last_name}, {worker.first_name}"
-                                    f" {role.role_name}"
-                                    f" requested shift"
-                                    f" {timeslot.shift.shift_type}"
-                                    f" on"
-                                    f" {timeslot.date}"
-                                    f" but was not assigned."
-                                )
-                            elif self.shift_requests[n][d][s] < 0:
-                                log.info(
-                                    f"Request Succeeded: "
-                                    f"{worker.last_name}, {worker.first_name}"
-                                    f" {role.role_name}"
-                                    f" requested not to work shift"
-                                    f" {timeslot.shift.shift_type}"
-                                    f" on"
-                                    f" {timeslot.date}"
-                                    f" and was not assigned."
-                                )
+
+        shift_vars_for_current_period = {
+            shift_var_key: self.shift_vars[shift_var_key]
+            for shift_var_key in self.shift_vars
+            if shift_var_key[2] in self.dates
+        }
+        for shift_var_key in shift_vars_for_current_period:
+            worker_id = shift_var_key[0]
+            role_id = shift_var_key[1]
+            date = shift_var_key[2]
+            timeslot_id = shift_var_key[3]
+            worker = self.workers.get(id=worker_id)
+            role = worker.roles.get(id=role_id)
+            timeslot = self.timeslots.get(id=timeslot_id)
+
+            n = self.worker_lookup[worker_id]
+            d = self.date_lookup[date]
+            timeslot_ids = [
+                timeslot.id for timeslot in self.timeslots_lookup[date]
+            ]
+            s = timeslot_ids.index(timeslot_id)
+
+            if self.solver.Value(self.shift_vars[shift_var_key]):
+                TimeSlot.objects.get(id=timeslot_id).staff.add(worker)
+                if self.shift_requests[n][d][s] > 0:
+                    log.info(
+                        f"Request Successful: "
+                        f"{worker.last_name}, {worker.first_name}"
+                        f" {role.role_name}"
+                        f" requested shift"
+                        f" {timeslot.shift.shift_type}"
+                        f" on"
+                        f" {timeslot.date}"
+                        f" and was assigned."
+                    )
+                elif self.shift_requests[n][d][s] < 0:
+                    log.info(
+                        f"Request Failed: "
+                        f"{worker.last_name}, {worker.first_name}"
+                        f" {role.role_name}"
+                        f" requested not to work shift"
+                        f" {timeslot.shift.shift_type}"
+                        f" on"
+                        f" {timeslot.date}"
+                        f" but was assigned."
+                    )
+            else:
+                if self.shift_requests[n][d][s] > 0:
+                    log.info(
+                        f"Request Failed: "
+                        f"{worker.last_name}, {worker.first_name}"
+                        f" {role.role_name}"
+                        f" requested shift"
+                        f" {timeslot.shift.shift_type}"
+                        f" on"
+                        f" {timeslot.date}"
+                        f" but was not assigned."
+                    )
+                elif self.shift_requests[n][d][s] < 0:
+                    log.info(
+                        f"Request Succeeded: "
+                        f"{worker.last_name}, {worker.first_name}"
+                        f" {role.role_name}"
+                        f" requested not to work shift"
+                        f" {timeslot.shift.shift_type}"
+                        f" on"
+                        f" {timeslot.date}"
+                        f" and was not assigned."
+                    )
         log.info("Population of roster completed...")
 
     def create(self):
         """Create roster as per constraints."""
         self._clear_existing_timeslots()
         self._create_timeslots()
-        self._create_timeslot_ids_lookup()
+        self._create_timeslots_lookup()
         self._check_if_too_many_staff()
         self._collect_shift_requests()
         self._create_shift_vars()
@@ -709,9 +707,10 @@ def get_roster_by_staff(start_date):
     )
     for worker in workers:
         roster[worker.last_name + ", " + worker.first_name] = OrderedDict()
-        staff_roles = ""
-        for role in worker.roles.order_by("role_name"):
-            staff_roles += role.role_name + " "
+        staff_roles = "".join(
+            role.role_name + " " for role in worker.roles.order_by("role_name")
+        )
+
         roster[worker.last_name + ", " + worker.first_name][
             "roles"
         ] = staff_roles
