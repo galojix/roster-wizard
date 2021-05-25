@@ -44,14 +44,13 @@ class Leave(models.Model):
 
     def __str__(self):
         """How a leave object is displayed."""
-        leave_display = (
+        return (
             self.staff_member.last_name
             + ", "
             + self.staff_member.first_name
             + " "
             + str(self.date)
         )
-        return leave_display
 
     def get_absolute_url(self):
         """URL."""
@@ -364,7 +363,7 @@ class StaffRequest(models.Model):
 
     def __str__(self):
         """How a StaffRequest object is displayed."""
-        staff_request_display = (
+        return (
             self.staff_member.last_name
             + ", "
             + self.staff_member.first_name
@@ -373,7 +372,6 @@ class StaffRequest(models.Model):
             + " "
             + str(self.date)
         )
-        return staff_request_display
 
     def get_absolute_url(self):
         """URL."""
