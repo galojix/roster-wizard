@@ -987,62 +987,19 @@ def edit_roster(request):
             form_kwargs={"shift_types": shift_types, "num_days": num_days},
         )
         if formset.is_valid():
-            # Process form
-            # Cleaned data from formset is a list of dictionaries
-            timeslots_lookup = {}
-            for date in dates:
-                timeslots_lookup[date] = []
-            for timeslot in all_timeslots:
-                timeslots_lookup[timeslot.date].append(timeslot)
-
-            staff_lookup = {}
-            for timeslot in all_timeslots:
-                staff_lookup[timeslot] = timeslot.staff.all()
-
-            for staff_num, shift_set in enumerate(formset.cleaned_data):
-                for day_num, day_label in enumerate(shift_set):
-                    shift_type = shift_set[day_label]
-                    timeslots = timeslots_lookup[
-                        (start_date + datetime.timedelta(days=day_num)).date()
-                    ]
-                    for timeslot in timeslots:
-                        if timeslot.shift.shift_type == shift_type:
-                            if (
-                                staff_members[staff_num]
-                                not in staff_lookup[timeslot]
-                            ):
-                                timeslot.staff.add(staff_members[staff_num])
-                        else:
-                            if (
-                                staff_members[staff_num]
-                                in staff_lookup[timeslot]
-                            ):
-                                timeslot.staff.remove(staff_members[staff_num])
+            process_edit_roster_form(
+                dates, all_timeslots, formset, start_date, staff_members
+            )
             return HttpResponseRedirect(reverse("roster_by_staff"))
     # Form not posted
     else:
-        # Create lookup for shift type from staff_member and date
-        shift_types_lookup = {}
-        for staff_member in staff_members:
-            shift_types_lookup[staff_member.id] = {}
-            for timeslot in all_timeslots:
-                shift_types_lookup[staff_member.id][timeslot.date] = "X"
-        for timeslot in all_timeslots:
-            for staff_member in timeslot.staff.all():
-                shift_types_lookup[staff_member.id][
-                    timeslot.date
-                ] = timeslot.shift.shift_type
-        # Populate formset with existing data
-        initial = []
-        for staff_member in staff_members:
-            staff_shifts = {}
-            for day_num, date in enumerate(dates):
-                shift_type = shift_types_lookup[staff_member.id][date]
-                staff_shifts["day-" + str(day_num)] = shift_type
-            initial.append(staff_shifts)
-        formset = EditRosterFormSet(
-            initial=initial,
-            form_kwargs={"shift_types": shift_types, "num_days": num_days},
+        formset = populate_edit_roster_form(
+            staff_members,
+            all_timeslots,
+            EditRosterFormSet,
+            dates,
+            shift_types,
+            num_days,
         )
 
     return render(
@@ -1054,6 +1011,67 @@ def edit_roster(request):
             "dates": dates,
         },
     )
+
+
+def populate_edit_roster_form(
+    staff_members,
+    all_timeslots,
+    EditRosterFormSet,
+    dates,
+    shift_types,
+    num_days,
+):
+    """Populate edit roster form."""
+    # Create lookup for shift type from staff_member and date
+    shift_types_lookup = {
+        staff_member.id: {timeslot.date: "X" for timeslot in all_timeslots}
+        for staff_member in staff_members
+    }
+
+    for timeslot in all_timeslots:
+        for staff_member in timeslot.staff.all():
+            shift_types_lookup[staff_member.id][
+                timeslot.date
+            ] = timeslot.shift.shift_type
+    # Populate formset with existing data
+    initial = []
+    for staff_member in staff_members:
+        staff_shifts = {}
+        for day_num, date in enumerate(dates):
+            shift_type = shift_types_lookup[staff_member.id][date]
+            staff_shifts["day-" + str(day_num)] = shift_type
+        initial.append(staff_shifts)
+    return EditRosterFormSet(
+        initial=initial,
+        form_kwargs={"shift_types": shift_types, "num_days": num_days},
+    )
+
+
+def process_edit_roster_form(
+    dates, all_timeslots, formset, start_date, staff_members
+):
+    """Process edit roster form."""
+    # Cleaned data from formset is a list of dictionaries
+    timeslots_lookup = {date: [] for date in dates}
+    for timeslot in all_timeslots:
+        timeslots_lookup[timeslot.date].append(timeslot)
+
+    staff_lookup = {
+        timeslot: timeslot.staff.all() for timeslot in all_timeslots
+    }
+    for staff_num, shift_set in enumerate(formset.cleaned_data):
+        for day_num, day_label in enumerate(shift_set):
+            shift_type = shift_set[day_label]
+            timeslots = timeslots_lookup[
+                (start_date + datetime.timedelta(days=day_num)).date()
+            ]
+            for timeslot in timeslots:
+                if timeslot.shift.shift_type == shift_type:
+                    if staff_members[staff_num] not in staff_lookup[timeslot]:
+                        timeslot.staff.add(staff_members[staff_num])
+                else:
+                    if staff_members[staff_num] in staff_lookup[timeslot]:
+                        timeslot.staff.remove(staff_members[staff_num])
 
 
 @login_required
