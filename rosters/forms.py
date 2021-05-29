@@ -12,6 +12,7 @@ from .models import (
     StaffRule,
     DayGroupDay,
     DayGroup,
+    StaffRuleShift,
 )
 
 
@@ -212,3 +213,18 @@ class DayGroupDayCreateForm(ModelForm):
                 f"Day {day} is already in the Day Group {daygroup.name}."
             )
         return cleaned_data
+
+
+class StaffRuleShiftCreateForm(ModelForm):
+    """Staff Rule Create Form."""
+
+    class Meta:
+        """Meta."""
+
+        model = StaffRuleShift
+        fields = ("shift", "position")
+
+    def __init__(self, *args, **kwargs):
+        """Set empty label."""
+        super().__init__(*args, **kwargs)
+        self.fields["shift"].empty_label = "X"

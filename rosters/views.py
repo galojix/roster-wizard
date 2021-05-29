@@ -54,6 +54,7 @@ from .forms import (
     StaffRequestUpdateForm,
     RosterSettingsForm,
     SelectBulkDeletionPeriodForm,
+    StaffRuleShiftCreateForm,
 )
 from .logic import (
     SolutionNotFeasible,
@@ -453,7 +454,8 @@ class StaffRuleShiftCreateView(LoginRequiredMixin, CreateView):
 
     model = StaffRuleShift
     template_name = "staffruleshift_create.html"
-    fields = ("shift", "position")
+    form_class = StaffRuleShiftCreateForm
+    # fields = ("shift", "position")
     login_url = "login"
 
     def form_valid(self, form):
