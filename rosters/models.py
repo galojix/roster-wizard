@@ -290,10 +290,11 @@ class StaffRuleShift(models.Model):
 
     def __str__(self):
         """Return a meaningful string representation."""
+        shift_type = "X" if self.shift is None else self.shift.shift_type
         return (
             self.staffrule.staffrule_name
             + ":"
-            + self.shift.shift_type
+            + shift_type
             + ":"
             + str(self.position)
         )
