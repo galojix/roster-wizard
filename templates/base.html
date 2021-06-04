@@ -150,7 +150,9 @@
                   {{ user.username }}
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
-                  <a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
+                  <a class="dropdown-item" href="{% url 'password_change' %}">Change Password</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'admin:index' %}">Database Admin</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'logout' %}">
                     Log Out</a>
@@ -182,12 +184,13 @@
   </nav>
   <div class="container-fluid" style="margin-top:100px">
     {% if messages %}
-      {% for message in messages %}
-        <div class="{% if message.tags %}container messages alert {{ message.tags }} {% else %}container messages alert alert-danger{% endif %}">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          <p>{{ message }}</p>
-        </div>
-      {% endfor %}
+    {% for message in messages %}
+    <div
+      class="{% if message.tags %}container messages alert {{ message.tags }} {% else %}container messages alert alert-danger{% endif %}">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <p>{{ message }}</p>
+    </div>
+    {% endfor %}
     {% endif %}
     {% block content-wide %}
     <div class="container">

@@ -18,6 +18,8 @@ from .models import (
 )
 
 admin.site.site_header = "Roster Wizard Administration"
+admin.site.site_title = "Admin"
+admin.site.index_title = "Roster"
 
 
 class LeaveAdmin(admin.ModelAdmin):
