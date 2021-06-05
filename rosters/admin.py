@@ -17,8 +17,8 @@ from .models import (
     StaffRequest,
 )
 
-admin.site.site_header = "Roster Wizard Administration"
-admin.site.site_title = "Admin"
+admin.site.site_header = "Roster Wizard Database Administration"
+admin.site.site_title = "Database Admin"
 admin.site.index_title = "Roster"
 
 
