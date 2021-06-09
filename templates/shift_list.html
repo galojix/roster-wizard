@@ -2,22 +2,27 @@
 
 {% block content %}
 
-  <h4>Shifts:</h4>
-  <table class="table table-striped table-bordered table-hover">
-    <tr>
-      <th>Shift Type</th>
-      <th>Day Group</th>
-      <th>Maximum Staff</th>
-      <th>Action</th>
-    </tr>
-    {% for shift in shift_list %}
-      <tr>
-        <td>{{ shift.shift_type }}</td>
-        <td>{{ shift.daygroup.name }}</td>
-        <td>{{ shift.max_staff }}</td>
-        <td><a href="{% url 'shift_update' shift.pk %}">Edit</a> | <a href="{% url 'shift_delete' shift.pk %}">Delete</a></td>
-      </tr>
-    {% endfor %}
-  </table>
-  
+<h4>Shifts:</h4>
+<table class="table table-striped table-bordered table-hover">
+  <tr>
+    <th>Shift Type</th>
+    <th>Day Group</th>
+    <th>Maximum Staff</th>
+    {% if perms.rosters.change_timeslot %}
+    <th>Action</th>
+    {% endif %}
+  </tr>
+  {% for shift in shift_list %}
+  <tr>
+    <td>{{ shift.shift_type }}</td>
+    <td>{{ shift.daygroup.name }}</td>
+    <td>{{ shift.max_staff }}</td>
+    {% if perms.rosters.change_timeslot %}
+    <td><a href="{% url 'shift_update' shift.pk %}">Edit</a> | <a href="{% url 'shift_delete' shift.pk %}">Delete</a>
+    </td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>
+
 {% endblock content %}

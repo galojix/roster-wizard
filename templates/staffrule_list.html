@@ -1,38 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h4>Shift Sequences:</h4>
-  <table class="table table-striped table-bordered table-hover">
-    <tr>
-      <th>Shift Sequence Name</th>
-      <th>Staff</th>
-      <th>Day Group</th>
-      <th>Action</th>
-      <th>Invalid Shift Sequences</th>
-    </tr>
-    {% for staffrule in staffrule_list %}
-      <tr>
-        <td>{{ staffrule.staffrule_name }}</td>
-        <td>{% for staff_member in staffrule.staff.all %}
-            {{ staff_member.last_name }}, {{ staff_member.first_name }}
-              <br/>
-            {% endfor %}
-        </td>
-        <td>{{ staffrule.daygroup.name }}</td>
-        <td><a href="{% url 'staffrule_update' staffrule.pk %}">Edit</a> | <a href="{% url 'staffrule_delete' staffrule.pk %}">Delete</a></td>
-        <td>
-          {% for staffruleshift in staffrule.staffruleshift_set.all %}
-            {% if staffruleshift.shift.shift_type %}
-              {{ staffruleshift.shift.shift_type}}:{{ staffruleshift.position}}
-            {% else %}
-              X:{{ staffruleshift.position}}
-            {% endif %}
-          <a href="{% url 'staffruleshift_update' staffruleshift.pk %}">Edit</a> | <a href="{% url 'staffruleshift_delete' staffruleshift.pk %}">Delete</a>
-          <br/>
-          {% endfor %}
-          <a href="{% url 'staffruleshift_create' staffrule.pk %}">Add Shift</a>
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+<h4>Shift Sequences:</h4>
+<table class="table table-striped table-bordered table-hover">
+  <tr>
+    <th>Shift Sequence Name</th>
+    <th>Staff</th>
+    <th>Day Group</th>
+    {% if perms.rosters.change_timeslot %}
+    <th>Action</th>
+    {% endif %}
+    <th>Invalid Shift Sequences</th>
+  </tr>
+  {% for staffrule in staffrule_list %}
+  <tr>
+    <td>{{ staffrule.staffrule_name }}</td>
+    <td>{% for staff_member in staffrule.staff.all %}
+      {{ staff_member.last_name }}, {{ staff_member.first_name }}
+      <br />
+      {% endfor %}
+    </td>
+    <td>{{ staffrule.daygroup.name }}</td>
+    {% if perms.rosters.change_timeslot %}
+    <td><a href="{% url 'staffrule_update' staffrule.pk %}">Edit</a> | <a
+        href="{% url 'staffrule_delete' staffrule.pk %}">Delete</a></td>
+    {% endif %}
+    <td>
+      {% for staffruleshift in staffrule.staffruleshift_set.all %}
+      {% if staffruleshift.shift.shift_type %}
+      {{ staffruleshift.shift.shift_type}}:{{ staffruleshift.position}}
+      {% else %}
+      X:{{ staffruleshift.position}}
+      {% endif %}
+      {% if perms.rosters.change_timeslot %}
+      <a href="{% url 'staffruleshift_update' staffruleshift.pk %}">Edit</a> | <a
+        href="{% url 'staffruleshift_delete' staffruleshift.pk %}">Delete</a>
+      {% endif %}
+      <br />
+      {% endfor %}
+      {% if perms.rosters.change_timeslot %}
+      <a href="{% url 'staffruleshift_create' staffrule.pk %}">Add Shift</a>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
 {% endblock content %}

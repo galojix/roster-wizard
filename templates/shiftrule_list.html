@@ -2,29 +2,39 @@
 
 {% block content %}
 
-  <h4>Skill Mix Rules:</h4>
-  <table class="table table-striped table-bordered table-hover">
-    <tr>
-      <th>Shift</th>
-      <th>Skill Mix Rule Name</th>
-      <th>Action</th>
-      <th>Roles</th>
-    </tr>
-    {% for shiftrule in shiftrule_list %}
-      <tr>
-        <td>{{ shiftrule.shift }}
-        <td>{{ shiftrule.shiftrule_name }}</td>
-        <td><a href="{% url 'shiftrule_update' shiftrule.pk %}">Edit</a> | <a href="{% url 'shiftrule_delete' shiftrule.pk %}">Delete</a></td>
-        <td>
-            {% for shiftrulerole in shiftrule.shiftrulerole_set.all %}
-            {{ shiftrulerole.role}}:{{ shiftrulerole.count}}
-            <a href="{% url 'shiftrulerole_update' shiftrulerole.pk %}">Edit</a> | <a href="{% url 'shiftrulerole_delete' shiftrulerole.pk %}">Delete</a>
-            <br/>
-            {% endfor %}
-            <a href="{% url 'shiftrulerole_create' shiftrule.pk %}">Add Role</a>
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
-  
+<h4>Skill Mix Rules:</h4>
+<table class="table table-striped table-bordered table-hover">
+  <tr>
+    <th>Shift</th>
+    <th>Skill Mix Rule Name</th>
+    {% if perms.rosters.change_timeslot %}
+    <th>Action</th>
+    {% endif %}
+    <th>Roles</th>
+  </tr>
+  {% for shiftrule in shiftrule_list %}
+  <tr>
+    <td>{{ shiftrule.shift }}
+    <td>{{ shiftrule.shiftrule_name }}</td>
+    {% if perms.rosters.change_timeslot %}
+    <td><a href="{% url 'shiftrule_update' shiftrule.pk %}">Edit</a> | <a
+        href="{% url 'shiftrule_delete' shiftrule.pk %}">Delete</a></td>
+    {% endif %}
+    <td>
+      {% for shiftrulerole in shiftrule.shiftrulerole_set.all %}
+      {{ shiftrulerole.role}}:{{ shiftrulerole.count}}
+      {% if perms.rosters.change_timeslot %}
+      <a href="{% url 'shiftrulerole_update' shiftrulerole.pk %}">Edit</a> | <a
+        href="{% url 'shiftrulerole_delete' shiftrulerole.pk %}">Delete</a>
+      {% endif %}
+      <br />
+      {% endfor %}
+      {% if perms.rosters.change_timeslot %}
+      <a href="{% url 'shiftrulerole_create' shiftrule.pk %}">Add Role</a>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
 {% endblock content %}

@@ -2,35 +2,40 @@
 
 {% block content %}
 
-  <h4>Roster By Day:</h4>
-  <table class="table table-striped table-bordered table-hover">
-    <tr>
-      <th>Date</th>
-      <th>Shift</th>
-      <th>Staff</th>
-      <th>Roles</th>
-      <th>Action</th>
-    </tr>
-    {% for timeslot in timeslot_list %}
-    <tr>
-      <td>{{ timeslot.date }}</td>
-      <td>{{ timeslot.shift }}</td>
-      <td>
-        {% for staff_member in timeslot.staff.all %}
-          {{ staff_member.last_name }}, {{ staff_member.first_name }}
-          <br/>
-        {% endfor %}
-      </td>
-      <td>
-        {% for staff_member in timeslot.staff.all %}
-          {% for role in staff_member.roles.all|dictsort:"role_name" %}
-            {{ role.role_name }} {% endfor %}
-          <br/>
-        {% endfor %}
-      </td>
-      <td><a href="{% url 'timeslot_update' timeslot.pk %}">Edit</a> | <a href="{% url 'timeslot_delete' timeslot.pk %}">Delete</a></td>
-    </tr>
-    {% endfor %}
-  </table>
-  
+<h4>Roster By Day:</h4>
+<table class="table table-striped table-bordered table-hover">
+  <tr>
+    <th>Date</th>
+    <th>Shift</th>
+    <th>Staff</th>
+    <th>Roles</th>
+    {% if perms.rosters.change_timeslot %}
+    <th>Action</th>
+    {% endif %}
+  </tr>
+  {% for timeslot in timeslot_list %}
+  <tr>
+    <td>{{ timeslot.date }}</td>
+    <td>{{ timeslot.shift }}</td>
+    <td>
+      {% for staff_member in timeslot.staff.all %}
+      {{ staff_member.last_name }}, {{ staff_member.first_name }}
+      <br />
+      {% endfor %}
+    </td>
+    <td>
+      {% for staff_member in timeslot.staff.all %}
+      {% for role in staff_member.roles.all|dictsort:"role_name" %}
+      {{ role.role_name }} {% endfor %}
+      <br />
+      {% endfor %}
+    </td>
+    {% if perms.rosters.change_timeslot %}
+    <td><a href="{% url 'timeslot_update' timeslot.pk %}">Edit</a> | <a
+        href="{% url 'timeslot_delete' timeslot.pk %}">Delete</a></td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>
+
 {% endblock content %}

@@ -2,25 +2,32 @@
 
 {% block content %}
 
-  <h4>Staff by Role:</h4>
-  <table class="table table-striped table-bordered table-hover">
-    <tr>
-      <th>Role</th>
-      <th>Action</th>
-      <th>Staff</th>
-    </tr>
-    {% for role in role_list %}
-      <tr>
-        <td>{{ role.role_name }}</td>
-        <td><a href="{% url 'role_update' role.pk %}">Edit</a> | <a href="{% url 'role_delete' role.pk %}">Delete</a></td>
-        <td>{% for staff in role.customuser_set.all|dictsort:"last_name" %}
-            {{ staff.last_name }}, {{ staff.first_name }}
-            <a href="{% url 'customuser_update' staff.pk %}">Edit</a> | <a href="{% url 'customuser_delete' staff.pk %}">Delete</a>
-            <br/>
-            {% endfor %}
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+<h4>Staff by Role:</h4>
+<table class="table table-striped table-bordered table-hover">
+  <tr>
+    <th>Role</th>
+    {% if perms.rosters.change_timeslot %}
+    <th>Action</th>
+    {% endif %}
+    <th>Staff</th>
+  </tr>
+  {% for role in role_list %}
+  <tr>
+    <td>{{ role.role_name }}</td>
+    {% if perms.rosters.change_timeslot %}
+    <td><a href="{% url 'role_update' role.pk %}">Edit</a> | <a href="{% url 'role_delete' role.pk %}">Delete</a></td>
+    {% endif %}
+    <td>{% for staff in role.customuser_set.all|dictsort:"last_name" %}
+      {{ staff.last_name }}, {{ staff.first_name }}
+      {% if perms.rosters.change_timeslot %}
+      <a href="{% url 'customuser_update' staff.pk %}">Edit</a> | <a
+        href="{% url 'customuser_delete' staff.pk %}">Delete</a>
+      {% endif %}
+      <br />
+      {% endfor %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
 
 {% endblock content %}
