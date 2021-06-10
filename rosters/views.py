@@ -139,25 +139,27 @@ class LeaveDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
 
-class LeaveUpdateView(LoginRequiredMixin, UpdateView):
+class LeaveUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Leave Update View."""
 
     model = Leave
     form_class = LeaveUpdateForm
     template_name = "leave_update.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class LeaveDeleteView(LoginRequiredMixin, DeleteView):
+class LeaveDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Leave Delete View."""
 
     model = Leave
     template_name = "leave_delete.html"
     success_url = reverse_lazy("leave_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class LeaveCreateView(LoginRequiredMixin, FormView):
+class LeaveCreateView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     """Leave Create View."""
 
     model = Leave
@@ -165,6 +167,7 @@ class LeaveCreateView(LoginRequiredMixin, FormView):
     template_name = "leave_create.html"
     success_url = reverse_lazy("leave_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
     def form_valid(self, form):
         """Process leave create form."""
