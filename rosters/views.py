@@ -17,7 +17,11 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin,
 )
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import (
+    HttpResponse,
+    HttpResponseRedirect,
+    HttpResponseNotAllowed,
+)
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import get_user_model
@@ -847,7 +851,7 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
             not self.request.user.is_superuser
             and self.request.user != self.staff_member
         ):
-            return super().dispatch(request, *args, **kwargs)
+            self.staff_member = self.request.user
         if "start_date" in self.request.session:
             start_date = datetime.datetime.strptime(
                 self.request.session["start_date"], "%d-%b-%Y"
