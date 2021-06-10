@@ -799,7 +799,12 @@ class StaffRequestListView(LoginRequiredMixin, ListView):
         num_days = datetime.timedelta(days=Day.objects.count() - 1)
         end_date = start_date + num_days
         date_range = [start_date, end_date]
-        return StaffRequest.objects.filter(date__range=date_range)
+        if self.request.user.is_superuser:
+            return StaffRequest.objects.filter(date__range=date_range)
+        else:
+            return StaffRequest.objects.filter(
+                date__range=date_range, staff_member=self.request.user
+            )
 
 
 class StaffRequestDeleteView(
@@ -814,29 +819,35 @@ class StaffRequestDeleteView(
     permission_required = "rosters.change_roster"
 
 
-class StaffRequestCreateView(LoginRequiredMixin, ListView):
+class StaffRequestCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, ListView
+):
     """Staff Request List View."""
 
     model = get_user_model()
     template_name = "staffrequest_create.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class StaffRequestUpdateView(
-    LoginRequiredMixin, PermissionRequiredMixin, FormView
-):
+class StaffRequestUpdateView(LoginRequiredMixin, FormView):
     """Staff Request Update Form."""
 
     template_name = "staffrequest_update.html"
     form_class = StaffRequestUpdateForm
     success_url = reverse_lazy("staffrequest_list")
-    permission_required = "rosters.change_roster"
 
     def dispatch(self, request, *args, **kwargs):
         """Collect requests."""
         self.staff_member = get_object_or_404(
             get_user_model(), id=self.kwargs["staffid"]
         )
+        # Make sure users can only update their own requests
+        if (
+            not self.request.user.is_superuser
+            and self.request.user != self.staff_member
+        ):
+            return super().dispatch(request, *args, **kwargs)
         if "start_date" in self.request.session:
             start_date = datetime.datetime.strptime(
                 self.request.session["start_date"], "%d-%b-%Y"
@@ -929,19 +940,19 @@ class StaffRequestUpdateView(
         return super().form_valid(form)
 
     def get_form_kwargs(self):
-        """Pass number of shifts to form."""
+        """Pass number request and priorities to form."""
         kwargs = super().get_form_kwargs()
         kwargs["requests"] = self.requests
         kwargs["priorities"] = self.priorities
         return kwargs
 
 
-class StaffRequestDetailView(LoginRequiredMixin, DetailView):
-    """Staff Request Detail View."""
+# class StaffRequestDetailView(LoginRequiredMixin, DetailView):
+#     """Staff Request Detail View."""
 
-    model = StaffRequest
-    template_name = "staffrequest_detail.html"
-    login_url = "login"
+#     model = StaffRequest
+#     template_name = "staffrequest_detail.html"
+#     login_url = "login"
 
 
 class RosterByStaffView(LoginRequiredMixin, TemplateView):
@@ -970,7 +981,7 @@ class SelectRosterPeriodView(LoginRequiredMixin, FormView):
 
     template_name = "select_roster_period.html"
     form_class = SelectRosterForm
-    success_url = reverse_lazy("roster_by_staff")
+    success_url = reverse_lazy("home")
 
     def form_valid(self, form):
         """Process select roster form."""

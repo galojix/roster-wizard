@@ -113,8 +113,10 @@
                 </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'leave_list' %}">Display Leave</a>
+                  {% if perms.rosters.change_roster %}
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'leave_create' %}">Create New Leave</a>
+                  {% endif %}
                 </div>
               </div>
             </li>
@@ -126,7 +128,11 @@
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'staffrequest_list' %}">Display Staff Requests</a>
                   <div class="dropdown-divider"></div>
+                  {% if perms.rosters.change_roster %}
                   <a class="dropdown-item" href="{% url 'staffrequest_create' %}">Create Staff Requests</a>
+                  {% else %}
+                  <a class="dropdown-item" href="{% url 'staffrequest_update' user.id %}">Edit My Shift Requests</a>
+                  {% endif %}
                 </div>
               </div>
             </li>

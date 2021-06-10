@@ -2,41 +2,46 @@
 
 {% block content %}
 
-  <h4>Staff Requests:</h4>
-  {% regroup staffrequest_list by staff_member as staffrequest_list_by_staff_member %}
-  {% for staff_member in staffrequest_list_by_staff_member %}
-    <h5>
-      <button href="#Pref{{ forloop.counter0 }}" class="btn btn-outline-dark" data-toggle="collapse">
-        {{ staff_member.grouper.last_name }}, {{ staff_member.grouper.first_name }}
-      </button>
-    </h5>
-    <div id="Pref{{ forloop.counter0 }}" class="collapse">
-      <table class="table table-striped table-bordered table-hover">
-        <tr>
-          <th>Day</th>
-          <th>Shift</th>
-          <th>Request</th>
-          <th>Priority</th>
-          <th>Action</th>
-        </tr>
-        {% for staffrequest in staff_member.list %}
-        <tr>
-          <td>{{ staffrequest.date|date:"D d M Y" }}</td>
-          <td>{{ staffrequest.shift.shift_type }}</td>
-          <td>
-            {% if staffrequest.like %}
-              Yes
-            {% else %}
-              No
-            {% endif %}
-          </td>
-          <td>{{ staffrequest.priority }}</td>
-          <td><a href="{% url 'staffrequest_delete' staffrequest.pk %}">Delete</a></td>
-        </tr>
-        {% endfor %}
-      </table>
-      <a href="{% url 'staffrequest_update' staff_member.grouper.id %}">Edit Requests for {{ staff_member.grouper.first_name }} {{ staff_member.grouper.last_name }}</a>
-    </div>
-  {% endfor %}
+<h4>Staff Requests:</h4>
+{% regroup staffrequest_list by staff_member as staffrequest_list_by_staff_member %}
+{% for staff_member in staffrequest_list_by_staff_member %}
+<h5>
+  <button href="#Pref{{ forloop.counter0 }}" class="btn btn-outline-dark" data-toggle="collapse">
+    {{ staff_member.grouper.last_name }}, {{ staff_member.grouper.first_name }}
+  </button>
+</h5>
+<div id="Pref{{ forloop.counter0 }}" class="collapse">
+  <table class="table table-striped table-bordered table-hover">
+    <tr>
+      <th>Day</th>
+      <th>Shift</th>
+      <th>Request</th>
+      <th>Priority</th>
+      {% if perms.rosters.change_roster %}
+      <th>Action</th>
+      {% endif %}
+    </tr>
+    {% for staffrequest in staff_member.list %}
+    <tr>
+      <td>{{ staffrequest.date|date:"D d M Y" }}</td>
+      <td>{{ staffrequest.shift.shift_type }}</td>
+      <td>
+        {% if staffrequest.like %}
+        Yes
+        {% else %}
+        No
+        {% endif %}
+      </td>
+      <td>{{ staffrequest.priority }}</td>
+      {% if perms.rosters.change_roster %}
+      <td><a href="{% url 'staffrequest_delete' staffrequest.pk %}">Delete</a></td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </table>
+  <a href="{% url 'staffrequest_update' staff_member.grouper.id %}">Edit Requests for
+    {{ staff_member.grouper.first_name }} {{ staff_member.grouper.last_name }}</a>
+</div>
+{% endfor %}
 
 {% endblock content %}
