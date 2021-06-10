@@ -3,7 +3,10 @@
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+)
 
 # from django.core.exceptions import PermissionDenied
 from .models import CustomUser
@@ -29,7 +32,9 @@ class CustomUserDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
 
-class CustomUserUpdateView(LoginRequiredMixin, UpdateView):
+class CustomUserUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """UserUpdateView."""
 
     model = CustomUser
@@ -47,18 +52,24 @@ class CustomUserUpdateView(LoginRequiredMixin, UpdateView):
         "roles",
     )
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class CustomUserDeleteView(LoginRequiredMixin, DeleteView):
+class CustomUserDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """UserDeleteView."""
 
     model = CustomUser
     template_name = "customuser_delete.html"
     success_url = reverse_lazy("customuser_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class CustomUserCreateView(LoginRequiredMixin, CreateView):
+class CustomUserCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """UserCreateView."""
 
     model = CustomUser
@@ -76,3 +87,4 @@ class CustomUserCreateView(LoginRequiredMixin, CreateView):
         "roles",
     )
     login_url = "login"
+    permission_required = "rosters.change_roster"

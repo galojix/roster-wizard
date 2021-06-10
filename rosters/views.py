@@ -13,13 +13,17 @@ from django.views.generic.edit import (
     FormView,
 )
 from django.urls import reverse_lazy, reverse
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+)
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.forms import formset_factory
+
 
 # from django.db.models.query import prefetch_related_objects
 
@@ -65,12 +69,15 @@ from .tasks import generate_roster
 from celery.result import AsyncResult
 
 
-class RosterSettingsView(LoginRequiredMixin, FormView):
+class RosterSettingsView(
+    LoginRequiredMixin, PermissionRequiredMixin, FormView
+):
     """Roster Settings View."""
 
     template_name = "roster_settings.html"
     form_class = RosterSettingsForm
     success_url = reverse_lazy("roster_settings")
+    permission_required = "rosters.change_roster"
 
     def get_form_kwargs(self):
         """Pass current settings to form."""
@@ -196,31 +203,34 @@ class RoleDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
 
-class RoleUpdateView(LoginRequiredMixin, UpdateView):
+class RoleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Role Update View."""
 
     model = Role
     fields = ("role_name",)
     template_name = "role_update.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class RoleDeleteView(LoginRequiredMixin, DeleteView):
+class RoleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Role Delete View."""
 
     model = Role
     template_name = "role_delete.html"
     success_url = reverse_lazy("role_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class RoleCreateView(LoginRequiredMixin, CreateView):
+class RoleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Role Create View."""
 
     model = Role
     template_name = "role_create.html"
     fields = ("role_name",)
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
 class ShiftListView(LoginRequiredMixin, ListView):
@@ -239,31 +249,34 @@ class ShiftDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
 
-class ShiftUpdateView(LoginRequiredMixin, UpdateView):
+class ShiftUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Shift Update View."""
 
     model = Shift
     fields = ("shift_type", "daygroup", "max_staff")
     template_name = "shift_update.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class ShiftDeleteView(LoginRequiredMixin, DeleteView):
+class ShiftDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Shift Delete View."""
 
     model = Shift
     template_name = "shift_delete.html"
     success_url = reverse_lazy("shift_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class ShiftCreateView(LoginRequiredMixin, CreateView):
+class ShiftCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Shift Create View."""
 
     model = Shift
     template_name = "shift_create.html"
     fields = ("shift_type", "daygroup", "max_staff")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
 class ShiftRuleListView(LoginRequiredMixin, ListView):
@@ -286,7 +299,9 @@ class ShiftRuleDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
 
-class ShiftRuleUpdateView(LoginRequiredMixin, UpdateView):
+class ShiftRuleUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Shift Rule Update View."""
 
     model = ShiftRule
@@ -295,7 +310,9 @@ class ShiftRuleUpdateView(LoginRequiredMixin, UpdateView):
     login_url = "login"
 
 
-class ShiftRuleDeleteView(LoginRequiredMixin, DeleteView):
+class ShiftRuleDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Shift Rule Delete View."""
 
     model = ShiftRule
@@ -304,7 +321,9 @@ class ShiftRuleDeleteView(LoginRequiredMixin, DeleteView):
     login_url = "login"
 
 
-class ShiftRuleCreateView(LoginRequiredMixin, CreateView):
+class ShiftRuleCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """Shift Rule Create View."""
 
     model = ShiftRule
@@ -333,7 +352,9 @@ class ShiftRuleRoleDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
 
-class ShiftRuleRoleUpdateView(LoginRequiredMixin, UpdateView):
+class ShiftRuleRoleUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Shift Rule Role Update View."""
 
     model = ShiftRuleRole
@@ -342,7 +363,9 @@ class ShiftRuleRoleUpdateView(LoginRequiredMixin, UpdateView):
     login_url = "login"
 
 
-class ShiftRuleRoleDeleteView(LoginRequiredMixin, DeleteView):
+class ShiftRuleRoleDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Shift Rule Role Delete View."""
 
     model = ShiftRuleRole
@@ -351,7 +374,9 @@ class ShiftRuleRoleDeleteView(LoginRequiredMixin, DeleteView):
     login_url = "login"
 
 
-class ShiftRuleRoleCreateView(LoginRequiredMixin, CreateView):
+class ShiftRuleRoleCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """Shift Rule Role Create View."""
 
     model = ShiftRuleRole
@@ -386,31 +411,40 @@ class StaffRuleDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
 
-class StaffRuleUpdateView(LoginRequiredMixin, UpdateView):
+class StaffRuleUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Staff Rule Update View."""
 
     model = StaffRule
     form_class = StaffRuleUpdateForm
     template_name = "staffrule_update.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class StaffRuleDeleteView(LoginRequiredMixin, DeleteView):
+class StaffRuleDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Staff Rule Delete View."""
 
     model = StaffRule
     template_name = "staffrule_delete.html"
     success_url = reverse_lazy("staffrule_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class StaffRuleCreateView(LoginRequiredMixin, CreateView):
+class StaffRuleCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """Staff Rule Create View."""
 
     model = StaffRule
     form_class = StaffRuleCreateForm
     template_name = "staffrule_create.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
 class StaffRuleShiftListView(LoginRequiredMixin, ListView):
@@ -430,7 +464,9 @@ class StaffRuleShiftDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
 
-class StaffRuleShiftUpdateView(LoginRequiredMixin, UpdateView):
+class StaffRuleShiftUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Staff Rule Shift Update View."""
 
     model = StaffRuleShift
@@ -438,18 +474,24 @@ class StaffRuleShiftUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "staffruleshift_update.html"
     success_url = reverse_lazy("staffrule_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class StaffRuleShiftDeleteView(LoginRequiredMixin, DeleteView):
+class StaffRuleShiftDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Staff Rule Shift Delete View."""
 
     model = StaffRuleShift
     template_name = "staffruleshift_delete.html"
     success_url = reverse_lazy("staffrule_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class StaffRuleShiftCreateView(LoginRequiredMixin, CreateView):
+class StaffRuleShiftCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """Staff Rule Shift Create View."""
 
     model = StaffRuleShift
@@ -457,6 +499,7 @@ class StaffRuleShiftCreateView(LoginRequiredMixin, CreateView):
     form_class = StaffRuleShiftCreateForm
     # fields = ("shift", "position")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
     def form_valid(self, form):
         """Process staff rule shift create form."""
@@ -498,31 +541,40 @@ class TimeSlotDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
 
-class TimeSlotUpdateView(LoginRequiredMixin, UpdateView):
+class TimeSlotUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Time Slot Update View."""
 
     model = TimeSlot
     form_class = TimeSlotUpdateForm
     template_name = "timeslot_update.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class TimeSlotDeleteView(LoginRequiredMixin, DeleteView):
+class TimeSlotDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Time Slot Delete View."""
 
     model = TimeSlot
     template_name = "timeslot_delete.html"
     success_url = reverse_lazy("timeslot_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class TimeSlotCreateView(LoginRequiredMixin, CreateView):
+class TimeSlotCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """Time Slot Create View."""
 
     model = TimeSlot
     form_class = TimeSlotCreateForm
     template_name = "timeslot_create.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
 class DayGroupListView(LoginRequiredMixin, ListView):
@@ -545,31 +597,40 @@ class DayGroupDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
 
-class DayGroupUpdateView(LoginRequiredMixin, UpdateView):
+class DayGroupUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Day Group Update View."""
 
     model = DayGroup
     fields = ("name",)
     template_name = "daygroup_update.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class DayGroupDeleteView(LoginRequiredMixin, DeleteView):
+class DayGroupDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Day Group Delete View."""
 
     model = DayGroup
     template_name = "daygroup_delete.html"
     success_url = reverse_lazy("daygroup_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class DayGroupCreateView(LoginRequiredMixin, CreateView):
+class DayGroupCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """Day Group Create View."""
 
     model = DayGroup
     template_name = "daygroup_create.html"
     fields = ("name",)
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
     def form_valid(self, form):
         """Add all days to day group by default."""
@@ -598,7 +659,9 @@ class DayGroupDayDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
 
-class DayGroupDayUpdateView(LoginRequiredMixin, UpdateView):
+class DayGroupDayUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Day Group Day Update View."""
 
     model = DayGroupDay
@@ -606,24 +669,31 @@ class DayGroupDayUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "daygroupday_update.html"
     success_url = reverse_lazy("daygroup_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class DayGroupDayDeleteView(LoginRequiredMixin, DeleteView):
+class DayGroupDayDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Day Group Day Delete View."""
 
     model = DayGroupDay
     template_name = "daygroupday_delete.html"
     success_url = reverse_lazy("daygroup_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class DayGroupDayCreateView(LoginRequiredMixin, CreateView):
+class DayGroupDayCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
     """Day Group Day Create View."""
 
     model = DayGroupDay
     template_name = "daygroupday_create.html"
     form_class = DayGroupDayCreateForm
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
     def form_valid(self, form):
         """Process day group day create form."""
@@ -658,39 +728,43 @@ class DayDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
 
-class DayUpdateView(LoginRequiredMixin, UpdateView):
+class DayUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Day Update View."""
 
     model = Day
     fields = ("number",)
     template_name = "day_update.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class DayDeleteView(LoginRequiredMixin, DeleteView):
+class DayDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Day Delete View."""
 
     model = Day
     template_name = "day_delete.html"
     success_url = reverse_lazy("day_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class DayCreateView(LoginRequiredMixin, CreateView):
+class DayCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Day Create View."""
 
     model = Day
     template_name = "day_create.html"
     fields = ("number",)
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
-class DaySetCreateView(LoginRequiredMixin, FormView):
+class DaySetCreateView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     """Day Set Create View."""
 
     template_name = "day_set_create.html"
     form_class = DaySetCreateForm
     success_url = reverse_lazy("day_list")
+    permission_required = "rosters.change_roster"
 
     def form_valid(self, form):
         """Process day set create form."""
@@ -725,13 +799,16 @@ class StaffRequestListView(LoginRequiredMixin, ListView):
         return StaffRequest.objects.filter(date__range=date_range)
 
 
-class StaffRequestDeleteView(LoginRequiredMixin, DeleteView):
+class StaffRequestDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """StaffRequest Delete View."""
 
     model = StaffRequest
     template_name = "staffrequest_delete.html"
     success_url = reverse_lazy("staffrequest_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
 class StaffRequestCreateView(LoginRequiredMixin, ListView):
@@ -742,12 +819,15 @@ class StaffRequestCreateView(LoginRequiredMixin, ListView):
     login_url = "login"
 
 
-class StaffRequestUpdateView(LoginRequiredMixin, FormView):
+class StaffRequestUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, FormView
+):
     """Staff Request Update Form."""
 
     template_name = "staffrequest_update.html"
     form_class = StaffRequestUpdateForm
     success_url = reverse_lazy("staffrequest_list")
+    permission_required = "rosters.change_roster"
 
     def dispatch(self, request, *args, **kwargs):
         """Collect requests."""
@@ -898,12 +978,15 @@ class SelectRosterPeriodView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class SelectBulkDeletionPeriodView(LoginRequiredMixin, FormView):
+class SelectBulkDeletionPeriodView(
+    LoginRequiredMixin, PermissionRequiredMixin, FormView
+):
     """Select Bulk Deletion Period View."""
 
     template_name = "select_bulk_deletion_period.html"
     form_class = SelectBulkDeletionPeriodForm
     success_url = reverse_lazy("roster_by_staff")
+    permission_required = "rosters.change_roster"
 
     def form_valid(self, form):
         """Process bulk deltion period form."""
@@ -915,11 +998,14 @@ class SelectBulkDeletionPeriodView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class GenerateRosterView(LoginRequiredMixin, FormView):
+class GenerateRosterView(
+    LoginRequiredMixin, PermissionRequiredMixin, FormView
+):
     """Generate Roster View."""
 
     template_name = "generate_roster.html"
     form_class = GenerateRosterForm
+    permission_required = "rosters.change_roster"
 
     def get_form_kwargs(self):
         """Pass request to form."""
@@ -943,6 +1029,7 @@ class GenerateRosterView(LoginRequiredMixin, FormView):
 
 
 @login_required
+@permission_required("rosters.change_roster")
 def edit_roster(request):
     """Edit Roster View."""
     if "start_date" in request.session:
@@ -1077,6 +1164,7 @@ def process_edit_roster_form(
 
 
 @login_required
+@permission_required("rosters.change_roster")
 def roster_generation_status(request, task_id):
     """Display roster generation status."""
     task = AsyncResult(task_id)
