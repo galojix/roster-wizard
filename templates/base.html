@@ -39,7 +39,7 @@
                   <a class="dropdown-item" href="{% url 'customuser_list' %}">Display Staff</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'role_list' %}">Display Staff by Role</a>
-                  {% if perms.rosters.change_timeslot %}
+                  {% if perms.rosters.change_roster %}
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'customuser_create' %}">Create New Staff Member</a>
                   <div class="dropdown-divider"></div>
@@ -55,7 +55,7 @@
                 </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'daygroup_list' %}">Display Day Groups</a>
-                  {% if perms.rosters.change_timeslot %}
+                  {% if perms.rosters.change_roster %}
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'daygroup_create' %}">Create New Day Group</a>
                   <div class="dropdown-divider"></div>
@@ -71,7 +71,7 @@
                 </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'shift_list' %}">Display Shifts</a>
-                  {% if perms.rosters.change_timeslot %}
+                  {% if perms.rosters.change_roster %}
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'shift_create' %}">Create New Shift</a>
                   {% endif %}
@@ -85,7 +85,7 @@
                 </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'shiftrule_list' %}">Display Skill Mix Rules</a>
-                  {% if perms.rosters.change_timeslot %}
+                  {% if perms.rosters.change_roster %}
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'shiftrule_create' %}">Create New Skill Mix Rule</a>
                   {% endif %}
@@ -99,7 +99,7 @@
                 </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'staffrule_list' %}">Display Shift Sequences</a>
-                  {% if perms.rosters.change_timeslot %}
+                  {% if perms.rosters.change_roster %}
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'staffrule_create' %}">Create New Shift Sequence</a>
                   {% endif %}
@@ -142,7 +142,7 @@
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'select_roster_period' %}">Select Roster Period</a>
                   <div class="dropdown-divider"></div>
-                  {% if perms.rosters.change_timeslot %}
+                  {% if perms.rosters.change_roster %}
                   <a class="dropdown-item" href="{% url 'generate_roster' %}">Generate New Roster</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'edit_roster' %}">Manually Edit Roster</a>
@@ -151,7 +151,7 @@
                   <div class="dropdown-divider"></div>
                   {% endif %}
                   <a class="dropdown-item" href="{% url 'download_csv' %}">Download Roster as CSV File</a>
-                  {% if perms.rosters.change_timeslot %}
+                  {% if perms.rosters.change_roster %}
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'roster_settings' %}">Settings</a>
                   {% endif %}
@@ -165,7 +165,7 @@
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
                   <a class="dropdown-item" href="{% url 'password_change' %}">Change Password</a>
-                  {% if perms.rosters.change_timeslot %}
+                  {% if perms.rosters.change_roster %}
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'admin:index' %}">Database Admin</a>
                   {% endif %}

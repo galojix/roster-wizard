@@ -7,7 +7,7 @@
     <th>Shift Sequence Name</th>
     <th>Staff</th>
     <th>Day Group</th>
-    {% if perms.rosters.change_timeslot %}
+    {% if perms.rosters.change_roster %}
     <th>Action</th>
     {% endif %}
     <th>Invalid Shift Sequences</th>
@@ -21,7 +21,7 @@
       {% endfor %}
     </td>
     <td>{{ staffrule.daygroup.name }}</td>
-    {% if perms.rosters.change_timeslot %}
+    {% if perms.rosters.change_roster %}
     <td><a href="{% url 'staffrule_update' staffrule.pk %}">Edit</a> | <a
         href="{% url 'staffrule_delete' staffrule.pk %}">Delete</a></td>
     {% endif %}
@@ -32,13 +32,13 @@
       {% else %}
       X:{{ staffruleshift.position}}
       {% endif %}
-      {% if perms.rosters.change_timeslot %}
+      {% if perms.rosters.change_roster %}
       <a href="{% url 'staffruleshift_update' staffruleshift.pk %}">Edit</a> | <a
         href="{% url 'staffruleshift_delete' staffruleshift.pk %}">Delete</a>
       {% endif %}
       <br />
       {% endfor %}
-      {% if perms.rosters.change_timeslot %}
+      {% if perms.rosters.change_roster %}
       <a href="{% url 'staffruleshift_create' staffrule.pk %}">Add Shift</a>
       {% endif %}
     </td>

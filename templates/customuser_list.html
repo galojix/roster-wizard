@@ -13,7 +13,7 @@
     <th>Maximise Shifts if Taking Leave</th>
     <th>Available for Shifts</th>
     <th>Roles</th>
-    {% if perms.rosters.change_timeslot %}
+    {% if perms.rosters.change_roster %}
     <th>Action</th>
     {% endif %}
   </tr>
@@ -30,7 +30,7 @@
       {{ role.role_name }}
       {% endfor %}
     </td>
-    {% if perms.rosters.change_timeslot %}
+    {% if perms.rosters.change_roster %}
     <td><a href="{% url 'customuser_update' customuser.pk %}">Edit</a> | <a
         href="{% url 'customuser_delete' customuser.pk %}">Delete</a></td>
     {% endif %}

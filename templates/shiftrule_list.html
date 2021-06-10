@@ -7,7 +7,7 @@
   <tr>
     <th>Shift</th>
     <th>Skill Mix Rule Name</th>
-    {% if perms.rosters.change_timeslot %}
+    {% if perms.rosters.change_roster %}
     <th>Action</th>
     {% endif %}
     <th>Roles</th>
@@ -16,20 +16,20 @@
   <tr>
     <td>{{ shiftrule.shift }}
     <td>{{ shiftrule.shiftrule_name }}</td>
-    {% if perms.rosters.change_timeslot %}
+    {% if perms.rosters.change_roster %}
     <td><a href="{% url 'shiftrule_update' shiftrule.pk %}">Edit</a> | <a
         href="{% url 'shiftrule_delete' shiftrule.pk %}">Delete</a></td>
     {% endif %}
     <td>
       {% for shiftrulerole in shiftrule.shiftrulerole_set.all %}
       {{ shiftrulerole.role}}:{{ shiftrulerole.count}}
-      {% if perms.rosters.change_timeslot %}
+      {% if perms.rosters.change_roster %}
       <a href="{% url 'shiftrulerole_update' shiftrulerole.pk %}">Edit</a> | <a
         href="{% url 'shiftrulerole_delete' shiftrulerole.pk %}">Delete</a>
       {% endif %}
       <br />
       {% endfor %}
-      {% if perms.rosters.change_timeslot %}
+      {% if perms.rosters.change_roster %}
       <a href="{% url 'shiftrulerole_create' shiftrule.pk %}">Add Role</a>
       {% endif %}
     </td>

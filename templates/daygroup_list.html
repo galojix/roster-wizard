@@ -6,7 +6,7 @@
   <tr>
     <th>Day Group Name</th>
     <th>Days</th>
-    {% if perms.rosters.change_timeslot %}
+    {% if perms.rosters.change_roster %}
     <th>Action</th>
     {% endif %}
   </tr>
@@ -16,17 +16,17 @@
     <td>{{ daygroup.name }}</td>
     <td>{% for daygroupday in daygroup.daygroupday_set.all %}
       {{ daygroupday.day.number }}
-      {% if perms.rosters.change_timeslot %}
+      {% if perms.rosters.change_roster %}
       <a href="{% url 'daygroupday_update' daygroupday.pk %}">Edit</a> | <a
         href="{% url 'daygroupday_delete' daygroupday.pk %}">Delete</a>
       {% endif %}
       <br />
       {% endfor %}
-      {% if perms.rosters.change_timeslot %}
+      {% if perms.rosters.change_roster %}
       <a href="{% url 'daygroupday_create' daygroup.pk %}">Add Day</a>
       {% endif %}
     </td>
-    {% if perms.rosters.change_timeslot %}
+    {% if perms.rosters.change_roster %}
     <td><a href="{% url 'daygroup_update' daygroup.pk %}">Edit</a> | <a
         href="{% url 'daygroup_delete' daygroup.pk %}">Delete</a></td>
     {% endif %}

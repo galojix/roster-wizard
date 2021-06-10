@@ -15,6 +15,11 @@ class RosterSettings(models.Model):
         max_length=15, null=False, blank=False, default="Not Used"
     )
 
+    class Meta:
+        """Permissions."""
+
+        permissions = (("change_roster", "Can change rosters"),)
+
 
 class LeaveManager(models.Manager):
     """Leave Manager."""

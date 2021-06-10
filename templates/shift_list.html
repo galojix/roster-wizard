@@ -8,7 +8,7 @@
     <th>Shift Type</th>
     <th>Day Group</th>
     <th>Maximum Staff</th>
-    {% if perms.rosters.change_timeslot %}
+    {% if perms.rosters.change_roster %}
     <th>Action</th>
     {% endif %}
   </tr>
@@ -17,7 +17,7 @@
     <td>{{ shift.shift_type }}</td>
     <td>{{ shift.daygroup.name }}</td>
     <td>{{ shift.max_staff }}</td>
-    {% if perms.rosters.change_timeslot %}
+    {% if perms.rosters.change_roster %}
     <td><a href="{% url 'shift_update' shift.pk %}">Edit</a> | <a href="{% url 'shift_delete' shift.pk %}">Delete</a>
     </td>
     {% endif %}
