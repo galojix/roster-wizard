@@ -53,7 +53,7 @@ from .views import (
     StaffRequestDeleteView,
     StaffRequestCreateView,
     StaffRequestUpdateView,
-    # StaffRequestDetailView,
+    StaffRequestDetailView,
     download_csv,
     DayGroupListView,
     DayGroupUpdateView,
@@ -305,11 +305,11 @@ urlpatterns = [
         StaffRequestListView.as_view(),
         name="staffrequest_list",
     ),
-    # path(
-    #     "staffrequest/<int:pk>/",
-    #     StaffRequestDetailView.as_view(),
-    #     name="staffrequest_detail",
-    # ),
+    path(
+        "staffrequest/<int:pk>/",
+        StaffRequestDetailView.as_view(),
+        name="staffrequest_detail",
+    ),
     path(
         "roster_by_staff/", RosterByStaffView.as_view(), name="roster_by_staff"
     ),

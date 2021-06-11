@@ -34,6 +34,7 @@ def init_db():
         first_name="Smith",
         available=False,
         shifts_per_roster=10,
+        is_superuser=True,
     )
 
 

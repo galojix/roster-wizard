@@ -429,7 +429,7 @@ def test_select_roster_period_view_post(init_roster_db, client):
     }
     response = client.post(reverse("select_roster_period"), data)
     assert response.status_code == 302
-    assert reverse("roster_by_staff") in response.url
+    assert reverse("home") in response.url
 
 
 def test_custom_user_list_view(init_feasible_db, client):

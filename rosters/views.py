@@ -390,6 +390,7 @@ class ShiftRuleRoleCreateView(
     template_name = "shiftrulerole_create.html"
     fields = ("role", "count")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
     def form_valid(self, form):
         """Process shift rule role create form."""
@@ -951,12 +952,15 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
         return kwargs
 
 
-# class StaffRequestDetailView(LoginRequiredMixin, DetailView):
-#     """Staff Request Detail View."""
+class StaffRequestDetailView(
+    LoginRequiredMixin, PermissionRequiredMixin, DetailView
+):
+    """Staff Request Detail View."""
 
-#     model = StaffRequest
-#     template_name = "staffrequest_detail.html"
-#     login_url = "login"
+    model = StaffRequest
+    template_name = "staffrequest_detail.html"
+    login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
 class RosterByStaffView(LoginRequiredMixin, TemplateView):
