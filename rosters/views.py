@@ -804,6 +804,7 @@ class StaffRequestListView(LoginRequiredMixin, ListView):
         num_days = datetime.timedelta(days=Day.objects.count() - 1)
         end_date = start_date + num_days
         date_range = [start_date, end_date]
+        # Users can only see their own requests
         if self.request.user.is_superuser:
             return StaffRequest.objects.filter(date__range=date_range)
         else:
