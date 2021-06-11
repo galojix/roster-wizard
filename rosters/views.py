@@ -20,7 +20,6 @@ from django.contrib.auth.mixins import (
 from django.http import (
     HttpResponse,
     HttpResponseRedirect,
-    HttpResponseNotAllowed,
 )
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required, permission_required
@@ -132,15 +131,22 @@ class LeaveListView(LoginRequiredMixin, ListView):
         num_days = datetime.timedelta(days=Day.objects.count() - 1)
         end_date = start_date + num_days
         date_range = [start_date, end_date]
-        return Leave.objects.filter(date__range=date_range)
+        # Users can only see their own leave
+        if self.request.user.is_superuser:
+            return Leave.objects.filter(date__range=date_range)
+        else:
+            return Leave.objects.filter(
+                date__range=date_range, staff_member=self.request.user
+            )
 
 
-class LeaveDetailView(LoginRequiredMixin, DetailView):
+class LeaveDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     """Leave Detail View."""
 
     model = Leave
     template_name = "leave_detail.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
 class LeaveUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
