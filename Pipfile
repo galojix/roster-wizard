@@ -25,10 +25,7 @@ pytest-cov = "*"
 django-debug-toolbar = "*"
 watchdog = {extras = ["watchmedo"], version = "*"}
 pytest-mock = "*"
-black = "*"
+black = "==21.6b0"
 
 [requires]
 python_version = "3.9"
-
-[pipenv]
-allow_prereleases = true
