@@ -3,6 +3,7 @@ version: "2.4"
 services:
   db:
     image: postgres:11
+    user: ${USERID}:${GROUPID}
     volumes:
       - db:/var/lib/postgresql/data/
     networks:
@@ -15,6 +16,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:latest
+    user: ${USERID}:${GROUPID}
     volumes:
       - rabbitmq:/var/lib/rabbitmq/
     hostname: rabbitmq1
@@ -28,6 +30,7 @@ services:
 
   celery:
     image: galojix/roster-wizard:latest
+    user: ${USERID}:${GROUPID}
     networks:
       - net
     logging:
@@ -41,6 +44,7 @@ services:
 
   web:
     image: galojix/roster-wizard:latest
+    user: ${USERID}:${GROUPID}
     networks:
       - net
     ports:
