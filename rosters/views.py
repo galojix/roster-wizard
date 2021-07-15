@@ -321,6 +321,7 @@ class ShiftRuleUpdateView(
     fields = ("shiftrule_name", "shift")
     template_name = "shiftrule_update.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
 class ShiftRuleDeleteView(
@@ -332,6 +333,7 @@ class ShiftRuleDeleteView(
     template_name = "shiftrule_delete.html"
     success_url = reverse_lazy("shiftrule_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
 class ShiftRuleCreateView(
@@ -343,6 +345,7 @@ class ShiftRuleCreateView(
     template_name = "shiftrule_create.html"
     fields = ("shiftrule_name", "shift")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
 class ShiftRuleRoleListView(LoginRequiredMixin, ListView):
@@ -374,6 +377,7 @@ class ShiftRuleRoleUpdateView(
     fields = ("shiftrule", "role", "count")
     template_name = "shiftrulerole_update.html"
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
 class ShiftRuleRoleDeleteView(
@@ -385,6 +389,7 @@ class ShiftRuleRoleDeleteView(
     template_name = "shiftrulerole_delete.html"
     success_url = reverse_lazy("shiftrule_list")
     login_url = "login"
+    permission_required = "rosters.change_roster"
 
 
 class ShiftRuleRoleCreateView(
