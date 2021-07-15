@@ -3,7 +3,7 @@ version: "2.4"
 services:
   db:
     image: postgres:11
-    user: ${USERID}:${GROUPID}
+    user: 999:999
     volumes:
       - db:/var/lib/postgresql/data/
     networks:
@@ -16,7 +16,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:latest
-    user: ${USERID}:${GROUPID}
+    user: 999:999
     volumes:
       - rabbitmq:/var/lib/rabbitmq/
     hostname: rabbitmq1
