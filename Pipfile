@@ -26,6 +26,7 @@ django-debug-toolbar = "*"
 watchdog = {extras = ["watchmedo"], version = "*"}
 pytest-mock = "*"
 black = "==21.6b0"
+pytest = "*"
 
 [requires]
 python_version = "3.9"
