@@ -890,9 +890,10 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
             for staffrequest in staffrequests
         }
         daygroup_shifts_map = {
-            daygroup: [shift for shift in daygroup.shift_set.all()]
+            daygroup: list(daygroup.shift_set.all())
             for daygroup in DayGroup.objects.all()
         }
+
         day_shifts_map = {}
         days = Day.objects.all()
         for day in days:
@@ -1192,9 +1193,8 @@ def process_edit_roster_form(
                 if timeslot.shift.shift_type == shift_type:
                     if staff_members[staff_num] not in staff_lookup[timeslot]:
                         timeslot.staff.add(staff_members[staff_num])
-                else:
-                    if staff_members[staff_num] in staff_lookup[timeslot]:
-                        timeslot.staff.remove(staff_members[staff_num])
+                elif staff_members[staff_num] in staff_lookup[timeslot]:
+                    timeslot.staff.remove(staff_members[staff_num])
 
 
 @login_required
