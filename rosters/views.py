@@ -1244,7 +1244,6 @@ def download_csv(request):
     writer.writerow(row)
     for staff_member in roster:
         row = [staff_member]
-        for key in roster[staff_member]:
-            row.append(roster[staff_member][key])
+        row.extend(roster[staff_member][key] for key in roster[staff_member])
         writer.writerow(row)
     return response

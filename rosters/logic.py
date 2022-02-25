@@ -94,12 +94,11 @@ class RosterGenerator:
         # Create timeslot id lookup
         self.timeslots_lookup = {}
         for date in self.extended_dates:
-            timeslot_ids_for_date = [
-                timeslot
-                for timeslot in TimeSlot.objects.filter(date=date).order_by(
+            timeslot_ids_for_date = list(
+                TimeSlot.objects.filter(date=date).order_by(
                     "shift__shift_type"
                 )
-            ]
+            )
 
             self.timeslots_lookup[date] = timeslot_ids_for_date
 
@@ -128,7 +127,7 @@ class RosterGenerator:
         """Collect shift requests into friendly data structure."""
         log.info("Shift request collection started...")
         self.shift_requests = [
-            [[0 for shift in self.shifts] for day in self.days]
+            [[0 for _ in self.shifts] for _ in self.days]
             for worker in self.workers
         ]
         for staffrequest in self.staffrequests:
@@ -638,29 +637,28 @@ class RosterGenerator:
                         f" {timeslot.date}"
                         f" but was assigned."
                     )
-            else:
-                if self.shift_requests[n][d][s] > 0:
-                    log.info(
-                        f"Request Failed: "
-                        f"{worker.last_name}, {worker.first_name}"
-                        f" {role.role_name}"
-                        f" requested shift"
-                        f" {timeslot.shift.shift_type}"
-                        f" on"
-                        f" {timeslot.date}"
-                        f" but was not assigned."
-                    )
-                elif self.shift_requests[n][d][s] < 0:
-                    log.info(
-                        f"Request Succeeded: "
-                        f"{worker.last_name}, {worker.first_name}"
-                        f" {role.role_name}"
-                        f" requested not to work shift"
-                        f" {timeslot.shift.shift_type}"
-                        f" on"
-                        f" {timeslot.date}"
-                        f" and was not assigned."
-                    )
+            elif self.shift_requests[n][d][s] > 0:
+                log.info(
+                    f"Request Failed: "
+                    f"{worker.last_name}, {worker.first_name}"
+                    f" {role.role_name}"
+                    f" requested shift"
+                    f" {timeslot.shift.shift_type}"
+                    f" on"
+                    f" {timeslot.date}"
+                    f" but was not assigned."
+                )
+            elif self.shift_requests[n][d][s] < 0:
+                log.info(
+                    f"Request Succeeded: "
+                    f"{worker.last_name}, {worker.first_name}"
+                    f" {role.role_name}"
+                    f" requested not to work shift"
+                    f" {timeslot.shift.shift_type}"
+                    f" on"
+                    f" {timeslot.date}"
+                    f" and was not assigned."
+                )
         log.info("Population of roster completed...")
 
     def create(self):
@@ -706,37 +704,41 @@ def get_roster_by_staff(start_date):
         .order_by("roles__role_name", "last_name", "first_name")
     )
     for worker in workers:
-        roster[worker.last_name + ", " + worker.first_name] = OrderedDict()
+        roster[f"{worker.last_name}, {worker.first_name}"] = OrderedDict()
         staff_roles = "".join(
-            role.role_name + " " for role in worker.roles.order_by("role_name")
+            f"{role.role_name} " for role in worker.roles.order_by("role_name")
         )
 
-        roster[worker.last_name + ", " + worker.first_name][
+        roster[f"{worker.last_name}, {worker.first_name}"][
             "roles"
         ] = staff_roles
-        roster[worker.last_name + ", " + worker.first_name][
+        roster[f"{worker.last_name}, {worker.first_name}"][
             "shifts_per_roster"
         ] = worker.shifts_per_roster
+
         for date in dates:
-            roster[worker.last_name + ", " + worker.first_name][date] = "X"
+            roster[f"{worker.last_name}, {worker.first_name}"][date] = "X"
         worker_timeslots = worker.timeslot_set.filter(date__range=date_range)
         for timeslot in worker_timeslots:
             if (
-                roster[worker.last_name + ", " + worker.first_name][
+                roster[f"{worker.last_name}, {worker.first_name}"][
                     timeslot.date
                 ]
                 == "X"
             ):
-                roster[worker.last_name + ", " + worker.first_name][
+                roster[f"{worker.last_name}, {worker.first_name}"][
                     timeslot.date
                 ] = timeslot.shift.shift_type
+
             else:
-                roster[worker.last_name + ", " + worker.first_name][
+                roster[f"{worker.last_name}, {worker.first_name}"][
                     timeslot.date
-                ] += (", " + timeslot.shift.shift_type)
+                ] += f", {timeslot.shift.shift_type}"
+
         worker_leave = worker.leave_set.filter(date__range=date_range)
         for leave in worker_leave:
-            roster[worker.last_name + ", " + worker.first_name][
+            roster[f"{worker.last_name}, {worker.first_name}"][
                 leave.date
             ] = leave.description
+
     return dates, roster
