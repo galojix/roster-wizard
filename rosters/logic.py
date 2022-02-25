@@ -701,12 +701,14 @@ def get_roster_by_staff(start_date):
     workers = (
         get_user_model()
         .objects.all()
+        .prefetch_related("roles")
         .order_by("roles__role_name", "last_name", "first_name")
     )
+    timeslots = TimeSlot.objects.filter(date__range=date_range)
     for worker in workers:
         roster[f"{worker.last_name}, {worker.first_name}"] = OrderedDict()
         staff_roles = "".join(
-            f"{role.role_name} " for role in worker.roles.order_by("role_name")
+            f"{role.role_name} " for role in worker.roles.all()
         )
 
         roster[f"{worker.last_name}, {worker.first_name}"][
@@ -718,7 +720,11 @@ def get_roster_by_staff(start_date):
 
         for date in dates:
             roster[f"{worker.last_name}, {worker.first_name}"][date] = "X"
-        worker_timeslots = worker.timeslot_set.filter(date__range=date_range)
+        worker_timeslots = [
+            timeslot
+            for timeslot in timeslots
+            if worker in timeslot.staff.all()
+        ]
         for timeslot in worker_timeslots:
             if (
                 roster[f"{worker.last_name}, {worker.first_name}"][
