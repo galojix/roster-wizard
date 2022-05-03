@@ -27,6 +27,8 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.forms import formset_factory
 
+from django.db import connection, reset_queries
+
 
 # from django.db.models.query import prefetch_related_objects
 
@@ -1082,6 +1084,8 @@ def edit_roster(request):
     ]
 
     staff_members = get_user_model().objects.all()
+    print(f"Get staff member queries: {len(connection.queries)}")
+    reset_queries()
 
     # Create timeslots if they do not already exist
     for shift in Shift.objects.all():
@@ -1090,6 +1094,8 @@ def edit_roster(request):
             TimeSlot.objects.get_or_create(
                 date=dates[daygroupday.day.number - 1], shift=shift
             )
+    print(f"Create timeslot queries: {len(connection.queries)}")
+    reset_queries()
 
     EditRosterFormSet = formset_factory(EditRosterForm, extra=0)
 
@@ -1099,6 +1105,9 @@ def edit_roster(request):
     ]
 
     all_timeslots = TimeSlot.objects.filter(date__range=date_range)
+    print(f"All timeslot queries: {len(connection.queries)}")
+    reset_queries()
+
     # print(all_timeslots)
 
     shift_types = [shift.shift_type for shift in Shift.objects.all()]
@@ -1151,12 +1160,17 @@ def populate_edit_roster_form(
         staff_member.id: {timeslot.date: "X" for timeslot in all_timeslots}
         for staff_member in staff_members
     }
+    print(f"Create lookup for shift type queries 1: {len(connection.queries)}")
+    reset_queries()
 
     for timeslot in all_timeslots:
         for staff_member in timeslot.staff.all():
             shift_types_lookup[staff_member.id][
                 timeslot.date
             ] = timeslot.shift.shift_type
+    print(f"Create lookup for shift type queries 2: {len(connection.queries)}")
+    reset_queries()
+
     # Populate formset with existing data
     initial = []
     for staff_member in staff_members:
@@ -1165,6 +1179,9 @@ def populate_edit_roster_form(
             shift_type = shift_types_lookup[staff_member.id][date]
             staff_shifts["day-" + str(day_num)] = shift_type
         initial.append(staff_shifts)
+    print(f"Populate formset queries: {len(connection.queries)}")
+    reset_queries()
+
     return EditRosterFormSet(
         initial=initial,
         form_kwargs={"shift_types": shift_types, "num_days": num_days},
@@ -1179,10 +1196,18 @@ def process_edit_roster_form(
     timeslots_lookup = {date: [] for date in dates}
     for timeslot in all_timeslots:
         timeslots_lookup[timeslot.date].append(timeslot)
+    print(f"Timeslot lookup queries: {len(connection.queries)}")
+    reset_queries()
 
-    staff_lookup = {
-        timeslot: timeslot.staff.all() for timeslot in all_timeslots
-    }
+    # Clear staff from all timeslots
+    for timeslot in all_timeslots:
+        timeslot.staff.clear()
+    print(f"Clear staff from all timeslots queries: {len(connection.queries)}")
+    reset_queries()
+
+    # Populate timeslots with staff as per form
+    TimeSlotStaffRelationship = TimeSlot.staff.through
+    staff_to_add = []
     for staff_num, shift_set in enumerate(formset.cleaned_data):
         for day_num, day_label in enumerate(shift_set):
             shift_type = shift_set[day_label]
@@ -1191,10 +1216,19 @@ def process_edit_roster_form(
             ]
             for timeslot in timeslots:
                 if timeslot.shift.shift_type == shift_type:
-                    if staff_members[staff_num] not in staff_lookup[timeslot]:
-                        timeslot.staff.add(staff_members[staff_num])
-                elif staff_members[staff_num] in staff_lookup[timeslot]:
-                    timeslot.staff.remove(staff_members[staff_num])
+                    staff_to_add.append(
+                        TimeSlotStaffRelationship(
+                            timeslot=timeslot,
+                            customuser=staff_members[staff_num],
+                        )
+                    )
+    print(f"Populate roster queries 1: {len(connection.queries)}")
+    # print(f"Populate roster queries 1: {connection.queries}")
+    reset_queries()
+
+    TimeSlotStaffRelationship.objects.bulk_create(staff_to_add)
+    print(f"Populate roster queries 2: {len(connection.queries)}")
+    reset_queries()
 
 
 @login_required
