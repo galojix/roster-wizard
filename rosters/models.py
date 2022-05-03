@@ -76,19 +76,9 @@ class Role(models.Model):
         return reverse("role_detail", args=[str(self.id)])
 
 
-class DayGroupManager(models.Manager):
-    """DayGroup Manager."""
-
-    def get_queryset(self):
-        """Select additional related object data."""
-        query_set = super().get_queryset()
-        return query_set.prefetch_related("daygroupday")
-
-
 class DayGroup(models.Model):
     """Day Group."""
 
-    objects = DayGroupManager()
     name = models.CharField(
         max_length=20, unique=True, null=False, blank=False
     )
