@@ -1095,10 +1095,13 @@ def edit_roster(request):
     for shift in Shift.objects.all():
         daygroupdays = shift.daygroup.daygroupday_set.all()
         for daygroupday in daygroupdays:
-            TimeSlot.objects.get_or_create(
+            if not TimeSlot.objects.filter(
                 date=dates[daygroupday.day.number - 1], shift=shift
-            )
-    print(f"Create timeslot queries: {len(connection.queries)}")
+            ).exists():
+                TimeSlot.objects.create(
+                    date=dates[daygroupday.day.number - 1], shift=shift
+                )
+    print(f"Create TIMESLOT queries: {len(connection.queries)}")
     reset_queries()
 
     EditRosterFormSet = formset_factory(EditRosterForm, extra=0)
