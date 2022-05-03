@@ -8,3 +8,4 @@ htmlcov
 django.log
 pytest.log
 docker-compose.override.yml
+.pytest_cache
