@@ -1087,6 +1087,10 @@ def edit_roster(request):
     print(f"Get staff member queries: {len(connection.queries)}")
     reset_queries()
 
+    staff_ids = [staff_member.id for staff_member in staff_members]
+    print(f"Get staff member ID queries: {len(connection.queries)}")
+    reset_queries()
+
     # Create timeslots if they do not already exist
     for shift in Shift.objects.all():
         daygroupdays = shift.daygroup.daygroupday_set.all()
@@ -1121,7 +1125,7 @@ def edit_roster(request):
         )
         if formset.is_valid():
             process_edit_roster_form(
-                dates, all_timeslots, formset, start_date, staff_members
+                dates, all_timeslots, formset, start_date, staff_ids
             )
             return HttpResponseRedirect(reverse("roster_by_staff"))
     # Form not posted
@@ -1189,7 +1193,7 @@ def populate_edit_roster_form(
 
 
 def process_edit_roster_form(
-    dates, all_timeslots, formset, start_date, staff_members
+    dates, all_timeslots, formset, start_date, staff_ids
 ):
     """Process edit roster form."""
     # Cleaned data from formset is a list of dictionaries
@@ -1218,8 +1222,8 @@ def process_edit_roster_form(
                 if timeslot.shift.shift_type == shift_type:
                     staff_to_add.append(
                         TimeSlotStaffRelationship(
-                            timeslot=timeslot,
-                            customuser=staff_members[staff_num],
+                            timeslot_id=timeslot.id,
+                            customuser_id=staff_ids[staff_num],
                         )
                     )
     print(f"Populate roster queries 1: {len(connection.queries)}")
