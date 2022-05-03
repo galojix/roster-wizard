@@ -1,10 +1,11 @@
 """User models."""
-from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
 from django.urls import reverse
 
 
-class CustomUserManager(UserManager):
+class CustomUserManager(BaseUserManager):
     """CustomUser Manager."""
 
     def get_queryset(self):
@@ -21,7 +22,7 @@ class CustomUser(AbstractUser):
 
         ordering = ("last_name", "first_name")
 
-    # objects = CustomUserManager()
+    objects = CustomUserManager()
     available = models.BooleanField(null=False, blank=False, default=True)
     shifts_per_roster = models.IntegerField(null=False, blank=False, default=0)
     max_shifts = models.BooleanField(null=False, blank=False, default=True)
