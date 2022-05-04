@@ -623,50 +623,50 @@ class RosterGenerator:
                     )
                 )
                 # TimeSlot.objects.get(id=timeslot_id).staff.add(worker)
-            #     if self.shift_requests[n][d][s] > 0:
-            #         log.info(
-            #             f"Request Successful: "
-            #             f"{worker.last_name}, {worker.first_name}"
-            #             f" {role.role_name}"
-            #             f" requested shift"
-            #             f" {timeslot.shift.shift_type}"
-            #             f" on"
-            #             f" {timeslot.date}"
-            #             f" and was assigned."
-            #         )
-            #     elif self.shift_requests[n][d][s] < 0:
-            #         log.info(
-            #             f"Request Failed: "
-            #             f"{worker.last_name}, {worker.first_name}"
-            #             f" {role.role_name}"
-            #             f" requested not to work shift"
-            #             f" {timeslot.shift.shift_type}"
-            #             f" on"
-            #             f" {timeslot.date}"
-            #             f" but was assigned."
-            #         )
-            # elif self.shift_requests[n][d][s] > 0:
-            #     log.info(
-            #         f"Request Failed: "
-            #         f"{worker.last_name}, {worker.first_name}"
-            #         f" {role.role_name}"
-            #         f" requested shift"
-            #         f" {timeslot.shift.shift_type}"
-            #         f" on"
-            #         f" {timeslot.date}"
-            #         f" but was not assigned."
-            #     )
-            # elif self.shift_requests[n][d][s] < 0:
-            #     log.info(
-            #         f"Request Succeeded: "
-            #         f"{worker.last_name}, {worker.first_name}"
-            #         f" {role.role_name}"
-            #         f" requested not to work shift"
-            #         f" {timeslot.shift.shift_type}"
-            #         f" on"
-            #         f" {timeslot.date}"
-            #         f" and was not assigned."
-            #     )
+                if self.shift_requests[n][d][s] > 0:
+                    log.info(
+                        f"Request Successful: "
+                        f"{worker.last_name}, {worker.first_name}"
+                        f" {role.role_name}"
+                        f" requested shift"
+                        f" {timeslot.shift.shift_type}"
+                        f" on"
+                        f" {timeslot.date}"
+                        f" and was assigned."
+                    )
+                elif self.shift_requests[n][d][s] < 0:
+                    log.info(
+                        f"Request Failed: "
+                        f"{worker.last_name}, {worker.first_name}"
+                        f" {role.role_name}"
+                        f" requested not to work shift"
+                        f" {timeslot.shift.shift_type}"
+                        f" on"
+                        f" {timeslot.date}"
+                        f" but was assigned."
+                    )
+            elif self.shift_requests[n][d][s] > 0:
+                log.info(
+                    f"Request Failed: "
+                    f"{worker.last_name}, {worker.first_name}"
+                    f" {role.role_name}"
+                    f" requested shift"
+                    f" {timeslot.shift.shift_type}"
+                    f" on"
+                    f" {timeslot.date}"
+                    f" but was not assigned."
+                )
+            elif self.shift_requests[n][d][s] < 0:
+                log.info(
+                    f"Request Succeeded: "
+                    f"{worker.last_name}, {worker.first_name}"
+                    f" {role.role_name}"
+                    f" requested not to work shift"
+                    f" {timeslot.shift.shift_type}"
+                    f" on"
+                    f" {timeslot.date}"
+                    f" and was not assigned."
+                )
         TimeSlotStaffRelationship.objects.bulk_create(
             staff_to_add, ignore_conflicts=True
         )
