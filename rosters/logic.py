@@ -1,5 +1,6 @@
 """Business logic."""
 
+import time
 import datetime
 import logging
 import math
@@ -7,6 +8,8 @@ from collections import OrderedDict
 
 from ortools.sat.python import cp_model
 from django.contrib.auth import get_user_model
+
+from django.db import connection, reset_queries
 
 from .models import Leave, Role, Shift, ShiftRule, TimeSlot, Day, StaffRequest
 
@@ -589,9 +592,8 @@ class RosterGenerator:
             raise SolutionNotFeasible("No feasible solutions.")
 
     def _populate_roster(self):
-        """Poulate roster."""
+        """Populate roster."""
         log.info("Population of roster started...")
-
         shift_vars_for_current_period = {
             shift_var_key: self.shift_vars[shift_var_key]
             for shift_var_key in self.shift_vars
@@ -601,71 +603,13 @@ class RosterGenerator:
         staff_to_add = []
         for shift_var_key in shift_vars_for_current_period:
             worker_id = shift_var_key[0]
-            role_id = shift_var_key[1]
-            date = shift_var_key[2]
             timeslot_id = shift_var_key[3]
-            worker = self.workers.get(id=worker_id)
-            role = worker.roles.get(id=role_id)
-            timeslot = self.timeslots.get(id=timeslot_id)
-
-            n = self.worker_lookup[worker_id]
-            d = self.date_lookup[date]
-            timeslot_ids = [
-                timeslot.id for timeslot in self.timeslots_lookup[date]
-            ]
-            s = timeslot_ids.index(timeslot_id)
-
             if self.solver.Value(self.shift_vars[shift_var_key]):
                 staff_to_add.append(
                     TimeSlotStaffRelationship(
                         timeslot_id=timeslot_id,
-                        customuser_id=worker.id,
+                        customuser_id=worker_id,
                     )
-                )
-                # TimeSlot.objects.get(id=timeslot_id).staff.add(worker)
-                if self.shift_requests[n][d][s] > 0:
-                    log.info(
-                        f"Request Successful: "
-                        f"{worker.last_name}, {worker.first_name}"
-                        f" {role.role_name}"
-                        f" requested shift"
-                        f" {timeslot.shift.shift_type}"
-                        f" on"
-                        f" {timeslot.date}"
-                        f" and was assigned."
-                    )
-                elif self.shift_requests[n][d][s] < 0:
-                    log.info(
-                        f"Request Failed: "
-                        f"{worker.last_name}, {worker.first_name}"
-                        f" {role.role_name}"
-                        f" requested not to work shift"
-                        f" {timeslot.shift.shift_type}"
-                        f" on"
-                        f" {timeslot.date}"
-                        f" but was assigned."
-                    )
-            elif self.shift_requests[n][d][s] > 0:
-                log.info(
-                    f"Request Failed: "
-                    f"{worker.last_name}, {worker.first_name}"
-                    f" {role.role_name}"
-                    f" requested shift"
-                    f" {timeslot.shift.shift_type}"
-                    f" on"
-                    f" {timeslot.date}"
-                    f" but was not assigned."
-                )
-            elif self.shift_requests[n][d][s] < 0:
-                log.info(
-                    f"Request Succeeded: "
-                    f"{worker.last_name}, {worker.first_name}"
-                    f" {role.role_name}"
-                    f" requested not to work shift"
-                    f" {timeslot.shift.shift_type}"
-                    f" on"
-                    f" {timeslot.date}"
-                    f" and was not assigned."
                 )
         TimeSlotStaffRelationship.objects.bulk_create(
             staff_to_add, ignore_conflicts=True
