@@ -206,8 +206,14 @@ class RoleListView(LoginRequiredMixin, ListView):
     login_url = "login"
 
     def get_queryset(self):
-        """Change order of role list view."""
-        return Role.objects.order_by("role_name")
+        """Prefetch customuser_set.
+
+        Doing prefetch here as it would not work via a custom model manager.
+
+        """
+        return Role.objects.prefetch_related("customuser_set").order_by(
+            "role_name"
+        )
 
 
 class RoleDetailView(LoginRequiredMixin, DetailView):
