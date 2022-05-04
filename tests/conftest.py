@@ -43,6 +43,7 @@ def init_feasible_db(init_db):
     """Initialise database."""
     staff_member1 = get_user_model().objects.create_user(
         username="one",
+        password="temporary",
         last_name="One",
         first_name="One",
         available=True,
@@ -50,6 +51,7 @@ def init_feasible_db(init_db):
     )
     staff_member2 = get_user_model().objects.create_user(
         username="two",
+        password="temporary",
         last_name="Two",
         first_name="Two",
         available=True,
@@ -57,6 +59,7 @@ def init_feasible_db(init_db):
     )
     staff_member3 = get_user_model().objects.create_user(
         username="three",
+        password="temporary",
         last_name="Three",
         first_name="Three",
         available=True,
@@ -64,6 +67,7 @@ def init_feasible_db(init_db):
     )
     staff_member4 = get_user_model().objects.create_user(
         username="four",
+        password="temporary",
         last_name="Four",
         first_name="Four",
         available=True,
@@ -71,6 +75,7 @@ def init_feasible_db(init_db):
     )
     staff_member5 = get_user_model().objects.create_user(
         username="casual",
+        password="temporary",
         last_name="casual",
         first_name="casual",
         available=True,
@@ -80,6 +85,7 @@ def init_feasible_db(init_db):
     )
     staff_member6 = get_user_model().objects.create_user(
         username="six",
+        password="temporary",
         last_name="Six",
         first_name="Six",
         available=True,
@@ -241,6 +247,7 @@ def init_infeasible_db(init_db):
     """Initialise database."""
     staff_member1 = get_user_model().objects.create_user(
         username="one",
+        password="temporary",
         last_name="One",
         first_name="One",
         available=True,
@@ -248,6 +255,7 @@ def init_infeasible_db(init_db):
     )
     staff_member2 = get_user_model().objects.create_user(
         username="two",
+        password="temporary",
         last_name="Two",
         first_name="Two",
         available=True,
@@ -274,6 +282,7 @@ def init_too_many_staff_db(init_db):
     """Initialise database."""
     staff_member1 = get_user_model().objects.create_user(
         username="one",
+        password="temporary",
         last_name="One",
         first_name="One",
         available=True,
@@ -281,6 +290,7 @@ def init_too_many_staff_db(init_db):
     )
     staff_member2 = get_user_model().objects.create_user(
         username="two",
+        password="temporary",
         last_name="Two",
         first_name="Two",
         available=True,
