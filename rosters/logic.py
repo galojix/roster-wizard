@@ -435,7 +435,7 @@ class RosterGenerator:
 
     def _enforce_one_skill_mix_rule_at_a_time(self):
         """Only one skill mix rule at a time should be enforced."""
-        log.info("Enforcement of one shift rule at a time started...")
+        log.info("Enforcement of one skill mix rule at a time started...")
         for timeslot in self.timeslots:
             if len(self.shiftrules[timeslot.shift.id]) >= 1:
                 self.model.Add(
@@ -449,7 +449,7 @@ class RosterGenerator:
                     )
                     == 1
                 )
-        log.info("Enforcement of one shift rule at a time completed...")
+        log.info("Enforcement of one skill mix rule at a time completed...")
 
     def _enforce_skill_mix_rules(self):
         """Enforce one skill mix rule per shift per timeslot."""
