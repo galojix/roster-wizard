@@ -42,18 +42,21 @@ ALLOWED_HOSTS = tuple(env.list("ALLOWED_HOSTS", default=[]))
 # Application definition
 
 INSTALLED_APPS = [
-    "users.apps.UsersConfig",
-    "rosters.apps.RostersConfig",
-    "api.apps.ApiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third Party
     "rangefilter",
     "crispy_forms",
     "rest_framework",
+    "corsheaders",
+    # Local
+    "users.apps.UsersConfig",
+    "rosters.apps.RostersConfig",
+    "api.apps.ApiConfig",
 ]
 
 if DEBUG:
@@ -62,6 +65,7 @@ if DEBUG:
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -275,3 +279,6 @@ MESSAGE_TAGS = {
     messages.INFO: "alert-info",
     messages.WARNING: "alert-warning",
 }
+
+# Cross Origin Resource Sharing (CORS)
+CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS").split(",")

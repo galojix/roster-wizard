@@ -2,6 +2,7 @@
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 
 from rosters.models import Leave, TimeSlot
@@ -13,14 +14,20 @@ from .serializers import (
 
 from rosters.tasks import generate_roster
 
-# from celery.result import AsyncResult
-
 
 class LeaveViewSet(viewsets.ModelViewSet):
     """LeaveViewSet."""
 
     queryset = Leave.objects.all()
     serializer_class = LeaveSerializer
+
+    def get_permissions(self):
+        """Instantiate and return permissions that this view requires."""
+        if self.action == "list":
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsAdminUser]
+        return [permission() for permission in permission_classes]
 
 
 class TimeSlotViewSet(viewsets.ModelViewSet):
@@ -32,6 +39,14 @@ class TimeSlotViewSet(viewsets.ModelViewSet):
 
 class GenerateRosterViewSet(viewsets.ViewSet):
     """GenerateRosterView."""
+
+    def get_permissions(self):
+        """Instantiate and return permissions that this view requires."""
+        if self.action == "list":
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsAdminUser]
+        return [permission() for permission in permission_classes]
 
     def list(self, request):
         """Get page."""
