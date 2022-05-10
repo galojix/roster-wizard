@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "dj_rest_auth",
     "django_extensions",
+    "drf_spectacular",
     # Local
     "users.apps.UsersConfig",
     "rosters.apps.RostersConfig",
@@ -276,6 +277,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 # Message colours
@@ -289,3 +291,10 @@ MESSAGE_TAGS = {
 
 # Cross Origin Resource Sharing (CORS)
 CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS").split(",")
+
+# Schema Documentation
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Roster Wizard API",
+    "DESCRIPTION": "An automatic roster generation application ",
+    "VERSION": "1.0.0",
+}

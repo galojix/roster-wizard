@@ -17,6 +17,7 @@ djangorestframework = "*"
 django-cors-headers = "*"
 dj-rest-auth = "*"
 django-extensions = "*"
+drf-spectacular = "*"
 
 [dev-packages]
 pylint = "*"
