@@ -33,6 +33,7 @@ class LeaveViewSet(viewsets.ModelViewSet):
 class TimeSlotViewSet(viewsets.ModelViewSet):
     """TimeSlotViewSet."""
 
+    permission_classes = [IsAdminUser]
     queryset = TimeSlot.objects.all()
     serializer_class = TimeSlotSerializer
 
@@ -40,13 +41,7 @@ class TimeSlotViewSet(viewsets.ModelViewSet):
 class GenerateRosterViewSet(viewsets.ViewSet):
     """GenerateRosterView."""
 
-    def get_permissions(self):
-        """Instantiate and return permissions that this view requires."""
-        if self.action == "list":
-            permission_classes = [IsAuthenticated]
-        else:
-            permission_classes = [IsAdminUser]
-        return [permission() for permission in permission_classes]
+    permission_classes = [IsAdminUser]
 
     def list(self, request):
         """Get page."""

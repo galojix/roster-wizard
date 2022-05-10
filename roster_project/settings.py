@@ -53,6 +53,9 @@ INSTALLED_APPS = [
     "crispy_forms",
     "rest_framework",
     "corsheaders",
+    "rest_framework.authtoken",
+    "dj_rest_auth",
+    "django_extensions",
     # Local
     "users.apps.UsersConfig",
     "rosters.apps.RostersConfig",
@@ -268,7 +271,11 @@ CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
-    ]
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ],
 }
 
 # Message colours

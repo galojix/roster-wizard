@@ -15,6 +15,8 @@ celery = "*"
 python-dateutil = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
+dj-rest-auth = "*"
+django-extensions = "*"
 
 [dev-packages]
 pylint = "*"

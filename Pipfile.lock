@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b45fde73ad65d35e3837cd8b247c1135584a2fbcc6fe3682ed1b086791f2c61e"
+            "sha256": "cd81fe7976bed52d691793fda2d7a08e87aaf3ad8a58d88faab49fdf524e1dfb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -99,6 +99,13 @@
             ],
             "version": "==1.0.5"
         },
+        "dj-rest-auth": {
+            "hashes": [
+                "sha256:cf15155756b60a02842c54af62a213975c4eed250a2cce5d31b80dc6cf8592f1"
+            ],
+            "index": "pypi",
+            "version": "==2.2.4"
+        },
         "django": {
             "hashes": [
                 "sha256:07c8638e7a7f548dc0acaaa7825d84b7bd42b10e8d22268b3d572946f1e9b687",
@@ -137,6 +144,14 @@
             ],
             "index": "pypi",
             "version": "==1.14.0"
+        },
+        "django-extensions": {
+            "hashes": [
+                "sha256:28e1e1bf49f0e00307ba574d645b0af3564c981a6dfc87209d48cb98f77d0b1a",
+                "sha256:9238b9e016bb0009d621e05cf56ea8ce5cce9b32e91ad2026996a7377ca28069"
+            ],
+            "index": "pypi",
+            "version": "==3.1.5"
         },
         "djangorestframework": {
             "hashes": [
