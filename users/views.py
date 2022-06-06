@@ -17,7 +17,6 @@ class CustomUserListView(LoginRequiredMixin, ListView):
 
     model = CustomUser
     template_name = "customuser_list.html"
-    login_url = "login"
 
     def get_queryset(self):
         """Get query set."""
@@ -29,7 +28,6 @@ class CustomUserDetailView(LoginRequiredMixin, DetailView):
 
     model = CustomUser
     template_name = "customuser_detail.html"
-    login_url = "login"
 
 
 class CustomUserUpdateView(
@@ -51,7 +49,7 @@ class CustomUserUpdateView(
         "available",
         "roles",
     )
-    login_url = "login"
+
     permission_required = "rosters.change_roster"
 
 
@@ -63,7 +61,7 @@ class CustomUserDeleteView(
     model = CustomUser
     template_name = "customuser_delete.html"
     success_url = reverse_lazy("customuser_list")
-    login_url = "login"
+
     permission_required = "rosters.change_roster"
 
 
@@ -86,5 +84,5 @@ class CustomUserCreateView(
         "available",
         "roles",
     )
-    login_url = "login"
+
     permission_required = "rosters.change_roster"

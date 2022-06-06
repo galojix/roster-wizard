@@ -160,8 +160,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "webserver/static")
 
 AUTH_USER_MODEL = "users.CustomUser"
 
-LOGIN_URL = "login"
-
 # Security
 SECURE = env.bool("SECURE")
 if not DEBUG and SECURE:
@@ -301,6 +299,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 # django-allauth config
+LOGIN_URL = "account_login"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 SITE_ID = 1
