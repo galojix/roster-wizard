@@ -1263,3 +1263,55 @@ def download_csv(request):
         row.extend(roster[staff_member][key] for key in roster[staff_member])
         writer.writerow(row)
     return response
+
+
+@login_required
+@permission_required("rosters.change_roster")
+def staff_request_status(request):
+    """Display staff request status."""
+    print("starting")
+    if "start_date" in request.session:
+        start_date = datetime.datetime.strptime(
+            request.session["start_date"], "%d-%b-%Y"
+        )
+    else:
+        start_date = datetime.datetime.now()
+
+    num_days = datetime.timedelta(days=Day.objects.count() - 1)
+    end_date = start_date + num_days
+    date_range = [start_date, end_date]
+
+    staff_requests = StaffRequest.objects.filter(date__range=date_range)
+    timeslots = TimeSlot.objects.filter(date__range=date_range)
+    successes = []
+    failures = []
+    for staff_request in staff_requests:
+        date = staff_request.date
+        shift = staff_request.shift
+        staff_member = staff_request.staff_member
+        like = staff_request.like
+        if like:
+            if (
+                staff_member
+                in timeslots.get(date=date, shift=shift).staff.all()
+            ):
+                successes.append(f"{staff_member} given {shift} on {date}")
+            else:
+                failures.append(f"{staff_member} not given {shift} on {date}")
+        else:
+            if (
+                staff_member
+                in timeslots.get(date=date, shift=shift).staff.all()
+            ):
+                failures.append(f"{staff_member} given {shift} on {date}")
+            else:
+                successes.append(f"{staff_member} not given {shift} on {date}")
+
+    return render(
+        request,
+        "staff_request_status.html",
+        {
+            "successes": successes,
+            "failures": failures,
+        },
+    )

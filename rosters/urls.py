@@ -72,6 +72,7 @@ from .views import (
     DayCreateView,
     DaySetCreateView,
     roster_generation_status,
+    staff_request_status,
 )
 
 urlpatterns = [
@@ -343,5 +344,10 @@ urlpatterns = [
         "roster_settings/",
         RosterSettingsView.as_view(),
         name="roster_settings",
+    ),
+    path(
+        "staff_request_status/",
+        staff_request_status,
+        name="staff_request_status",
     ),
 ]

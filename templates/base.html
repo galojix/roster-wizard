@@ -130,6 +130,8 @@
                   <div class="dropdown-divider"></div>
                   {% if perms.rosters.change_roster %}
                   <a class="dropdown-item" href="{% url 'staffrequest_create' %}">Create Staff Requests</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'staff_request_status' %}">Staff Request Status</a>
                   {% else %}
                   <a class="dropdown-item" href="{% url 'staffrequest_update' user.id %}">Edit My Shift Requests</a>
                   {% endif %}
