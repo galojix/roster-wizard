@@ -27,11 +27,7 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.forms import formset_factory
 
-from django.db import connection, reset_queries
-
-
-# from django.db.models.query import prefetch_related_objects
-
+# from django.db import connection, reset_queries
 
 from .models import (
     Leave,
