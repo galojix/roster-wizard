@@ -10,4 +10,3 @@ COPY Pipfile Pipfile.lock /roster/
 RUN python -m pip install --upgrade pip && python -m pip install pipenv && pipenv install --system --dev
 # Copy project
 COPY . /roster/
-RUN mkdir -p /roster/webserver/static
