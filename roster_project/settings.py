@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     # Third Party
     "rangefilter",
     "crispy_forms",
-    "crispy_boostrap4",
+    "crispy_bootstrap4",
     "rest_framework",
     "corsheaders",
     "rest_framework.authtoken",
