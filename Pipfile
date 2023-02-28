@@ -19,6 +19,7 @@ dj-rest-auth = "*"
 django-extensions = "*"
 drf-spectacular = "*"
 django-allauth = "*"
+crispy-bootstrap4 = "*"
 
 [dev-packages]
 pylint = "*"
