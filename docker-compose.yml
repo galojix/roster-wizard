@@ -29,7 +29,7 @@ services:
         max-size: "10m"
 
   celery:
-    image: galojix/roster-wizard:latest
+    image: gregcowell/roster-wizard:latest
     user: ${USERID}:${GROUPID}
     networks:
       - net
@@ -43,7 +43,7 @@ services:
       - rabbitmq
 
   web:
-    image: galojix/roster-wizard:latest
+    image: gregcowell/roster-wizard:latest
     user: ${USERID}:${GROUPID}
     networks:
       - net
