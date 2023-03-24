@@ -1206,6 +1206,9 @@ def roster_generation_status(request, task_id):
         except TooManyStaff:
             status = "FAILED"
             status_message = "There are too many staff available, put more staff on leave..."
+        except Exception as error:
+            status = "FAILED"
+            status_message = f"{error.__class__.__name__}:{error}"
     else:
         status = "PROCESSING"
         status_message = "Processing..."
