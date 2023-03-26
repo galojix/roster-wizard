@@ -17,6 +17,9 @@ services:
   rabbitmq:
     restart: always
 
+  redis:
+    restart: always
+
   celery:
     env_file:
       - .env_prod_web

@@ -11,7 +11,6 @@ gunicorn = "*"
 django-admin-rangefilter = "*"
 django-crispy-forms = "*"
 environs = {extras = ["django"], version = "*"}
-celery = "*"
 python-dateutil = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
@@ -20,6 +19,7 @@ django-extensions = "*"
 drf-spectacular = "*"
 django-allauth = "*"
 crispy-bootstrap4 = "*"
+celery = {extras = ["redis"], version = "*"}
 
 [dev-packages]
 pylint = "*"

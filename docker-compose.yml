@@ -28,6 +28,18 @@ services:
         max-file: "5"
         max-size: "10m"
 
+  redis:
+    image: redis:latest
+    volumes: 
+      - redis:/data
+    networks:
+      - net
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
   celery:
     image: gregcowell/roster-wizard:latest
     user: ${USERID}:${GROUPID}
@@ -61,6 +73,7 @@ services:
 volumes:
   db:
   rabbitmq:
+  redis:
 
 networks:
   net:

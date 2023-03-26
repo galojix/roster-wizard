@@ -1039,7 +1039,15 @@ class GenerateRosterView(
         self.request.session["start_date"] = start_date.date().strftime(
             "%d-%b-%Y"
         )
-        result = generate_roster.delay(start_date=start_date)
+        try:
+            result = generate_roster.delay(start_date=start_date)
+        except Exception as error:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                f"Error: {error}, Please try again...",
+            )
+            return HttpResponseRedirect(reverse("generate_roster"))
         self.task_id = result.task_id
         return super().form_valid(form)
 
