@@ -149,7 +149,7 @@ def test_roster_generation_status_view_infeasible(init_db, client, mocker):
     response = client.get(reverse("roster_generation_status", args=("12345",)))
     assert response.status_code == 200
     assert (
-        "Could not generate roster, try putting more staff on leave or changing rules..."
+        "Could not generate roster, ensure staff details and rules are correct..."
         in str(response.getvalue())
     )
     assert "roster_generation_status.html" in [
