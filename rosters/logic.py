@@ -581,7 +581,7 @@ class RosterGenerator:
     def _solve_roster(self):
         """Create the solver and solve."""
         self.solver = cp_model.CpSolver()
-        # self.solver.parameters.max_time_in_seconds = 120
+        self.solver.parameters.max_time_in_seconds = 120
         log.info("Solver started...")
         solution_status = self.solver.Solve(self.model)
         log.info("Solver finished...")

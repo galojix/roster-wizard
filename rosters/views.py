@@ -1210,7 +1210,7 @@ def roster_generation_status(request, task_id):
             status = "SUCCEEDED"
         except SolutionNotFeasible:
             status = "FAILED"
-            status_message = "Could not generate roster, try putting more staff on leave or changing rules..."
+            status_message = "Could not generate roster, ensure staff details and rules are correct..."
         except TooManyStaff:
             status = "FAILED"
             status_message = "There are too many staff available, put more staff on leave..."
