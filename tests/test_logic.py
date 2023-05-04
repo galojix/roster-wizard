@@ -6,7 +6,6 @@ import datetime
 from rosters.logic import (
     RosterGenerator,
     SolutionNotFeasible,
-    TooManyStaff,
 )
 from rosters.tasks import generate_roster
 
@@ -30,7 +29,7 @@ def test_infeasible_roster_generation(init_infeasible_db):
 def test_too_many_staff_roster_generation(init_too_many_staff_db):
     """Test too many staff roster generation."""
     roster = RosterGenerator(start_date=datetime.datetime.now())
-    with pytest.raises(TooManyStaff):
+    with pytest.raises(SolutionNotFeasible):
         roster.create()
 
 

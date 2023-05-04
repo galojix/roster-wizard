@@ -1,6 +1,5 @@
 """Business logic."""
 
-import time
 import datetime
 import logging
 import math
@@ -9,7 +8,7 @@ from collections import OrderedDict
 from ortools.sat.python import cp_model
 from django.contrib.auth import get_user_model
 
-from django.db import connection, reset_queries
+# from django.db import connection, reset_queries
 
 from .models import Leave, Role, Shift, ShiftRule, TimeSlot, Day, StaffRequest
 
@@ -19,12 +18,6 @@ log = logging.getLogger(__name__)
 
 class SolutionNotFeasible(Exception):
     """Exception for when there is no feasible solution."""
-
-    pass
-
-
-class TooManyStaff(Exception):
-    """Exception for when there are too many staff."""
 
     pass
 
@@ -104,27 +97,6 @@ class RosterGenerator:
             )
 
             self.timeslots_lookup[date] = timeslot_ids_for_date
-
-    def _check_if_too_many_staff(self):
-        # Check if too many staff
-        log.info("Too many staff check started...")
-        total_staff_shifts = 0
-        for worker in self.workers:
-            leave_days = self.leaves.filter(staff_member=worker).count()
-            if leave_days > worker.shifts_per_roster:
-                total_staff_shifts += 0
-            else:
-                total_staff_shifts += worker.shifts_per_roster - leave_days
-        total_shifts = sum(
-            timeslot.shift.max_staff for timeslot in self.timeslots
-        )
-        log.info("Total staff shifts: " + str(total_staff_shifts))
-        log.info("Total shifts: " + str(total_shifts))
-
-        if total_staff_shifts > total_shifts:
-            log.info("Error: there are too many staff...")
-            raise TooManyStaff("Too many staff.")
-        log.info("Too many staff check completed...")
 
     def _collect_shift_requests(self):
         """Collect shift requests into friendly data structure."""
@@ -621,7 +593,6 @@ class RosterGenerator:
         self._clear_existing_timeslots()
         self._create_timeslots()
         self._create_timeslots_lookup()
-        self._check_if_too_many_staff()
         self._collect_shift_requests()
         self._create_shift_vars()
         self._create_previous_shift_vars()

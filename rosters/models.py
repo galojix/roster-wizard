@@ -162,7 +162,6 @@ class Shift(models.Model):
     daygroup = models.ForeignKey(
         DayGroup, null=True, blank=False, on_delete=models.SET_NULL
     )
-    max_staff = models.IntegerField(null=False, blank=False, default=5)
 
     class Meta:
         """Meta."""

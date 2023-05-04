@@ -63,7 +63,6 @@ from .forms import (
 )
 from .logic import (
     SolutionNotFeasible,
-    TooManyStaff,
     get_roster_by_staff,
 )
 from .tasks import generate_roster
@@ -265,7 +264,7 @@ class ShiftUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Shift Update View."""
 
     model = Shift
-    fields = ("shift_type", "daygroup", "max_staff")
+    fields = ("shift_type", "daygroup")
     template_name = "shift_update.html"
 
     permission_required = "rosters.change_roster"
@@ -286,7 +285,7 @@ class ShiftCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     model = Shift
     template_name = "shift_create.html"
-    fields = ("shift_type", "daygroup", "max_staff")
+    fields = ("shift_type", "daygroup")
 
     permission_required = "rosters.change_roster"
 
@@ -1211,9 +1210,6 @@ def roster_generation_status(request, task_id):
         except SolutionNotFeasible:
             status = "FAILED"
             status_message = "Could not generate roster, ensure staff details and rules are correct..."
-        except TooManyStaff:
-            status = "FAILED"
-            status_message = "There are too many staff available, put more staff on leave..."
         except Exception as error:
             status = "FAILED"
             status_message = f"{error.__class__.__name__}:{error}"

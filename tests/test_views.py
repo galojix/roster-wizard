@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 
 from rosters.models import Day, Role, ShiftRule, StaffRule, Shift, DayGroup
 from rosters.views import generate_roster, AsyncResult
-from rosters.logic import SolutionNotFeasible, TooManyStaff
+from rosters.logic import SolutionNotFeasible
 
 pytestmark = pytest.mark.django_db
 
@@ -161,11 +161,11 @@ def test_roster_generation_status_view_too_many_staff(init_db, client, mocker):
     """Test roster generation status view."""
     client.login(username="temporary", password="temporary")
     mocker.patch.object(AsyncResult, "ready", return_value=True)
-    mocker.patch.object(AsyncResult, "get", side_effect=TooManyStaff)
+    mocker.patch.object(AsyncResult, "get", side_effect=SolutionNotFeasible)
     response = client.get(reverse("roster_generation_status", args=("12345",)))
     assert response.status_code == 200
     assert (
-        "There are too many staff available, put more staff on leave..."
+        "Could not generate roster, ensure staff details and rules are correct..."
         in str(response.getvalue())
     )
     assert "roster_generation_status.html" in [
