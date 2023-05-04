@@ -535,6 +535,33 @@ class RosterGenerator:
                 self.model.Add(num_shifts_worked1 == num_shifts)
         log.info("Enforcement of balanced shifts completed...")
 
+    def _enforce_staff_numbers(self):
+        """Enforce staff numbers."""
+        log.info("Enforcement of staff numbers started...")
+        max_shift_size_lookup = {}
+        min_shift_size_lookup = {}
+        for shift_id in self.shiftrules:
+            role_count_sizes = []
+            for role_counts in self.shiftrules[shift_id]:
+                role_count_sizes.append(sum(role_counts.values()))
+            max_shift_size = max(role_count_sizes)
+            min_shift_size = min(role_count_sizes)
+            max_shift_size_lookup[shift_id] = max_shift_size
+            min_shift_size_lookup[shift_id] = min_shift_size
+        for timeslot in self.timeslots:
+            max_timeslot_size = max_shift_size_lookup[timeslot.shift.id]
+            min_timeslot_size = max_shift_size_lookup[timeslot.shift.id]
+            num_staff_allocated = sum(
+                self.shift_vars[
+                    (worker.id, role.id, timeslot.date, timeslot.id)
+                ]
+                for worker in self.workers
+                for role in worker.roles.all()
+            )
+            self.model.Add(num_staff_allocated >= min_timeslot_size)
+            self.model.Add(num_staff_allocated <= max_timeslot_size)
+        log.info("Enforcement of staff numbers completed...")
+
     def _maximise_staff_requests(self):
         """Maximise the number of satisfied staff requests."""
         log.info("Maximising of staff requests started...")
@@ -597,14 +624,15 @@ class RosterGenerator:
         self._create_shift_vars()
         self._create_previous_shift_vars()
         self._exclude_leave_dates()
-        self._enforce_invalid_shift_sequences()
+        self._enforce_one_shift_per_day()
+        self._enforce_shifts_per_roster()
         self._collect_skill_mix_rules()
         self._create_intermediate_skill_mix_vars()
         self._enforce_one_skill_mix_rule_at_a_time()
         self._enforce_skill_mix_rules()
-        self._enforce_one_shift_per_day()
-        self._enforce_shifts_per_roster()
         self._enforce_balanced_shifts()
+        self._enforce_invalid_shift_sequences()
+        self._enforce_staff_numbers()
         self._maximise_staff_requests()
         self._solve_roster()
         self._populate_roster()
