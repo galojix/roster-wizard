@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserManager(BaseUserManager):
@@ -42,6 +43,7 @@ class CustomUser(AbstractUser):
         ordering = ("last_name", "first_name")
 
     objects = CustomUserManager()
+    email = models.EmailField(_("email address"), blank=False)
     available = models.BooleanField(null=False, blank=False, default=True)
     shifts_per_roster = models.IntegerField(null=False, blank=False, default=0)
     max_shifts = models.BooleanField(null=False, blank=False, default=True)
