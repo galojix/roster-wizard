@@ -1212,7 +1212,10 @@ def roster_generation_status(request, task_id):
             status_message = "Could not generate roster, ensure staff details and rules are correct..."
         except Exception as error:
             status = "FAILED"
-            status_message = f"{error.__class__.__name__}:{error}"
+            if "no attribute 'daygroupday_set'" in str(error):
+                status_message = "Please check that all shifts and shift sequences have day groups assigned..."
+            else:
+                status_message = f"{error.__class__.__name__}:{error}"
     else:
         status = "PROCESSING"
         status_message = "Processing..."
