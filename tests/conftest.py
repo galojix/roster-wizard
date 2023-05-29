@@ -30,6 +30,7 @@ def init_db():
     get_user_model().objects.create_user(
         username="temporary",
         password="temporary",
+        email="temporrary@fred.com",
         last_name="Joey",
         first_name="Smith",
         available=False,
@@ -46,6 +47,7 @@ def init_feasible_db(init_db):
         password="temporary",
         last_name="One",
         first_name="One",
+        email="one@fred.com",
         available=True,
         shifts_per_roster=10,
     )
@@ -54,6 +56,7 @@ def init_feasible_db(init_db):
         password="temporary",
         last_name="Two",
         first_name="Two",
+        email="two@fred.com",
         available=True,
         shifts_per_roster=10,
     )
@@ -62,6 +65,7 @@ def init_feasible_db(init_db):
         password="temporary",
         last_name="Three",
         first_name="Three",
+        email="three@fred.com",
         available=True,
         shifts_per_roster=10,
     )
@@ -70,6 +74,7 @@ def init_feasible_db(init_db):
         password="temporary",
         last_name="Four",
         first_name="Four",
+        email="four@fred.com",
         available=True,
         shifts_per_roster=10,
     )
@@ -78,6 +83,7 @@ def init_feasible_db(init_db):
         password="temporary",
         last_name="casual",
         first_name="casual",
+        email="casual@fred.com",
         available=True,
         shifts_per_roster=0,
         enforce_shifts_per_roster=False,
@@ -88,6 +94,7 @@ def init_feasible_db(init_db):
         password="temporary",
         last_name="Six",
         first_name="Six",
+        email="six@fred.com",
         available=True,
         max_shifts=False,
         shifts_per_roster=1,
@@ -252,6 +259,7 @@ def init_infeasible_db(init_db):
         password="temporary",
         last_name="One",
         first_name="One",
+        email="one@fred.com",
         available=True,
         shifts_per_roster=10,
     )
@@ -260,6 +268,7 @@ def init_infeasible_db(init_db):
         password="temporary",
         last_name="Two",
         first_name="Two",
+        email="two@fred.com",
         available=True,
         shifts_per_roster=9,
     )
@@ -288,6 +297,7 @@ def init_too_many_staff_db(init_db):
         password="temporary",
         last_name="One",
         first_name="One",
+        email="one@fred.com",
         available=True,
         shifts_per_roster=10,
     )
@@ -296,6 +306,7 @@ def init_too_many_staff_db(init_db):
         password="temporary",
         last_name="Two",
         first_name="Two",
+        email="two@fred.com",
         available=True,
         shifts_per_roster=11,
     )
