@@ -43,7 +43,15 @@ class CustomUser(AbstractUser):
         ordering = ("last_name", "first_name")
 
     objects = CustomUserManager()
-    email = models.EmailField(_("email address"), blank=False)
+    email = models.EmailField(
+        _("email address"),
+        blank=False,
+        unique=True,
+        null=False,
+        error_messages={
+            "unique": _("A user with that email address already exists."),
+        },
+    )
     available = models.BooleanField(null=False, blank=False, default=True)
     shifts_per_roster = models.IntegerField(null=False, blank=False, default=0)
     max_shifts = models.BooleanField(null=False, blank=False, default=True)
