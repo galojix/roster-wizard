@@ -20,10 +20,10 @@ drf-spectacular = "*"
 django-allauth = "*"
 crispy-bootstrap4 = "*"
 celery = {extras = ["redis"], version = "*"}
+pandas = "*"
 
 [dev-packages]
 pylint = "*"
-pylint-django = "*"
 flake8 = "*"
 pydocstyle = "*"
 pytest-django = "*"
@@ -33,6 +33,7 @@ watchdog = {extras = ["watchmedo"], version = "*"}
 pytest-mock = "*"
 black = "*"
 pytest = "*"
+pylint-django = "*"
 
 [requires]
 python_version = "3.10"
