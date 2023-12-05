@@ -12,7 +12,7 @@ class CustomUserManager(BaseUserManager):
     def get_queryset(self):
         """Select additional related object data."""
         query_set = super().get_queryset()
-        return query_set.prefetch_related("roles")
+        return query_set
 
     def create_user(self, username, password, **extra_fields):
         """Create and save a User with the given username and password."""
