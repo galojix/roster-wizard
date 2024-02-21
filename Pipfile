@@ -21,6 +21,7 @@ django-allauth = "*"
 crispy-bootstrap4 = "*"
 celery = {extras = ["redis"], version = "*"}
 pandas = "*"
+pyarrow = "*"
 
 [dev-packages]
 pylint = "*"
