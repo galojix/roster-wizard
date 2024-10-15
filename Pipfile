@@ -25,16 +25,13 @@ pyarrow = "*"
 
 [dev-packages]
 pylint = "*"
-flake8 = "*"
-pydocstyle = "*"
 pytest-django = "*"
 pytest-cov = "*"
 django-debug-toolbar = "*"
 watchdog = {extras = ["watchmedo"], version = "*"}
 pytest-mock = "*"
-black = "*"
 pytest = "*"
 pylint-django = "*"
 
 [requires]
-python_version = "3.11"
+python_version = "3.12"
