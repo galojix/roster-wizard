@@ -7,11 +7,11 @@ USER app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 # Set work directory
-WORKDIR /roster
+WORKDIR /roster_app/roster_wizard
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-COPY pyproject.toml uv.lock /roster/
+COPY pyproject.toml uv.lock /roster_app
 # Install virtual environment
 RUN uv sync --locked
 # Copy project
-COPY --chown=app:app . /roster/
+COPY --chown=app:app ./roster_wizard /roster_app/roster_wizard
