@@ -6,9 +6,9 @@ services:
   web:
     env_file:
       - .env_demo_web
-    command: python /roster/manage.py runserver 0.0.0.0:8000
+    command: uv run python /roster_wizard/manage.py runserver 0.0.0.0:8000
 
   celery:
     env_file:
       - .env_demo_web
-    command: celery -A roster_project worker -l INFO
+    command: uv run celery -A roster_project worker -l INFO

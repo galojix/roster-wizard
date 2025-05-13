@@ -5,3 +5,4 @@ logs/*
 .coverage
 .git
 .pytest_cache
+.venv

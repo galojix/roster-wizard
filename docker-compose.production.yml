@@ -7,9 +7,9 @@ services:
   web:
     env_file:
       - .env_prod_web
-    command: gunicorn roster_project.wsgi:application --disable-redirect-access-to-syslog --error-logfile '-' --access-logfile '-' --access-logformat '%(t)s [GUNICORN] %(h)s %(l)s %(u)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"' --workers 3 --bind '[::]:8000'
+    command: uv run gunicorn roster_project.wsgi:application --disable-redirect-access-to-syslog --error-logfile '-' --access-logfile '-' --access-logformat '%(t)s [GUNICORN] %(h)s %(l)s %(u)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"' --workers 3 --bind '[::]:8000'
     volumes:
-      - /opt/roster/static:/roster/webserver/static/
+      - /opt/roster/static:/roster_wizard/webserver/static/
     restart: always
 
   rabbitmq:
@@ -21,5 +21,5 @@ services:
   celery:
     env_file:
       - .env_prod_web
-    command: celery -A roster_project worker -l INFO
+    command: uv run celery -A roster_project worker -l INFO
     restart: always

@@ -40,7 +40,7 @@ services:
 
   celery:
     image: gregcowell/roster-wizard:latest
-    user: ${USERID}:${GROUPID}
+    # user: ${USERID}:${GROUPID}
     networks:
       - net
     logging:
@@ -54,7 +54,7 @@ services:
 
   web:
     image: gregcowell/roster-wizard:latest
-    user: ${USERID}:${GROUPID}
+    # user: ${USERID}:${GROUPID}
     networks:
       - net
     ports:
@@ -72,7 +72,6 @@ volumes:
   db:
   rabbitmq:
   redis:
-
 
 networks:
   net:
