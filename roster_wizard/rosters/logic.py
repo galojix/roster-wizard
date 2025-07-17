@@ -146,7 +146,7 @@ class RosterGenerator:
         log.info("Creation of shift variables for previous period completed...")
 
     def _exclude_leave_dates(self):
-        """Exclude leave dates from roster."""
+        """Ensure staff members are not assigned to any shifts while on leave."""
         log.info("Exclusion of leave dates started...")
         for leave in self.leaves:
             for role in leave.staff_member.roles.all():
