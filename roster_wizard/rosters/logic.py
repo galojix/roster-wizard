@@ -85,11 +85,10 @@ class RosterGenerator:
         # Create timeslot id lookup
         self.timeslots_lookup = {}
         for date in self.extended_dates:
-            timeslot_ids_for_date = list(
+            timeslots_for_date = list(
                 TimeSlot.objects.filter(date=date).order_by("shift__shift_type")
             )
-
-            self.timeslots_lookup[date] = timeslot_ids_for_date
+            self.timeslots_lookup[date] = timeslots_for_date
 
     def _collect_shift_requests(self):
         """Collect shift requests into friendly data structure."""
@@ -118,9 +117,7 @@ class RosterGenerator:
                 f"shift_n{worker.id}r{role.id}d{date}t{timeslot.id}"
             )
             for date in self.dates
-            for timeslot in self.timeslots.filter(date=date).order_by(
-                "shift__shift_type"
-            )
+            for timeslot in self.timeslots_lookup[date]
             for worker in self.workers
             for role in worker.roles.all()
         }
