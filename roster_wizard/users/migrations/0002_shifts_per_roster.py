@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='customuser',
-            name='ward_name',
+            model_name="customuser",
+            name="ward_name",
         ),
         migrations.AddField(
-            model_name='customuser',
-            name='shifts_per_roster',
+            model_name="customuser",
+            name="shifts_per_roster",
             field=models.IntegerField(default=10),
             preserve_default=False,
         ),

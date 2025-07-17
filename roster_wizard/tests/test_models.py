@@ -1,4 +1,5 @@
 """Model testing."""
+
 import pytest
 
 from users.models import CustomUser
@@ -31,9 +32,7 @@ def test_leave_object_name(init_feasible_db):
     """Test leave object name."""
     leave = Leave.objects.first()
     expected_object_name = (
-        f"{leave.staff_member.last_name}, "
-        f"{leave.staff_member.first_name} "
-        f"{leave.date}"
+        f"{leave.staff_member.last_name}, {leave.staff_member.first_name} {leave.date}"
     )
     assert expected_object_name == str(leave)
 
@@ -76,9 +75,7 @@ def test_day_object_name(init_feasible_db):
 def test_daygroupday_object_name(init_feasible_db):
     """Test daygroupday object name."""
     daygroupday = DayGroupDay.objects.first()
-    expected_object_name = (
-        f"{daygroupday.daygroup.name}" f"{daygroupday.day.number}"
-    )
+    expected_object_name = f"{daygroupday.daygroup.name}{daygroupday.day.number}"
     assert expected_object_name == str(daygroupday)
 
 
@@ -93,9 +90,7 @@ def test_shiftrule_get_absolute_url(init_feasible_db):
     """Test shiftrule get_absolute_url custom method."""
     shiftrule = ShiftRule.objects.first()
     # This will also fail if the urlconf is not defined.
-    assert (
-        shiftrule.get_absolute_url() == f"/rosters/shiftrule/{shiftrule.id}/"
-    )
+    assert shiftrule.get_absolute_url() == f"/rosters/shiftrule/{shiftrule.id}/"
 
 
 def test_shiftrulerole_object_name(init_feasible_db):
@@ -120,9 +115,7 @@ def test_staffrule_get_absolute_url(init_feasible_db):
     """Test staffrule day get_absolute_url custom method."""
     staffrule = StaffRule.objects.first()
     # This will also fail if the urlconf is not defined.
-    assert (
-        staffrule.get_absolute_url() == f"/rosters/staffrule/{staffrule.id}/"
-    )
+    assert staffrule.get_absolute_url() == f"/rosters/staffrule/{staffrule.id}/"
 
 
 def test_staffruleshift_object_name(init_feasible_db):
@@ -139,7 +132,7 @@ def test_staffruleshift_object_name(init_feasible_db):
 def test_timeslot_object_name(init_feasible_db):
     """Test timeslot object name."""
     timeslot = TimeSlot.objects.first()
-    expected_object_name = f"{timeslot.date}:" f"{timeslot.shift.shift_type}"
+    expected_object_name = f"{timeslot.date}:{timeslot.shift.shift_type}"
     assert expected_object_name == str(timeslot)
 
 
@@ -167,17 +160,14 @@ def test_staffrequest_get_absolute_url(init_feasible_db):
     staffrequest = StaffRequest.objects.first()
     # This will also fail if the urlconf is not defined.
     assert (
-        staffrequest.get_absolute_url()
-        == f"/rosters/staffrequest/{staffrequest.id}/"
+        staffrequest.get_absolute_url() == f"/rosters/staffrequest/{staffrequest.id}/"
     )
 
 
 def test_customuser_object_name(init_feasible_db):
     """Test customuser object name."""
     customuser = CustomUser.objects.first()
-    expected_object_name = (
-        f"{customuser.last_name}," f"{customuser.first_name}"
-    )
+    expected_object_name = f"{customuser.last_name},{customuser.first_name}"
     assert expected_object_name == str(customuser)
 
 
@@ -185,6 +175,4 @@ def test_customuser_get_absolute_url(init_feasible_db):
     """Test customuser_get_absolute_url custom method."""
     customuser = CustomUser.objects.first()
     # This will also fail if the urlconf is not defined.
-    assert (
-        customuser.get_absolute_url() == f"/users/customuser/{customuser.id}/"
-    )
+    assert customuser.get_absolute_url() == f"/users/customuser/{customuser.id}/"

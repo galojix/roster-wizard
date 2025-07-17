@@ -4,15 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0023_auto_20200821_0330'),
+        ("rosters", "0023_auto_20200821_0330"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='shiftrule',
-            name='roles',
-            field=models.ManyToManyField(related_name='shift_rule_role_set', through='rosters.ShiftRuleRole', to='rosters.Role'),
+            model_name="shiftrule",
+            name="roles",
+            field=models.ManyToManyField(
+                related_name="shift_rule_role_set",
+                through="rosters.ShiftRuleRole",
+                to="rosters.Role",
+            ),
         ),
     ]

@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0010_new_preference_model'),
+        ("rosters", "0010_new_preference_model"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='staffruleshift',
-            options={'ordering': ('position',)},
+            name="staffruleshift",
+            options={"ordering": ("position",)},
         ),
     ]

@@ -6,28 +6,32 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0020_largerrulenames'),
+        ("rosters", "0020_largerrulenames"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='day',
-            options={'ordering': ('number',)},
+            name="day",
+            options={"ordering": ("number",)},
         ),
         migrations.AlterModelOptions(
-            name='daygroupday',
-            options={'ordering': ('day__number',)},
+            name="daygroupday",
+            options={"ordering": ("day__number",)},
         ),
         migrations.AlterField(
-            model_name='staffrule',
-            name='staff',
+            model_name="staffrule",
+            name="staff",
             field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
-            model_name='staffruleshift',
-            name='shift',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='rosters.Shift'),
+            model_name="staffruleshift",
+            name="shift",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="rosters.Shift",
+            ),
         ),
     ]

@@ -130,15 +130,11 @@ def test_roster_generation_status_view_feasible(init_db, client, mocker):
     """Test roster generation status view."""
     client.login(username="temporary", password="temporary")
     mocker.patch.object(AsyncResult, "ready", return_value=True)
-    mocker.patch.object(
-        AsyncResult, "get", return_value="Roster is complete..."
-    )
+    mocker.patch.object(AsyncResult, "get", return_value="Roster is complete...")
     response = client.get(reverse("roster_generation_status", args=("12345",)))
     assert response.status_code == 200
     assert "Roster is complete..." in str(response.getvalue())
-    assert "roster_generation_status.html" in [
-        t.name for t in response.templates
-    ]
+    assert "roster_generation_status.html" in [t.name for t in response.templates]
 
 
 def test_roster_generation_status_view_infeasible(init_db, client, mocker):
@@ -152,9 +148,7 @@ def test_roster_generation_status_view_infeasible(init_db, client, mocker):
         "Could not generate roster, ensure staff details and rules are correct..."
         in str(response.getvalue())
     )
-    assert "roster_generation_status.html" in [
-        t.name for t in response.templates
-    ]
+    assert "roster_generation_status.html" in [t.name for t in response.templates]
 
 
 def test_roster_generation_status_view_too_many_staff(init_db, client, mocker):
@@ -168,9 +162,7 @@ def test_roster_generation_status_view_too_many_staff(init_db, client, mocker):
         "Could not generate roster, ensure staff details and rules are correct..."
         in str(response.getvalue())
     )
-    assert "roster_generation_status.html" in [
-        t.name for t in response.templates
-    ]
+    assert "roster_generation_status.html" in [t.name for t in response.templates]
 
 
 def test_roster_generation_status_view_processing(init_db, client, mocker):
@@ -180,9 +172,7 @@ def test_roster_generation_status_view_processing(init_db, client, mocker):
     response = client.get(reverse("roster_generation_status", args=("12345",)))
     assert response.status_code == 200
     assert "Processing..." in str(response.getvalue())
-    assert "roster_generation_status.html" in [
-        t.name for t in response.templates
-    ]
+    assert "roster_generation_status.html" in [t.name for t in response.templates]
 
 
 def test_leave_create_view_post(init_feasible_db, client):
@@ -204,9 +194,7 @@ def test_staff_request_update_view(init_feasible_db, client):
     """Test leave create view post."""
     client.login(username="temporary", password="temporary")
     staff_member = get_user_model().objects.first()
-    response = client.get(
-        reverse("staffrequest_update", args=(staff_member.id,))
-    )
+    response = client.get(reverse("staffrequest_update", args=(staff_member.id,)))
     assert response.status_code == 200
     assert "staffrequest_update.html" in [t.name for t in response.templates]
 
@@ -218,9 +206,7 @@ def test_staff_request_update_view_start_date(init_feasible_db, client):
     session["start_date"] = datetime.datetime.now().date().strftime("%d-%b-%Y")
     session.save()
     staff_member = get_user_model().objects.first()
-    response = client.get(
-        reverse("staffrequest_update", args=(staff_member.id,))
-    )
+    response = client.get(reverse("staffrequest_update", args=(staff_member.id,)))
     assert response.status_code == 200
     assert "staffrequest_update.html" in [t.name for t in response.templates]
 
@@ -270,9 +256,7 @@ def test_shift_rule_role_create_view_post(init_feasible_db, client):
         "role": role.id,
         "count": 2,
     }
-    response = client.post(
-        reverse("shiftrulerole_create", args=(shiftrule.id,)), data
-    )
+    response = client.post(reverse("shiftrulerole_create", args=(shiftrule.id,)), data)
     assert response.status_code == 302
     assert reverse("shiftrule_list") in response.url
 
@@ -286,9 +270,7 @@ def test_staff_rule_shift_create_view_post(init_feasible_db, client):
         "shift": shift.id,
         "position": 2,
     }
-    response = client.post(
-        reverse("staffruleshift_create", args=(staffrule.id,)), data
-    )
+    response = client.post(reverse("staffruleshift_create", args=(staffrule.id,)), data)
     assert response.status_code == 302
     assert reverse("staffrule_list") in response.url
 
@@ -312,9 +294,7 @@ def test_day_group_day_create_view_post(init_feasible_db, client):
     data = {
         "day": day.id,
     }
-    response = client.post(
-        reverse("daygroupday_create", args=(daygroup.id,)), data
-    )
+    response = client.post(reverse("daygroupday_create", args=(daygroup.id,)), data)
     assert response.status_code == 302
     assert "/rosters/daygroupday" in response.url
 
@@ -327,9 +307,7 @@ def test_day_group_day_create_view_post_invalid(init_feasible_db, client):
     data = {
         "day": day.id,
     }
-    response = client.post(
-        reverse("daygroupday_create", args=(daygroup.id,)), data
-    )
+    response = client.post(reverse("daygroupday_create", args=(daygroup.id,)), data)
     assert response.status_code == 200
     assert "is already in the Day Group" in response.rendered_content
     assert "daygroupday_create.html" in [t.name for t in response.templates]

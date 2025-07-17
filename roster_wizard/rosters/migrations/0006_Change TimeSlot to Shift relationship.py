@@ -5,20 +5,23 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0005_auto_20181113_0348'),
+        ("rosters", "0005_auto_20181113_0348"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='timeslot',
-            name='shifts',
+            model_name="timeslot",
+            name="shifts",
         ),
         migrations.AddField(
-            model_name='timeslot',
-            name='shift',
-            field=models.ForeignKey(default=4, on_delete=django.db.models.deletion.CASCADE, to='rosters.Shift'),
+            model_name="timeslot",
+            name="shift",
+            field=models.ForeignKey(
+                default=4,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="rosters.Shift",
+            ),
             preserve_default=False,
         ),
     ]

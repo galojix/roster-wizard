@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0039_roster_settings'),
+        ("rosters", "0039_roster_settings"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='rostersettings',
-            name='roster_name',
-            field=models.CharField(default='No Roster Name Set', max_length=15),
+            model_name="rostersettings",
+            name="roster_name",
+            field=models.CharField(default="No Roster Name Set", max_length=15),
         ),
     ]

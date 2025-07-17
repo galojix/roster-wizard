@@ -30,9 +30,7 @@ class CustomUserDetailView(LoginRequiredMixin, DetailView):
     template_name = "customuser_detail.html"
 
 
-class CustomUserUpdateView(
-    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
-):
+class CustomUserUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """UserUpdateView."""
 
     model = CustomUser
@@ -53,9 +51,7 @@ class CustomUserUpdateView(
     permission_required = "rosters.change_roster"
 
 
-class CustomUserDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
-):
+class CustomUserDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """UserDeleteView."""
 
     model = CustomUser
@@ -65,9 +61,7 @@ class CustomUserDeleteView(
     permission_required = "rosters.change_roster"
 
 
-class CustomUserCreateView(
-    LoginRequiredMixin, PermissionRequiredMixin, CreateView
-):
+class CustomUserCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """UserCreateView."""
 
     model = CustomUser

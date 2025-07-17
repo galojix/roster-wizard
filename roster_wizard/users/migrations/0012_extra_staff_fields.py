@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0011_auto_20200908_2332'),
+        ("users", "0011_auto_20200908_2332"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='enforce_one_shift_per_day',
+            model_name="customuser",
+            name="enforce_one_shift_per_day",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='customuser',
-            name='enforce_shifts_per_roster',
+            model_name="customuser",
+            name="enforce_shifts_per_roster",
             field=models.BooleanField(default=True),
         ),
     ]

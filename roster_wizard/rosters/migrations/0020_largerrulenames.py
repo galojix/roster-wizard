@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0019_leavedescription'),
+        ("rosters", "0019_leavedescription"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='staffrule',
-            name='staff_rule_name',
+            model_name="staffrule",
+            name="staff_rule_name",
             field=models.CharField(max_length=40),
         ),
     ]

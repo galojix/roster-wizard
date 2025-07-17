@@ -4,16 +4,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0009_manytomany'),
-        ('users', '0002_shifts_per_roster'),
+        ("rosters", "0009_manytomany"),
+        ("users", "0002_shifts_per_roster"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='roles',
-            field=models.ManyToManyField(to='rosters.Role'),
+            model_name="customuser",
+            name="roles",
+            field=models.ManyToManyField(to="rosters.Role"),
         ),
     ]

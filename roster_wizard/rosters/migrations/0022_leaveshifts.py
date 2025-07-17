@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0021_blankshiftsequence'),
+        ("rosters", "0021_blankshiftsequence"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='timeslot',
-            options={'ordering': ('date', 'shift__shift_type')},
+            name="timeslot",
+            options={"ordering": ("date", "shift__shift_type")},
         ),
     ]

@@ -1,4 +1,5 @@
 """Form Testing."""
+
 import datetime
 
 # import pytest
@@ -12,7 +13,5 @@ def test_generate_roster_form(mocker):
     """Test generate roster form."""
     request = mocker.Mock()
     request.session = {"start_date": "22-MAR-2010"}
-    form = GenerateRosterForm(
-        request, data={"start_date": datetime.datetime.now()}
-    )
+    form = GenerateRosterForm(request, data={"start_date": datetime.datetime.now()})
     assert form.is_valid()

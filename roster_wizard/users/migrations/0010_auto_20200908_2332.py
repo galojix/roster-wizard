@@ -5,22 +5,21 @@ import users.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0035_auto_20200827_0124'),
-        ('users', '0009_auto_20200827_0147'),
+        ("rosters", "0035_auto_20200827_0124"),
+        ("users", "0009_auto_20200827_0147"),
     ]
 
     operations = [
         migrations.AlterModelManagers(
-            name='customuser',
+            name="customuser",
             managers=[
-                ('objects', users.models.CustomUserManager()),
+                ("objects", users.models.CustomUserManager()),
             ],
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='roles',
-            field=models.ManyToManyField(blank=True, null=True, to='rosters.Role'),
+            model_name="customuser",
+            name="roles",
+            field=models.ManyToManyField(blank=True, null=True, to="rosters.Role"),
         ),
     ]

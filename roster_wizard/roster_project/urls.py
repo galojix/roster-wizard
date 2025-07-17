@@ -19,9 +19,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path(
         "password_change/",
-        PasswordChangeView.as_view(
-            template_name="account/password_change.html"
-        ),
+        PasswordChangeView.as_view(template_name="account/password_change.html"),
         name="password_change",
     ),
     path(

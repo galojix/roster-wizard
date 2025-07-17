@@ -5,20 +5,27 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0013_daygroups'),
+        ("rosters", "0013_daygroups"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='shift',
-            name='day_group',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='rosters.DayGroup'),
+            model_name="shift",
+            name="day_group",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="rosters.DayGroup",
+            ),
         ),
         migrations.AlterField(
-            model_name='staffrule',
-            name='day_group',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='rosters.DayGroup'),
+            model_name="staffrule",
+            name="day_group",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="rosters.DayGroup",
+            ),
         ),
     ]

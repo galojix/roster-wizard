@@ -89,13 +89,9 @@ urlpatterns = [
     ),
     path("leave/create/", LeaveCreateView.as_view(), name="leave_create"),
     path("leave/", LeaveListView.as_view(), name="leave_list"),
-    path(
-        "role/<int:pk>/update/", RoleUpdateView.as_view(), name="role_update"
-    ),
+    path("role/<int:pk>/update/", RoleUpdateView.as_view(), name="role_update"),
     path("role/<int:pk>/", RoleDetailView.as_view(), name="role_detail"),
-    path(
-        "role/<int:pk>/delete/", RoleDeleteView.as_view(), name="role_delete"
-    ),
+    path("role/<int:pk>/delete/", RoleDeleteView.as_view(), name="role_delete"),
     path("role/create/", RoleCreateView.as_view(), name="role_create"),
     path("role/", RoleListView.as_view(), name="role_list"),
     path(
@@ -311,9 +307,7 @@ urlpatterns = [
         StaffRequestDetailView.as_view(),
         name="staffrequest_detail",
     ),
-    path(
-        "roster_by_staff/", RosterByStaffView.as_view(), name="roster_by_staff"
-    ),
+    path("roster_by_staff/", RosterByStaffView.as_view(), name="roster_by_staff"),
     path(
         "select_roster_period/",
         SelectRosterPeriodView.as_view(),

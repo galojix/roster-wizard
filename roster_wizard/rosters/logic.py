@@ -29,8 +29,7 @@ class RosterGenerator:
         """Create starting conditions."""
         self.workers = get_user_model().objects.filter(available=True)
         self.worker_lookup = {
-            worker.id: worker_num
-            for worker_num, worker in enumerate(self.workers)
+            worker.id: worker_num for worker_num, worker in enumerate(self.workers)
         }
         self.shifts = Shift.objects.all().order_by("shift_type")
         self.shift_lookup = {
@@ -50,17 +49,13 @@ class RosterGenerator:
             start_date.date() + datetime.timedelta(days=self.num_days - 1),
         ]
         self.leaves = Leave.objects.filter(date__range=self.date_range)
-        self.staffrequests = StaffRequest.objects.filter(
-            date__range=self.date_range
-        )
+        self.staffrequests = StaffRequest.objects.filter(date__range=self.date_range)
         self.days = [day.number for day in Day.objects.order_by("number")]
         self.dates = [
             (start_date + datetime.timedelta(days=n)).date()
             for n in range(self.num_days)
         ]
-        self.date_lookup = {
-            date: day_num for day_num, date in enumerate(self.dates)
-        }
+        self.date_lookup = {date: day_num for day_num, date in enumerate(self.dates)}
         self.extended_dates = [
             (
                 start_date
@@ -91,9 +86,7 @@ class RosterGenerator:
         self.timeslots_lookup = {}
         for date in self.extended_dates:
             timeslot_ids_for_date = list(
-                TimeSlot.objects.filter(date=date).order_by(
-                    "shift__shift_type"
-                )
+                TimeSlot.objects.filter(date=date).order_by("shift__shift_type")
             )
 
             self.timeslots_lookup[date] = timeslot_ids_for_date
@@ -102,17 +95,14 @@ class RosterGenerator:
         """Collect shift requests into friendly data structure."""
         log.info("Shift request collection started...")
         self.shift_requests = [
-            [[0 for _ in self.shifts] for _ in self.days]
-            for worker in self.workers
+            [[0 for _ in self.shifts] for _ in self.days] for worker in self.workers
         ]
         for staffrequest in self.staffrequests:
             worker_num = self.worker_lookup[staffrequest.staff_member.id]
             day_num = self.date_lookup[staffrequest.date]
             shift_num = self.shift_lookup[staffrequest.shift.id]
             self.shift_requests[worker_num][day_num][shift_num] = (
-                staffrequest.priority
-                if staffrequest.like
-                else -staffrequest.priority
+                staffrequest.priority if staffrequest.like else -staffrequest.priority
             )
         log.info("Shift request collection completed...")
 
@@ -156,9 +146,7 @@ class RosterGenerator:
                     self.model.Add(self.shift_vars[(n, r, d, t)] == 1)
                 else:
                     self.model.Add(self.shift_vars[(n, r, d, t)] == 0)
-        log.info(
-            "Creation of shift variables for previous period completed..."
-        )
+        log.info("Creation of shift variables for previous period completed...")
 
     def _exclude_leave_dates(self):
         """Exclude leave dates from roster."""
@@ -181,13 +169,8 @@ class RosterGenerator:
 
     def _get_timeslot_ids(self):
         """Map date and shift to timeslot ID."""
-        timeslots = TimeSlot.objects.filter(
-            date__range=self.extended_date_range
-        )
-        return {
-            (timeslot.date, timeslot.shift): timeslot.id
-            for timeslot in timeslots
-        }
+        timeslots = TimeSlot.objects.filter(date__range=self.extended_date_range)
+        return {(timeslot.date, timeslot.shift): timeslot.id for timeslot in timeslots}
 
     def _get_shift_seq(self, staffrule):
         """Create shift sequence for each rule.
@@ -204,9 +187,7 @@ class RosterGenerator:
 
     def _get_work_days_in_seq(self, shift_seq):
         """Get number of working days in shift sequence."""
-        return sum(
-            shift_seq[position][0] is not None for position in shift_seq
-        )
+        return sum(shift_seq[position][0] is not None for position in shift_seq)
 
     def _get_all_days_in_seq(self, staffrule):
         """Get number of days in staff rule."""
@@ -412,9 +393,7 @@ class RosterGenerator:
         # Intermediate shift rule variables
         log.info("Creation of skill mix intermediate variables started...")
         self.intermediate_skill_mix_vars = {
-            (timeslot.id, rule_num): self.model.NewBoolVar(
-                f"t{timeslot.id}r{rule_num}"
-            )
+            (timeslot.id, rule_num): self.model.NewBoolVar(f"t{timeslot.id}r{rule_num}")
             for timeslot in self.timeslots
             for rule_num, rule in enumerate(self.shiftrules[timeslot.shift.id])
         }
@@ -428,9 +407,7 @@ class RosterGenerator:
             if len(self.shiftrules[timeslot.shift.id]) >= 1:
                 self.model.Add(
                     sum(
-                        self.intermediate_skill_mix_vars[
-                            (timeslot.id, rule_num)
-                        ]
+                        self.intermediate_skill_mix_vars[(timeslot.id, rule_num)]
                         for rule_num, rule in enumerate(
                             self.shiftrules[timeslot.shift.id]
                         )
@@ -480,9 +457,7 @@ class RosterGenerator:
                 if worker.enforce_one_shift_per_day:
                     self.model.Add(
                         sum(
-                            self.shift_vars[
-                                (worker.id, role.id, date, timeslot.id)
-                            ]
+                            self.shift_vars[(worker.id, role.id, date, timeslot.id)]
                             for role in roles
                             for timeslot in timeslots
                         )
@@ -524,9 +499,7 @@ class RosterGenerator:
         """
         length = len(alist)
         return [
-            alist[
-                i * length // wanted_parts : (i + 1) * length // wanted_parts
-            ]
+            alist[i * length // wanted_parts : (i + 1) * length // wanted_parts]
             for i in range(wanted_parts)
         ]
 
@@ -568,9 +541,7 @@ class RosterGenerator:
             max_timeslot_size = max_shift_size_lookup[timeslot.shift.id]
             min_timeslot_size = max_shift_size_lookup[timeslot.shift.id]
             num_staff_allocated = sum(
-                self.shift_vars[
-                    (worker.id, role.id, timeslot.date, timeslot.id)
-                ]
+                self.shift_vars[(worker.id, role.id, timeslot.date, timeslot.id)]
                 for worker in self.workers
                 for role in worker.roles.all()
             )
@@ -678,44 +649,33 @@ def get_roster_by_staff(start_date):
     timeslots = TimeSlot.objects.filter(date__range=date_range)
     for worker in workers:
         roster[f"{worker.last_name}, {worker.first_name}"] = OrderedDict()
-        staff_roles = "".join(
-            f"{role.role_name} " for role in worker.roles.all()
-        )
+        staff_roles = "".join(f"{role.role_name} " for role in worker.roles.all())
 
-        roster[f"{worker.last_name}, {worker.first_name}"][
-            "roles"
-        ] = staff_roles
-        roster[f"{worker.last_name}, {worker.first_name}"][
-            "shifts_per_roster"
-        ] = worker.shifts_per_roster
+        roster[f"{worker.last_name}, {worker.first_name}"]["roles"] = staff_roles
+        roster[f"{worker.last_name}, {worker.first_name}"]["shifts_per_roster"] = (
+            worker.shifts_per_roster
+        )
 
         for date in dates:
             roster[f"{worker.last_name}, {worker.first_name}"][date] = "X"
         worker_timeslots = [
-            timeslot
-            for timeslot in timeslots
-            if worker in timeslot.staff.all()
+            timeslot for timeslot in timeslots if worker in timeslot.staff.all()
         ]
         for timeslot in worker_timeslots:
-            if (
-                roster[f"{worker.last_name}, {worker.first_name}"][
-                    timeslot.date
-                ]
-                == "X"
-            ):
-                roster[f"{worker.last_name}, {worker.first_name}"][
-                    timeslot.date
-                ] = timeslot.shift.shift_type
+            if roster[f"{worker.last_name}, {worker.first_name}"][timeslot.date] == "X":
+                roster[f"{worker.last_name}, {worker.first_name}"][timeslot.date] = (
+                    timeslot.shift.shift_type
+                )
 
             else:
-                roster[f"{worker.last_name}, {worker.first_name}"][
-                    timeslot.date
-                ] += f", {timeslot.shift.shift_type}"
+                roster[f"{worker.last_name}, {worker.first_name}"][timeslot.date] += (
+                    f", {timeslot.shift.shift_type}"
+                )
 
         worker_leave = worker.leave_set.filter(date__range=date_range)
         for leave in worker_leave:
-            roster[f"{worker.last_name}, {worker.first_name}"][
-                leave.date
-            ] = leave.description
+            roster[f"{worker.last_name}, {worker.first_name}"][leave.date] = (
+                leave.description
+            )
 
     return dates, roster

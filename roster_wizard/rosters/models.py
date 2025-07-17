@@ -38,9 +38,7 @@ class Leave(models.Model):
     description = models.CharField(
         max_length=15, null=False, blank=False, default="Leave"
     )
-    staff_member = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE
-    )
+    staff_member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     class Meta:
         """Meta."""
@@ -79,9 +77,7 @@ class Role(models.Model):
 class DayGroup(models.Model):
     """Day Group."""
 
-    name = models.CharField(
-        max_length=20, unique=True, null=False, blank=False
-    )
+    name = models.CharField(max_length=20, unique=True, null=False, blank=False)
 
     def __str__(self):
         """Return a meaningful string representation."""
@@ -243,9 +239,7 @@ class StaffRuleManager(models.Manager):
     def get_queryset(self):
         """Select additional related object data."""
         query_set = super().get_queryset()
-        return query_set.select_related("daygroup").prefetch_related(
-            "staff", "shifts"
-        )
+        return query_set.select_related("daygroup").prefetch_related("staff", "shifts")
 
 
 class StaffRule(models.Model):
@@ -282,9 +276,7 @@ class StaffRuleShift(models.Model):
 
     objects = StaffRuleShiftManager()
     staffrule = models.ForeignKey(StaffRule, on_delete=models.CASCADE)
-    shift = models.ForeignKey(
-        Shift, on_delete=models.CASCADE, null=True, blank=True
-    )
+    shift = models.ForeignKey(Shift, on_delete=models.CASCADE, null=True, blank=True)
     position = models.IntegerField(null=False, blank=False)
 
     class Meta:
@@ -296,11 +288,7 @@ class StaffRuleShift(models.Model):
         """Return a meaningful string representation."""
         shift_type = "X" if self.shift is None else self.shift.shift_type
         return (
-            self.staffrule.staffrule_name
-            + ":"
-            + shift_type
-            + ":"
-            + str(self.position)
+            self.staffrule.staffrule_name + ":" + shift_type + ":" + str(self.position)
         )
 
     def get_absolute_url(self):
@@ -357,9 +345,7 @@ class StaffRequest(models.Model):
     like = models.BooleanField(null=False, blank=False, default=True)
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
 
-    staff_member = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE
-    )
+    staff_member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     class Meta:
         """Meta."""

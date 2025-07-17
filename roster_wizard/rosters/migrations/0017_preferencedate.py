@@ -5,23 +5,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0016_toomanystaff'),
+        ("rosters", "0016_toomanystaff"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='shift',
-            options={'ordering': ('shift_type',)},
+            name="shift",
+            options={"ordering": ("shift_type",)},
         ),
         migrations.RemoveField(
-            model_name='preference',
-            name='day',
+            model_name="preference",
+            name="day",
         ),
         migrations.AddField(
-            model_name='preference',
-            name='date',
+            model_name="preference",
+            name="date",
             field=models.DateField(default=datetime.date(2019, 7, 25)),
             preserve_default=False,
         ),

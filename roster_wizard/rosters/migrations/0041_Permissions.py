@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0040_roster_settings'),
+        ("rosters", "0040_roster_settings"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='rostersettings',
-            options={'permissions': (('change_roster', 'Can change rosters'),)},
+            name="rostersettings",
+            options={"permissions": (("change_roster", "Can change rosters"),)},
         ),
     ]

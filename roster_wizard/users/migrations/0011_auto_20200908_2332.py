@@ -4,16 +4,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0035_auto_20200827_0124'),
-        ('users', '0010_auto_20200908_2332'),
+        ("rosters", "0035_auto_20200827_0124"),
+        ("users", "0010_auto_20200908_2332"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='customuser',
-            name='roles',
-            field=models.ManyToManyField(blank=True, to='rosters.Role'),
+            model_name="customuser",
+            name="roles",
+            field=models.ManyToManyField(blank=True, to="rosters.Role"),
         ),
     ]

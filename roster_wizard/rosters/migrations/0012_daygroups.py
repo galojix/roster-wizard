@@ -5,64 +5,98 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0011_available'),
+        ("rosters", "0011_available"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Day',
+            name="Day",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number', models.IntegerField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("number", models.IntegerField()),
             ],
         ),
         migrations.CreateModel(
-            name='DayGroup',
+            name="DayGroup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=20)),
             ],
         ),
         migrations.AlterModelOptions(
-            name='staffruleshift',
-            options={'ordering': ('position', 'shift')},
+            name="staffruleshift",
+            options={"ordering": ("position", "shift")},
         ),
         migrations.RemoveField(
-            model_name='shift',
-            name='friday',
+            model_name="shift",
+            name="friday",
         ),
         migrations.RemoveField(
-            model_name='shift',
-            name='monday',
+            model_name="shift",
+            name="monday",
         ),
         migrations.RemoveField(
-            model_name='shift',
-            name='saturday',
+            model_name="shift",
+            name="saturday",
         ),
         migrations.RemoveField(
-            model_name='shift',
-            name='sunday',
+            model_name="shift",
+            name="sunday",
         ),
         migrations.RemoveField(
-            model_name='shift',
-            name='thursday',
+            model_name="shift",
+            name="thursday",
         ),
         migrations.RemoveField(
-            model_name='shift',
-            name='tuesday',
+            model_name="shift",
+            name="tuesday",
         ),
         migrations.RemoveField(
-            model_name='shift',
-            name='wednesday',
+            model_name="shift",
+            name="wednesday",
         ),
         migrations.CreateModel(
-            name='DayGroupDay',
+            name="DayGroupDay",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('day', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rosters.Day')),
-                ('day_group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rosters.DayGroup')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "day",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="rosters.Day"
+                    ),
+                ),
+                (
+                    "day_group",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="rosters.DayGroup",
+                    ),
+                ),
             ],
         ),
     ]

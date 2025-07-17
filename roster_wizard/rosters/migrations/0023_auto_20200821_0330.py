@@ -5,15 +5,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('rosters', '0022_leaveshifts'),
+        ("rosters", "0022_leaveshifts"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='Preference',
-            new_name='StaffRequest',
+            old_name="Preference",
+            new_name="StaffRequest",
         ),
     ]

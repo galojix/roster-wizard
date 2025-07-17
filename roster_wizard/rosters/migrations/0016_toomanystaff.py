@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0015_toomanystaff'),
+        ("rosters", "0015_toomanystaff"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='timeslot',
-            name='max_staff',
+            model_name="timeslot",
+            name="max_staff",
         ),
         migrations.AddField(
-            model_name='shift',
-            name='max_staff',
+            model_name="shift",
+            name="max_staff",
             field=models.IntegerField(default=5),
         ),
     ]

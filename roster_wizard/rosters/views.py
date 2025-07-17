@@ -69,9 +69,7 @@ from .tasks import generate_roster
 from celery.result import AsyncResult
 
 
-class RosterSettingsView(
-    LoginRequiredMixin, PermissionRequiredMixin, FormView
-):
+class RosterSettingsView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     """Roster Settings View."""
 
     template_name = "roster_settings.html"
@@ -204,9 +202,7 @@ class RoleListView(LoginRequiredMixin, ListView):
         Doing prefetch here as it would not work via a custom model manager.
 
         """
-        return Role.objects.prefetch_related("customuser_set").order_by(
-            "role_name"
-        )
+        return Role.objects.prefetch_related("customuser_set").order_by("role_name")
 
 
 class RoleDetailView(LoginRequiredMixin, DetailView):
@@ -308,9 +304,7 @@ class ShiftRuleDetailView(LoginRequiredMixin, DetailView):
     template_name = "shiftrule_detail.html"
 
 
-class ShiftRuleUpdateView(
-    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
-):
+class ShiftRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Shift Rule Update View."""
 
     model = ShiftRule
@@ -320,9 +314,7 @@ class ShiftRuleUpdateView(
     permission_required = "rosters.change_roster"
 
 
-class ShiftRuleDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
-):
+class ShiftRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Shift Rule Delete View."""
 
     model = ShiftRule
@@ -332,9 +324,7 @@ class ShiftRuleDeleteView(
     permission_required = "rosters.change_roster"
 
 
-class ShiftRuleCreateView(
-    LoginRequiredMixin, PermissionRequiredMixin, CreateView
-):
+class ShiftRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Shift Rule Create View."""
 
     model = ShiftRule
@@ -362,9 +352,7 @@ class ShiftRuleRoleDetailView(LoginRequiredMixin, DetailView):
     template_name = "shiftrulerole_detail.html"
 
 
-class ShiftRuleRoleUpdateView(
-    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
-):
+class ShiftRuleRoleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Shift Rule Role Update View."""
 
     model = ShiftRuleRole
@@ -374,9 +362,7 @@ class ShiftRuleRoleUpdateView(
     permission_required = "rosters.change_roster"
 
 
-class ShiftRuleRoleDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
-):
+class ShiftRuleRoleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Shift Rule Role Delete View."""
 
     model = ShiftRuleRole
@@ -386,9 +372,7 @@ class ShiftRuleRoleDeleteView(
     permission_required = "rosters.change_roster"
 
 
-class ShiftRuleRoleCreateView(
-    LoginRequiredMixin, PermissionRequiredMixin, CreateView
-):
+class ShiftRuleRoleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Shift Rule Role Create View."""
 
     model = ShiftRuleRole
@@ -422,9 +406,7 @@ class StaffRuleDetailView(LoginRequiredMixin, DetailView):
     template_name = "staffrule_detail.html"
 
 
-class StaffRuleUpdateView(
-    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
-):
+class StaffRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Staff Rule Update View."""
 
     model = StaffRule
@@ -434,9 +416,7 @@ class StaffRuleUpdateView(
     permission_required = "rosters.change_roster"
 
 
-class StaffRuleDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
-):
+class StaffRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Staff Rule Delete View."""
 
     model = StaffRule
@@ -446,9 +426,7 @@ class StaffRuleDeleteView(
     permission_required = "rosters.change_roster"
 
 
-class StaffRuleCreateView(
-    LoginRequiredMixin, PermissionRequiredMixin, CreateView
-):
+class StaffRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Staff Rule Create View."""
 
     model = StaffRule
@@ -473,9 +451,7 @@ class StaffRuleShiftDetailView(LoginRequiredMixin, DetailView):
     success_url = reverse_lazy("staffrule_list")
 
 
-class StaffRuleShiftUpdateView(
-    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
-):
+class StaffRuleShiftUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Staff Rule Shift Update View."""
 
     model = StaffRuleShift
@@ -486,9 +462,7 @@ class StaffRuleShiftUpdateView(
     permission_required = "rosters.change_roster"
 
 
-class StaffRuleShiftDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
-):
+class StaffRuleShiftDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Staff Rule Shift Delete View."""
 
     model = StaffRuleShift
@@ -498,9 +472,7 @@ class StaffRuleShiftDeleteView(
     permission_required = "rosters.change_roster"
 
 
-class StaffRuleShiftCreateView(
-    LoginRequiredMixin, PermissionRequiredMixin, CreateView
-):
+class StaffRuleShiftCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Staff Rule Shift Create View."""
 
     model = StaffRuleShift
@@ -548,9 +520,7 @@ class TimeSlotDetailView(LoginRequiredMixin, DetailView):
     template_name = "timeslot_detail.html"
 
 
-class TimeSlotUpdateView(
-    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
-):
+class TimeSlotUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Time Slot Update View."""
 
     model = TimeSlot
@@ -560,9 +530,7 @@ class TimeSlotUpdateView(
     permission_required = "rosters.change_roster"
 
 
-class TimeSlotDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
-):
+class TimeSlotDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Time Slot Delete View."""
 
     model = TimeSlot
@@ -572,9 +540,7 @@ class TimeSlotDeleteView(
     permission_required = "rosters.change_roster"
 
 
-class TimeSlotCreateView(
-    LoginRequiredMixin, PermissionRequiredMixin, CreateView
-):
+class TimeSlotCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Time Slot Create View."""
 
     model = TimeSlot
@@ -602,9 +568,7 @@ class DayGroupDetailView(LoginRequiredMixin, DetailView):
     template_name = "daygroup_detail.html"
 
 
-class DayGroupUpdateView(
-    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
-):
+class DayGroupUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Day Group Update View."""
 
     model = DayGroup
@@ -614,9 +578,7 @@ class DayGroupUpdateView(
     permission_required = "rosters.change_roster"
 
 
-class DayGroupDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
-):
+class DayGroupDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Day Group Delete View."""
 
     model = DayGroup
@@ -626,9 +588,7 @@ class DayGroupDeleteView(
     permission_required = "rosters.change_roster"
 
 
-class DayGroupCreateView(
-    LoginRequiredMixin, PermissionRequiredMixin, CreateView
-):
+class DayGroupCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Day Group Create View."""
 
     model = DayGroup
@@ -662,9 +622,7 @@ class DayGroupDayDetailView(LoginRequiredMixin, DetailView):
     success_url = reverse_lazy("daygroup_list")
 
 
-class DayGroupDayUpdateView(
-    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
-):
+class DayGroupDayUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Day Group Day Update View."""
 
     model = DayGroupDay
@@ -675,9 +633,7 @@ class DayGroupDayUpdateView(
     permission_required = "rosters.change_roster"
 
 
-class DayGroupDayDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
-):
+class DayGroupDayDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Day Group Day Delete View."""
 
     model = DayGroupDay
@@ -687,9 +643,7 @@ class DayGroupDayDeleteView(
     permission_required = "rosters.change_roster"
 
 
-class DayGroupDayCreateView(
-    LoginRequiredMixin, PermissionRequiredMixin, CreateView
-):
+class DayGroupDayCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Day Group Day Create View."""
 
     model = DayGroupDay
@@ -805,9 +759,7 @@ class StaffRequestListView(LoginRequiredMixin, ListView):
             )
 
 
-class StaffRequestDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
-):
+class StaffRequestDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """StaffRequest Delete View."""
 
     model = StaffRequest
@@ -817,9 +769,7 @@ class StaffRequestDeleteView(
     permission_required = "rosters.change_roster"
 
 
-class StaffRequestCreateView(
-    LoginRequiredMixin, PermissionRequiredMixin, ListView
-):
+class StaffRequestCreateView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """Staff Request List View."""
 
     model = get_user_model()
@@ -884,9 +834,7 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
                     day_shifts_map[day.number].append(shift)
         for day in days:
             for shift in day_shifts_map[day.number]:
-                date = (
-                    start_date + datetime.timedelta(days=(day.number - 1))
-                ).date()
+                date = (start_date + datetime.timedelta(days=(day.number - 1))).date()
                 self.dates.append(date)
                 self.shifts.append(shift)
                 request_id = (date, shift)
@@ -946,9 +894,7 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
         return kwargs
 
 
-class StaffRequestDetailView(
-    LoginRequiredMixin, PermissionRequiredMixin, DetailView
-):
+class StaffRequestDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     """Staff Request Detail View."""
 
     model = StaffRequest
@@ -987,9 +933,7 @@ class SelectRosterPeriodView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         """Process select roster form."""
         start_date = form.cleaned_data["start_date"]
-        self.request.session["start_date"] = start_date.date().strftime(
-            "%d-%b-%Y"
-        )
+        self.request.session["start_date"] = start_date.date().strftime("%d-%b-%Y")
         return super().form_valid(form)
 
 
@@ -1013,9 +957,7 @@ class SelectBulkDeletionPeriodView(
         return super().form_valid(form)
 
 
-class GenerateRosterView(
-    LoginRequiredMixin, PermissionRequiredMixin, FormView
-):
+class GenerateRosterView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     """Generate Roster View."""
 
     template_name = "generate_roster.html"
@@ -1035,9 +977,7 @@ class GenerateRosterView(
     def form_valid(self, form):
         """Process generate roster form."""
         start_date = form.cleaned_data["start_date"]
-        self.request.session["start_date"] = start_date.date().strftime(
-            "%d-%b-%Y"
-        )
+        self.request.session["start_date"] = start_date.date().strftime("%d-%b-%Y")
         try:
             result = generate_roster.delay(start_date=start_date)
         except Exception as error:
@@ -1145,9 +1085,9 @@ def populate_edit_roster_form(
 
     for timeslot in all_timeslots:
         for staff_member in timeslot.staff.all():
-            shift_types_lookup[staff_member.id][
-                timeslot.date
-            ] = timeslot.shift.shift_type
+            shift_types_lookup[staff_member.id][timeslot.date] = (
+                timeslot.shift.shift_type
+            )
 
     # Populate formset with existing data
     initial = []
@@ -1164,9 +1104,7 @@ def populate_edit_roster_form(
     )
 
 
-def process_edit_roster_form(
-    dates, all_timeslots, formset, start_date, staff_ids
-):
+def process_edit_roster_form(dates, all_timeslots, formset, start_date, staff_ids):
     """Process edit roster form."""
     # Cleaned data from formset is a list of dictionaries
     timeslots_lookup = {date: [] for date in dates}
@@ -1278,18 +1216,12 @@ def staff_request_status(request):
         staff_member = staff_request.staff_member
         like = staff_request.like
         if like:
-            if (
-                staff_member
-                in timeslots.get(date=date, shift=shift).staff.all()
-            ):
+            if staff_member in timeslots.get(date=date, shift=shift).staff.all():
                 successes.append(f"{staff_member} given {shift} on {date}")
             else:
                 failures.append(f"{staff_member} not given {shift} on {date}")
         else:
-            if (
-                staff_member
-                in timeslots.get(date=date, shift=shift).staff.all()
-            ):
+            if staff_member in timeslots.get(date=date, shift=shift).staff.all():
                 failures.append(f"{staff_member} given {shift} on {date}")
             else:
                 successes.append(f"{staff_member} not given {shift} on {date}")

@@ -4,17 +4,27 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0037_daygroup_names_unique'),
+        ("rosters", "0037_daygroup_names_unique"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='RosterSettings',
+            name="RosterSettings",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('roster_name', models.CharField(default='Location Name', max_length=15)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "roster_name",
+                    models.CharField(default="Location Name", max_length=15),
+                ),
             ],
         ),
     ]

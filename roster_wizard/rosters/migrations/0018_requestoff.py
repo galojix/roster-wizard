@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0017_preferencedate'),
+        ("rosters", "0017_preferencedate"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='leave',
-            options={'ordering': ('staff_member', 'date')},
+            name="leave",
+            options={"ordering": ("staff_member", "date")},
         ),
         migrations.AddField(
-            model_name='preference',
-            name='like',
+            model_name="preference",
+            name="like",
             field=models.BooleanField(default=True),
         ),
     ]

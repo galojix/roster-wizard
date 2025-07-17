@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0008_add_preferences'),
+        ("rosters", "0008_add_preferences"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='role',
-            name='staff',
+            model_name="role",
+            name="staff",
         ),
     ]

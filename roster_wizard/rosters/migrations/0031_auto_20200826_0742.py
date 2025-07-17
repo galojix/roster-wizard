@@ -4,15 +4,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0030_auto_20200826_0428'),
+        ("rosters", "0030_auto_20200826_0428"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='staffruleshift',
-            old_name='staff_rule',
-            new_name='staffrule',
+            model_name="staffruleshift",
+            old_name="staff_rule",
+            new_name="staffrule",
         ),
     ]

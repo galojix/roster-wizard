@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0034_auto_20200827_0123'),
+        ("rosters", "0034_auto_20200827_0123"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='day',
-            name='number',
+            model_name="day",
+            name="number",
             field=models.IntegerField(),
         ),
         migrations.AlterField(
-            model_name='daygroup',
-            name='name',
+            model_name="daygroup",
+            name="name",
             field=models.CharField(max_length=20),
         ),
     ]

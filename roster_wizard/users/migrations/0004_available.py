@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0003_manytomany'),
+        ("users", "0003_manytomany"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='available',
+            model_name="customuser",
+            name="available",
             field=models.BooleanField(default=True),
         ),
     ]

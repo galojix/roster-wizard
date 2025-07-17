@@ -4,23 +4,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0014_nullable'),
+        ("rosters", "0014_nullable"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='daygroupday',
-            options={'ordering': ('day',)},
+            name="daygroupday",
+            options={"ordering": ("day",)},
         ),
         migrations.AlterModelOptions(
-            name='staffruleshift',
-            options={'ordering': ('position', 'shift__shift_type')},
+            name="staffruleshift",
+            options={"ordering": ("position", "shift__shift_type")},
         ),
         migrations.AddField(
-            model_name='timeslot',
-            name='max_staff',
+            model_name="timeslot",
+            name="max_staff",
             field=models.IntegerField(default=5),
         ),
     ]

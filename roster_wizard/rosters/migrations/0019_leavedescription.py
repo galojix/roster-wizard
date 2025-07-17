@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0018_requestoff'),
+        ("rosters", "0018_requestoff"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='preference',
-            options={'ordering': ('staff_member', 'date', 'shift', 'like')},
+            name="preference",
+            options={"ordering": ("staff_member", "date", "shift", "like")},
         ),
         migrations.AddField(
-            model_name='leave',
-            name='description',
-            field=models.CharField(default='Leave', max_length=15),
+            model_name="leave",
+            name="description",
+            field=models.CharField(default="Leave", max_length=15),
         ),
     ]

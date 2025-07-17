@@ -5,15 +5,16 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rosters', '0025_auto_20200826_0336'),
+        ("rosters", "0025_auto_20200826_0336"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='shiftrulerole',
-            name='shift_rule',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rosters.shiftrule'),
+            model_name="shiftrulerole",
+            name="shift_rule",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="rosters.shiftrule"
+            ),
         ),
     ]

@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0006_daygroups'),
+        ("users", "0006_daygroups"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='max_shifts',
+            model_name="customuser",
+            name="max_shifts",
             field=models.BooleanField(default=True),
         ),
     ]
