@@ -150,7 +150,7 @@ class RosterGenerator:
         log.info("Exclusion of leave dates started...")
         for leave in self.leaves:
             for role in leave.staff_member.roles.all():
-                for timeslot in self.timeslots.filter(date=leave.date):
+                for timeslot in self.timeslots_lookup[leave.date]:
                     self.model.Add(
                         self.shift_vars[
                             (
