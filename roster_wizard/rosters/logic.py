@@ -384,7 +384,6 @@ class RosterGenerator:
                     role_count[shiftrulerole.role.id] = shiftrulerole.count
                 self.shiftrules[shift.id].append(role_count)
         log.info("Collection of skill mix rules completed...")
-        log.debug(self.shiftrules)
 
     def _create_intermediate_skill_mix_vars(self):
         # Intermediate shift rule variables
@@ -395,7 +394,6 @@ class RosterGenerator:
             for rule_num, rule in enumerate(self.shiftrules[timeslot.shift.id])
         }
         log.info("Creation of skill mix intermediate variables completed...")
-        log.debug(self.intermediate_skill_mix_vars)
 
     def _enforce_one_skill_mix_rule_at_a_time(self):
         """Only one skill mix rule at a time should be enforced."""
