@@ -242,7 +242,7 @@ class StaffRuleManager(models.Manager):
         return query_set.select_related("daygroup").prefetch_related("staff", "shifts")
 
 
-class StaffRule(models.Model):
+class ShiftSequence(models.Model):
     """Staff Rule (Shift Sequence Rule)."""
 
     objects = StaffRuleManager()
@@ -275,7 +275,7 @@ class StaffRuleShift(models.Model):
     """StaffRuleShift."""
 
     objects = StaffRuleShiftManager()
-    staffrule = models.ForeignKey(StaffRule, on_delete=models.CASCADE)
+    staffrule = models.ForeignKey(ShiftSequence, on_delete=models.CASCADE)
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE, null=True, blank=True)
     position = models.IntegerField(null=False, blank=False)
 

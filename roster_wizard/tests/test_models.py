@@ -12,7 +12,7 @@ from rosters.models import (
     Shift,
     ShiftRule,
     ShiftRuleRole,
-    StaffRule,
+    ShiftSequence,
     StaffRuleShift,
     TimeSlot,
     StaffRequest,
@@ -106,14 +106,14 @@ def test_shiftrulerole_object_name(init_feasible_db):
 
 def test_staffrule_object_name(init_feasible_db):
     """Test staffrule object name."""
-    staffrule = StaffRule.objects.first()
+    staffrule = ShiftSequence.objects.first()
     expected_object_name = f"{staffrule.staffrule_name}"
     assert expected_object_name == str(staffrule)
 
 
 def test_staffrule_get_absolute_url(init_feasible_db):
     """Test staffrule day get_absolute_url custom method."""
-    staffrule = StaffRule.objects.first()
+    staffrule = ShiftSequence.objects.first()
     # This will also fail if the urlconf is not defined.
     assert staffrule.get_absolute_url() == f"/rosters/staffrule/{staffrule.id}/"
 

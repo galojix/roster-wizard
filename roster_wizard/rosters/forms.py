@@ -9,7 +9,7 @@ from .models import (
     Leave,
     RosterSettings,
     TimeSlot,
-    StaffRule,
+    ShiftSequence,
     DayGroupDay,
     DayGroup,
     StaffRuleShift,
@@ -143,7 +143,7 @@ class StaffRuleUpdateForm(ModelForm):
     class Meta:
         """Meta."""
 
-        model = StaffRule
+        model = ShiftSequence
         fields = ("staffrule_name", "daygroup", "staff")
         widgets = {"staff": forms.CheckboxSelectMultiple()}
 
@@ -154,7 +154,7 @@ class StaffRuleCreateForm(ModelForm):
     class Meta:
         """Meta."""
 
-        model = StaffRule
+        model = ShiftSequence
         fields = ("staffrule_name", "daygroup", "staff")
         widgets = {"staff": forms.CheckboxSelectMultiple()}
 

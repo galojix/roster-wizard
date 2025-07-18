@@ -169,13 +169,13 @@ class RosterGenerator:
         timeslots = TimeSlot.objects.filter(date__range=self.extended_date_range)
         return {(timeslot.date, timeslot.shift): timeslot.id for timeslot in timeslots}
 
-    def _get_shift_seq(self, staffrule):
+    def _get_shift_seq(self, shiftsequence):
         """Create shift sequence for each rule.
 
         Example: { 1: [ "E", "L", "N"], 2: ["E", "L"] }
         """
         shift_sequence = OrderedDict()
-        staffruleshifts = staffrule.staffruleshift_set.order_by("position")
+        staffruleshifts = shiftsequence.staffruleshift_set.order_by("position")
         for staffruleshift in staffruleshifts:
             shift_sequence.setdefault(staffruleshift.position, []).append(
                 staffruleshift.shift
@@ -186,9 +186,9 @@ class RosterGenerator:
         """Get number of working days in shift sequence."""
         return sum(shift_seq[position][0] is not None for position in shift_seq)
 
-    def _get_all_days_in_seq(self, staffrule):
+    def _get_all_days_in_seq(self, shiftsequence):
         """Get number of days in staff rule."""
-        daygroupday_set = staffrule.daygroup.daygroupday_set.all()
+        daygroupday_set = shiftsequence.daygroup.daygroupday_set.all()
         return [daygroupday.day.number for daygroupday in daygroupday_set]
 
     def _get_non_working_shift_variables_in_sequence(
@@ -281,9 +281,9 @@ class RosterGenerator:
     def _precompute_invalid_shift_sequences(self):
         self.invalid_shift_sequences = {}
         for worker in self.workers:
-            for staffrule in worker.staffrule_set.all():
-                invalid_shift_seq = self._get_shift_seq(staffrule)
-                self.invalid_shift_sequences[(worker.id, staffrule.id)] = (
+            for shiftsequence in worker.shiftsequence_set.all():
+                invalid_shift_seq = self._get_shift_seq(shiftsequence)
+                self.invalid_shift_sequences[(worker.id, shiftsequence.id)] = (
                     invalid_shift_seq
                 )
 
@@ -298,12 +298,12 @@ class RosterGenerator:
 
         for worker in self.workers:
             roles = worker.roles.all()
-            for staffrule in worker.staffrule_set.all():
+            for shiftsequence in worker.shiftsequence_set.all():
                 invalid_shift_seq = self.invalid_shift_sequences[
-                    (worker.id, staffrule.id)
+                    (worker.id, shiftsequence.id)
                 ]
-                # invalid_shift_seq = self._get_shift_seq(staffrule)
-                all_days_in_seq = self._get_all_days_in_seq(staffrule)
+                # invalid_shift_seq = self._get_shift_seq(shiftsequence)
+                all_days_in_seq = self._get_all_days_in_seq(shiftsequence)
 
                 for date in self.extended_dates:
                     shift_vars_in_seq_off = (
@@ -331,10 +331,10 @@ class RosterGenerator:
                         (
                             worker.id,
                             date,
-                            staffrule.id,
+                            shiftsequence.id,
                             position,
                         ): self.model.NewBoolVar(
-                            f"w{worker.id}d{date}sr{staffrule.id}p{position}"
+                            f"w{worker.id}d{date}sr{shiftsequence.id}p{position}"
                         )
                         for position in shift_vars_in_seq_on
                     }
@@ -346,7 +346,7 @@ class RosterGenerator:
                                 sum(shift_vars_in_seq_off[position]) >= 1
                             ).OnlyEnforceIf(
                                 intermediate_vars[
-                                    (worker.id, date, staffrule.id, position)
+                                    (worker.id, date, shiftsequence.id, position)
                                 ]
                             )
 
@@ -357,7 +357,7 @@ class RosterGenerator:
                                 sum(shift_vars_in_seq_on[position]) == 0
                             ).OnlyEnforceIf(
                                 intermediate_vars[
-                                    (worker.id, date, staffrule.id, position)
+                                    (worker.id, date, shiftsequence.id, position)
                                 ]
                             )
 

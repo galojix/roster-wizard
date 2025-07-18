@@ -35,7 +35,7 @@ from .models import (
     Shift,
     ShiftRule,
     ShiftRuleRole,
-    StaffRule,
+    ShiftSequence,
     StaffRuleShift,
     TimeSlot,
     StaffRequest,
@@ -391,25 +391,25 @@ class ShiftRuleRoleCreateView(LoginRequiredMixin, PermissionRequiredMixin, Creat
 class StaffRuleListView(LoginRequiredMixin, ListView):
     """Staff Rule List View."""
 
-    model = StaffRule
+    model = ShiftSequence
     template_name = "staffrule_list.html"
 
     def get_queryset(self):
         """Change list order."""
-        return StaffRule.objects.order_by("staffrule_name")
+        return ShiftSequence.objects.order_by("staffrule_name")
 
 
 class StaffRuleDetailView(LoginRequiredMixin, DetailView):
     """Staff Rule Detail View."""
 
-    model = StaffRule
+    model = ShiftSequence
     template_name = "staffrule_detail.html"
 
 
 class StaffRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Staff Rule Update View."""
 
-    model = StaffRule
+    model = ShiftSequence
     form_class = StaffRuleUpdateForm
     template_name = "staffrule_update.html"
 
@@ -419,7 +419,7 @@ class StaffRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVie
 class StaffRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Staff Rule Delete View."""
 
-    model = StaffRule
+    model = ShiftSequence
     template_name = "staffrule_delete.html"
     success_url = reverse_lazy("staffrule_list")
 
@@ -429,7 +429,7 @@ class StaffRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVie
 class StaffRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Staff Rule Create View."""
 
-    model = StaffRule
+    model = ShiftSequence
     form_class = StaffRuleCreateForm
     template_name = "staffrule_create.html"
 
@@ -484,7 +484,7 @@ class StaffRuleShiftCreateView(LoginRequiredMixin, PermissionRequiredMixin, Crea
 
     def form_valid(self, form):
         """Process staff rule shift create form."""
-        staffrule = get_object_or_404(StaffRule, id=self.kwargs["staffrule"])
+        staffrule = get_object_or_404(ShiftSequence, id=self.kwargs["staffrule"])
         form.instance.staffrule = staffrule
         return super().form_valid(form)
 

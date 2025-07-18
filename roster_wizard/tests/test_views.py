@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.test import SimpleTestCase
 from django.contrib.auth import get_user_model
 
-from rosters.models import Day, Role, ShiftRule, StaffRule, Shift, DayGroup
+from rosters.models import Day, Role, ShiftRule, ShiftSequence, Shift, DayGroup
 from rosters.views import generate_roster, AsyncResult
 from rosters.logic import SolutionNotFeasible
 
@@ -264,7 +264,7 @@ def test_shift_rule_role_create_view_post(init_feasible_db, client):
 def test_staff_rule_shift_create_view_post(init_feasible_db, client):
     """Test staff rule shift create view post."""
     client.login(username="temporary", password="temporary")
-    staffrule = StaffRule.objects.first()
+    staffrule = ShiftSequence.objects.first()
     shift = Shift.objects.first()
     data = {
         "shift": shift.id,

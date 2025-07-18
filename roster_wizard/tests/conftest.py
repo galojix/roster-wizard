@@ -14,7 +14,7 @@ from rosters.models import (
     ShiftRuleRole,
     Role,
     StaffRequest,
-    StaffRule,
+    ShiftSequence,
     StaffRuleShift,
     Leave,
     TimeSlot,
@@ -221,7 +221,7 @@ def init_feasible_db(init_db):
         shift=late_shift,
         staff_member=staff_member1,
     )
-    staff_rule1 = StaffRule.objects.create(
+    staff_rule1 = ShiftSequence.objects.create(
         staffrule_name="No Early after Late", daygroup=daygroup
     )
     staff_rule1.staff.add(staff_member1)
