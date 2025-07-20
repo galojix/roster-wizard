@@ -233,8 +233,8 @@ class ShiftRuleRole(models.Model):
         return reverse("shiftrule_list")
 
 
-class StaffRuleManager(models.Manager):
-    """StaffRule Manager."""
+class ShiftSequenceManager(models.Manager):
+    """ShiftSequence Manager."""
 
     def get_queryset(self):
         """Select additional related object data."""
@@ -243,9 +243,9 @@ class StaffRuleManager(models.Manager):
 
 
 class ShiftSequence(models.Model):
-    """Staff Rule (Shift Sequence Rule)."""
+    """Shift Sequence Rule."""
 
-    objects = StaffRuleManager()
+    objects = ShiftSequenceManager()
     staffrule_name = models.CharField(max_length=40, null=False, blank=False)
     staff = models.ManyToManyField(get_user_model(), blank=True)
     shifts = models.ManyToManyField(Shift, through="StaffRuleShift")
