@@ -93,14 +93,14 @@ class RosterGenerator:
     def _collect_shift_requests(self):
         """Collect shift requests into friendly data structure."""
         log.info("Shift request collection started...")
-        self.shift_requests = [
+        self.staff_requests = [
             [[0 for _ in self.shifts] for _ in self.days] for worker in self.workers
         ]
         for staffrequest in self.staffrequests:
             worker_num = self.worker_lookup[staffrequest.staff_member.id]
             day_num = self.date_lookup[staffrequest.date]
             shift_num = self.shift_lookup[staffrequest.shift.id]
-            self.shift_requests[worker_num][day_num][shift_num] = (
+            self.staff_requests[worker_num][day_num][shift_num] = (
                 staffrequest.priority if staffrequest.like else -staffrequest.priority
             )
         log.info("Shift request collection completed...")
@@ -549,7 +549,7 @@ class RosterGenerator:
         log.info("Maximising of staff requests started...")
         self.model.Maximize(
             sum(
-                self.shift_requests[n][d][s]
+                self.staff_requests[n][d][s]
                 * self.shift_vars[(worker.id, role.id, date, timeslot.id)]
                 for n, worker in enumerate(self.workers)
                 for role in worker.roles.all()
