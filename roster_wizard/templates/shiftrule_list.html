@@ -15,7 +15,7 @@
   {% for shiftrule in shiftrule_list %}
   <tr>
     <td>{{ shiftrule.shift }}
-    <td>{{ shiftrule.shiftrule_name }}</td>
+    <td>{{ shiftrule.skillmixrule_name }}</td>
     {% if perms.rosters.change_roster %}
     <td><a href="{% url 'shiftrule_update' shiftrule.pk %}">Edit</a> | <a
         href="{% url 'shiftrule_delete' shiftrule.pk %}">Delete</a></td>

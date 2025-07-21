@@ -123,25 +123,25 @@ def init_feasible_db(init_db):
         daygroup=daygroup,
     )
     early_shiftrule1 = SkillMixRule.objects.create(
-        shiftrule_name="Early Option A", shift=early_shift
+        skillmixrule_name="Early Option A", shift=early_shift
     )
     ShiftRuleRole.objects.create(shiftrule=early_shiftrule1, role=rn, count=2)
     early_shiftrule2 = SkillMixRule.objects.create(
-        shiftrule_name="Early Option B", shift=early_shift
+        skillmixrule_name="Early Option B", shift=early_shift
     )
     ShiftRuleRole.objects.create(shiftrule=early_shiftrule2, role=rn, count=1)
     ShiftRuleRole.objects.create(shiftrule=early_shiftrule2, role=jrn, count=1)
     early_shiftrule3 = SkillMixRule.objects.create(
-        shiftrule_name="Early Option C", shift=early_shift
+        skillmixrule_name="Early Option C", shift=early_shift
     )
     ShiftRuleRole.objects.create(shiftrule=early_shiftrule3, role=srn, count=1)
     ShiftRuleRole.objects.create(shiftrule=early_shiftrule3, role=jrn, count=1)
     late_shiftrule1 = SkillMixRule.objects.create(
-        shiftrule_name="Late Option A", shift=late_shift
+        skillmixrule_name="Late Option A", shift=late_shift
     )
     ShiftRuleRole.objects.create(shiftrule=late_shiftrule1, role=srn, count=1)
     late_shiftrule2 = SkillMixRule.objects.create(
-        shiftrule_name="Late Option B", shift=late_shift
+        skillmixrule_name="Late Option B", shift=late_shift
     )
     ShiftRuleRole.objects.create(shiftrule=late_shiftrule2, role=rn, count=1)
     StaffRequest.objects.create(
@@ -284,7 +284,7 @@ def init_infeasible_db(init_db):
         daygroup=daygroup,
     )
     shiftrule = SkillMixRule.objects.create(
-        shiftrule_name="Early Option A", shift=shift
+        skillmixrule_name="Early Option A", shift=shift
     )
     ShiftRuleRole.objects.create(shiftrule=shiftrule, role=role, count=2)
 
@@ -322,7 +322,7 @@ def init_too_many_staff_db(init_db):
         daygroup=daygroup,
     )
     shiftrule = SkillMixRule.objects.create(
-        shiftrule_name="Early Option A", shift=shift
+        skillmixrule_name="Early Option A", shift=shift
     )
     ShiftRuleRole.objects.create(shiftrule=shiftrule, role=role, count=2)
 

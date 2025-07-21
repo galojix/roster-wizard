@@ -97,7 +97,7 @@ def test_shiftrulerole_object_name(init_feasible_db):
     """Test shiftrulerole object name."""
     shiftrulerole = ShiftRuleRole.objects.first()
     expected_object_name = (
-        f"{shiftrulerole.shiftrule.shiftrule_name} "
+        f"{shiftrulerole.shiftrule.skillmixrule_name} "
         f"{shiftrulerole.role.role_name}:"
         f"{shiftrulerole.count}"
     )

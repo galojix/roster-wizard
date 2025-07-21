@@ -294,7 +294,7 @@ class ShiftRuleListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         """Change order of shift rule list view."""
-        return SkillMixRule.objects.order_by("shift", "shiftrule_name")
+        return SkillMixRule.objects.order_by("shift", "skillmixrule_name")
 
 
 class ShiftRuleDetailView(LoginRequiredMixin, DetailView):
@@ -308,7 +308,7 @@ class ShiftRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVie
     """Shift Rule Update View."""
 
     model = SkillMixRule
-    fields = ("shiftrule_name", "shift")
+    fields = ("skillmixrule_name", "shift")
     template_name = "shiftrule_update.html"
 
     permission_required = "rosters.change_roster"
@@ -329,7 +329,7 @@ class ShiftRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVie
 
     model = SkillMixRule
     template_name = "shiftrule_create.html"
-    fields = ("shiftrule_name", "shift")
+    fields = ("skillmixrule_name", "shift")
 
     permission_required = "rosters.change_roster"
 

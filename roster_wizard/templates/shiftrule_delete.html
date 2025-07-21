@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
   <h1>Delete</h1>
-  <form action="" method="post">{% csrf_token %}
-    <p>Are you sure you want to delete shift rule: "{{ shiftrule.shiftrule_name }}" for shift: "{{ shiftrule.shift.shift_type }}"?</p>
+  <form action="" method="post">
+    {% csrf_token %}
+    <p>Are you sure you want to delete shift rule: "{{ shiftrule.skillmixrule_name }}" for shift: "{{ shiftrule.shift.shift_type }}"?</p>
     <button class="btn btn-danger ml-2" type="submit">Confirm</button>
   </form>
-
-{% endblock content %}
+{% endblock %}

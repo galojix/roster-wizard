@@ -186,7 +186,7 @@ class SkillMixRule(models.Model):
     """Skill Mix Rule."""
 
     objects = SkillMixRuleManager()
-    shiftrule_name = models.CharField(
+    skillmixrule_name = models.CharField(
         max_length=20, null=False, blank=False, unique=True
     )
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
@@ -194,7 +194,7 @@ class SkillMixRule(models.Model):
 
     def __str__(self):
         """Return a meaningful string representation."""
-        return self.shiftrule_name
+        return self.skillmixrule_name
 
     def get_absolute_url(self):
         """URL."""
@@ -221,7 +221,7 @@ class ShiftRuleRole(models.Model):
     def __str__(self):
         """Return a meaningful string representation."""
         return (
-            self.shiftrule.shiftrule_name
+            self.shiftrule.skillmixrule_name
             + " "
             + self.role.role_name
             + ":"
