@@ -392,7 +392,7 @@ class StaffRuleListView(LoginRequiredMixin, ListView):
     """Staff Rule List View."""
 
     model = ShiftSequence
-    template_name = "staffrule_list.html"
+    template_name = "shiftsequence_list.html"
 
     def get_queryset(self):
         """Change list order."""
@@ -403,7 +403,7 @@ class StaffRuleDetailView(LoginRequiredMixin, DetailView):
     """Staff Rule Detail View."""
 
     model = ShiftSequence
-    template_name = "staffrule_detail.html"
+    template_name = "shiftsequence_detail.html"
 
 
 class StaffRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -411,7 +411,7 @@ class StaffRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVie
 
     model = ShiftSequence
     form_class = StaffRuleUpdateForm
-    template_name = "staffrule_update.html"
+    template_name = "shiftsequence_update.html"
 
     permission_required = "rosters.change_roster"
 
@@ -420,7 +420,7 @@ class StaffRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVie
     """Staff Rule Delete View."""
 
     model = ShiftSequence
-    template_name = "staffrule_delete.html"
+    template_name = "shiftsequence_delete.html"
     success_url = reverse_lazy("staffrule_list")
 
     permission_required = "rosters.change_roster"
@@ -431,7 +431,7 @@ class StaffRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVie
 
     model = ShiftSequence
     form_class = StaffRuleCreateForm
-    template_name = "staffrule_create.html"
+    template_name = "shiftsequence_create.html"
 
     permission_required = "rosters.change_roster"
 
@@ -440,14 +440,14 @@ class StaffRuleShiftListView(LoginRequiredMixin, ListView):
     """Staff Rule Shift List View."""
 
     model = ShiftSequenceShift
-    template_name = "staffruleshift_list.html"
+    template_name = "shiftsequenceshift_list.html"
 
 
 class StaffRuleShiftDetailView(LoginRequiredMixin, DetailView):
     """Staff Rule Shift Detail View."""
 
     model = ShiftSequenceShift
-    template_name = "staffruleshift_detail.html"
+    template_name = "shiftsequenceshift_detail.html"
     success_url = reverse_lazy("staffrule_list")
 
 
@@ -456,7 +456,7 @@ class StaffRuleShiftUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Upda
 
     model = ShiftSequenceShift
     fields = ("shift", "position")
-    template_name = "staffruleshift_update.html"
+    template_name = "shiftsequenceshift_update.html"
     success_url = reverse_lazy("staffrule_list")
 
     permission_required = "rosters.change_roster"
@@ -466,7 +466,7 @@ class StaffRuleShiftDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Dele
     """Staff Rule Shift Delete View."""
 
     model = ShiftSequenceShift
-    template_name = "staffruleshift_delete.html"
+    template_name = "shiftsequenceshift_delete.html"
     success_url = reverse_lazy("staffrule_list")
 
     permission_required = "rosters.change_roster"
@@ -476,7 +476,7 @@ class StaffRuleShiftCreateView(LoginRequiredMixin, PermissionRequiredMixin, Crea
     """Staff Rule Shift Create View."""
 
     model = ShiftSequenceShift
-    template_name = "staffruleshift_create.html"
+    template_name = "shiftsequenceshift_update.html"
     form_class = StaffRuleShiftCreateForm
     # fields = ("shift", "position")
 

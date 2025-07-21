@@ -378,7 +378,7 @@ def test_staff_rule_list_view(init_feasible_db, client):
     response = client.get(reverse("staffrule_list"))
     assert response.status_code == 200
     assert "Shift Sequences:" in response.rendered_content
-    assert "staffrule_list.html" in [t.name for t in response.templates]
+    assert "shiftsequence_list.html" in [t.name for t in response.templates]
 
 
 def test_day_group_list_view(init_feasible_db, client):
