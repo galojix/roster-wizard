@@ -360,7 +360,7 @@ def test_shift_rule_list_view(init_feasible_db, client):
     response = client.get(reverse("shiftrule_list"))
     assert response.status_code == 200
     assert "Skill Mix Rules:" in response.rendered_content
-    assert "shiftrule_list.html" in [t.name for t in response.templates]
+    assert "skillmixrule_list.html" in [t.name for t in response.templates]
 
 
 def test_shift_rule_role_list_view(init_feasible_db, client):
