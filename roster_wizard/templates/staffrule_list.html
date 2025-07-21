@@ -28,14 +28,14 @@
           </td>
         {% endif %}
         <td>
-          {% for staffruleshift in shiftsequence.staffruleshift_set.all %}
-            {% if staffruleshift.shift.shift_type %}
-              {{ staffruleshift.shift.shift_type }}:{{ staffruleshift.position }}
+          {% for shiftsequenceshift in shiftsequence.shiftsequenceshift_set.all %}
+            {% if shiftsequenceshift.shift.shift_type %}
+              {{ shiftsequenceshift.shift.shift_type }}:{{ shiftsequenceshift.position }}
             {% else %}
-              X:{{ staffruleshift.position }}
+              X:{{ shiftsequenceshift.position }}
             {% endif %}
             {% if perms.rosters.change_roster %}
-              <a href="{% url 'staffruleshift_update' staffruleshift.pk %}">Edit</a> | <a href="{% url 'staffruleshift_delete' staffruleshift.pk %}">Delete</a>
+              <a href="{% url 'staffruleshift_update' shiftsequenceshift.pk %}">Edit</a> | <a href="{% url 'staffruleshift_delete' shiftsequenceshift.pk %}">Delete</a>
             {% endif %}
             <br />
           {% endfor %}

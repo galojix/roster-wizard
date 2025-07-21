@@ -5,8 +5,8 @@
     <h2>Shift Sequence Name: {{ shiftsequence.staffrule_name }}</h2>
     <p>Day Group: {{ shiftsequence.daygroup.name }}</p>
     <p>
-      Shifts:{% for staffruleshift in shiftsequence.staffruleshift_set.all %}
-        {{ staffruleshift.shift.shift_type }}:{{ staffruleshift.position }}
+      Shifts:{% for shiftsequenceshift in shiftsequence.shiftsequenceshift_set.all %}
+        {{ shiftsequenceshift.shift.shift_type }}:{{ shiftsequenceshift.position }}
       {% endfor %}
     </p>
   </div>
