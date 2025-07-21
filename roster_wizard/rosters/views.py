@@ -33,7 +33,7 @@ from .models import (
     Leave,
     Role,
     Shift,
-    ShiftRule,
+    SkillMixRule,
     ShiftRuleRole,
     ShiftSequence,
     ShiftSequenceShift,
@@ -289,25 +289,25 @@ class ShiftCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 class ShiftRuleListView(LoginRequiredMixin, ListView):
     """Shift Rule List View."""
 
-    model = ShiftRule
+    model = SkillMixRule
     template_name = "shiftrule_list.html"
 
     def get_queryset(self):
         """Change order of shift rule list view."""
-        return ShiftRule.objects.order_by("shift", "shiftrule_name")
+        return SkillMixRule.objects.order_by("shift", "shiftrule_name")
 
 
 class ShiftRuleDetailView(LoginRequiredMixin, DetailView):
     """Shift Rule Detail View."""
 
-    model = ShiftRule
+    model = SkillMixRule
     template_name = "shiftrule_detail.html"
 
 
 class ShiftRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Shift Rule Update View."""
 
-    model = ShiftRule
+    model = SkillMixRule
     fields = ("shiftrule_name", "shift")
     template_name = "shiftrule_update.html"
 
@@ -317,7 +317,7 @@ class ShiftRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVie
 class ShiftRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Shift Rule Delete View."""
 
-    model = ShiftRule
+    model = SkillMixRule
     template_name = "shiftrule_delete.html"
     success_url = reverse_lazy("shiftrule_list")
 
@@ -327,7 +327,7 @@ class ShiftRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVie
 class ShiftRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Shift Rule Create View."""
 
-    model = ShiftRule
+    model = SkillMixRule
     template_name = "shiftrule_create.html"
     fields = ("shiftrule_name", "shift")
 
@@ -383,7 +383,7 @@ class ShiftRuleRoleCreateView(LoginRequiredMixin, PermissionRequiredMixin, Creat
 
     def form_valid(self, form):
         """Process shift rule role create form."""
-        shiftrule = get_object_or_404(ShiftRule, id=self.kwargs["shiftrule"])
+        shiftrule = get_object_or_404(SkillMixRule, id=self.kwargs["shiftrule"])
         form.instance.shiftrule = shiftrule
         return super().form_valid(form)
 

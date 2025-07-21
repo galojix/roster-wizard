@@ -173,7 +173,7 @@ class Shift(models.Model):
         return reverse("shift_detail", args=[str(self.id)])
 
 
-class ShiftRuleManager(models.Manager):
+class SkillMixRuleManager(models.Manager):
     """ShiftRule Manager."""
 
     def get_queryset(self):
@@ -182,10 +182,10 @@ class ShiftRuleManager(models.Manager):
         return query_set.select_related("shift").prefetch_related("roles")
 
 
-class ShiftRule(models.Model):
-    """Shift Rule (Skill Mix Rule)."""
+class SkillMixRule(models.Model):
+    """Skill Mix Rule."""
 
-    objects = ShiftRuleManager()
+    objects = SkillMixRuleManager()
     shiftrule_name = models.CharField(
         max_length=20, null=False, blank=False, unique=True
     )
@@ -214,7 +214,7 @@ class ShiftRuleRole(models.Model):
     """ShiftRuleRole."""
 
     objects = ShiftRuleRoleManager()
-    shiftrule = models.ForeignKey(ShiftRule, on_delete=models.CASCADE)
+    shiftrule = models.ForeignKey(SkillMixRule, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     count = models.IntegerField(null=False, blank=False)
 

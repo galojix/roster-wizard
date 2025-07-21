@@ -7,7 +7,7 @@ from .models import (
     Leave,
     Role,
     Shift,
-    ShiftRule,
+    SkillMixRule,
     ShiftRuleRole,
     ShiftSequence,
     ShiftSequenceShift,
@@ -72,7 +72,7 @@ class StaffRequestAdmin(admin.ModelAdmin):
 admin.site.register(Leave, LeaveAdmin)
 admin.site.register(Role)
 admin.site.register(Shift)
-admin.site.register(ShiftRule)
+admin.site.register(SkillMixRule)
 admin.site.register(ShiftRuleRole)
 admin.site.register(ShiftSequence)
 admin.site.register(ShiftSequenceShift)

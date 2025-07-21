@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.test import SimpleTestCase
 from django.contrib.auth import get_user_model
 
-from rosters.models import Day, Role, ShiftRule, ShiftSequence, Shift, DayGroup
+from rosters.models import Day, Role, SkillMixRule, ShiftSequence, Shift, DayGroup
 from rosters.views import generate_roster, AsyncResult
 from rosters.logic import SolutionNotFeasible
 
@@ -250,7 +250,7 @@ def test_download_csv_start_date(init_feasible_db, client):
 def test_shift_rule_role_create_view_post(init_feasible_db, client):
     """Test shift rule role create view post."""
     client.login(username="temporary", password="temporary")
-    shiftrule = ShiftRule.objects.first()
+    shiftrule = SkillMixRule.objects.first()
     role = Role.objects.first()
     data = {
         "role": role.id,

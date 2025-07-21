@@ -10,7 +10,7 @@ from rosters.models import (
     Day,
     DayGroupDay,
     Shift,
-    ShiftRule,
+    SkillMixRule,
     ShiftRuleRole,
     ShiftSequence,
     ShiftSequenceShift,
@@ -88,7 +88,7 @@ def test_shift_get_absolute_url(init_feasible_db):
 
 def test_shiftrule_get_absolute_url(init_feasible_db):
     """Test shiftrule get_absolute_url custom method."""
-    shiftrule = ShiftRule.objects.first()
+    shiftrule = SkillMixRule.objects.first()
     # This will also fail if the urlconf is not defined.
     assert shiftrule.get_absolute_url() == f"/rosters/shiftrule/{shiftrule.id}/"
 

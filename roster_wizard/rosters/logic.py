@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 
 # from django.db import connection, reset_queries
 
-from .models import Leave, Role, Shift, ShiftRule, TimeSlot, Day, StaffRequest
+from .models import Leave, Role, Shift, SkillMixRule, TimeSlot, Day, StaffRequest
 
 
 log = logging.getLogger(__name__)
@@ -376,7 +376,7 @@ class RosterGenerator:
         self.shiftrules = {}
         for shift in self.shifts:
             self.shiftrules[shift.id] = []
-            shiftrules = ShiftRule.objects.filter(shift=shift)
+            shiftrules = SkillMixRule.objects.filter(shift=shift)
             for shiftrule in shiftrules:
                 shiftruleroles = shiftrule.shiftrulerole_set.all()
                 role_count = {role.id: 0 for role in Role.objects.all()}
