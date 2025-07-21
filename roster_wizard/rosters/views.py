@@ -286,8 +286,8 @@ class ShiftCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = "rosters.change_roster"
 
 
-class ShiftRuleListView(LoginRequiredMixin, ListView):
-    """Shift Rule List View."""
+class SkillMixRuleListView(LoginRequiredMixin, ListView):
+    """Skill Mix Rule List View."""
 
     model = SkillMixRule
     template_name = "skillmixrule_list.html"
@@ -297,15 +297,15 @@ class ShiftRuleListView(LoginRequiredMixin, ListView):
         return SkillMixRule.objects.order_by("shift", "skillmixrule_name")
 
 
-class ShiftRuleDetailView(LoginRequiredMixin, DetailView):
-    """Shift Rule Detail View."""
+class SkillMixRuleDetailView(LoginRequiredMixin, DetailView):
+    """Skill Mix Rule Detail View."""
 
     model = SkillMixRule
     template_name = "skillmixrule_detail.html"
 
 
-class ShiftRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    """Shift Rule Update View."""
+class SkillMixRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    """Skill Mix Rule Update View."""
 
     model = SkillMixRule
     fields = ("skillmixrule_name", "shift")
@@ -314,8 +314,8 @@ class ShiftRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVie
     permission_required = "rosters.change_roster"
 
 
-class ShiftRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    """Shift Rule Delete View."""
+class SkillMixRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    """Skill Mix Rule Delete View."""
 
     model = SkillMixRule
     template_name = "skillmixrule_delete.html"
@@ -324,8 +324,8 @@ class ShiftRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVie
     permission_required = "rosters.change_roster"
 
 
-class ShiftRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    """Shift Rule Create View."""
+class SkillMixRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    """Skill Mix Rule Create View."""
 
     model = SkillMixRule
     template_name = "skillmixrule_create.html"
@@ -334,8 +334,8 @@ class ShiftRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVie
     permission_required = "rosters.change_roster"
 
 
-class ShiftRuleRoleListView(LoginRequiredMixin, ListView):
-    """Shift Rule Role List View."""
+class SkillMixRuleRoleListView(LoginRequiredMixin, ListView):
+    """Skill Mix Rule Role List View."""
 
     model = SkillMixRuleRole
     template_name = "shiftrulerole_list.html"
@@ -345,14 +345,16 @@ class ShiftRuleRoleListView(LoginRequiredMixin, ListView):
         return SkillMixRuleRole.objects.order_by("skillmixrule", "role")
 
 
-class ShiftRuleRoleDetailView(LoginRequiredMixin, DetailView):
-    """Shift Rule Role Detail View."""
+class SkillMixRuleRoleDetailView(LoginRequiredMixin, DetailView):
+    """Skill Mix Rule Role Detail View."""
 
     model = SkillMixRuleRole
     template_name = "shiftrulerole_detail.html"
 
 
-class ShiftRuleRoleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class SkillMixRuleRoleUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Shift Rule Role Update View."""
 
     model = SkillMixRuleRole
@@ -362,8 +364,10 @@ class ShiftRuleRoleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Updat
     permission_required = "rosters.change_roster"
 
 
-class ShiftRuleRoleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    """Shift Rule Role Delete View."""
+class SkillMixRuleRoleDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
+    """Skill Mix Rule Role Delete View."""
 
     model = SkillMixRuleRole
     template_name = "shiftrulerole_delete.html"
@@ -372,8 +376,10 @@ class ShiftRuleRoleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Delet
     permission_required = "rosters.change_roster"
 
 
-class ShiftRuleRoleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    """Shift Rule Role Create View."""
+class SkillMixRuleRoleCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
+    """Skill Mix Rule Role Create View."""
 
     model = SkillMixRuleRole
     template_name = "shiftrulerole_create.html"
@@ -388,8 +394,8 @@ class ShiftRuleRoleCreateView(LoginRequiredMixin, PermissionRequiredMixin, Creat
         return super().form_valid(form)
 
 
-class StaffRuleListView(LoginRequiredMixin, ListView):
-    """Staff Rule List View."""
+class ShiftSequenceListView(LoginRequiredMixin, ListView):
+    """Shift Sequence List View."""
 
     model = ShiftSequence
     template_name = "shiftsequence_list.html"
@@ -399,15 +405,15 @@ class StaffRuleListView(LoginRequiredMixin, ListView):
         return ShiftSequence.objects.order_by("staffrule_name")
 
 
-class StaffRuleDetailView(LoginRequiredMixin, DetailView):
-    """Staff Rule Detail View."""
+class ShiftSequenceDetailView(LoginRequiredMixin, DetailView):
+    """Shift Sequence Detail View."""
 
     model = ShiftSequence
     template_name = "shiftsequence_detail.html"
 
 
-class StaffRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    """Staff Rule Update View."""
+class ShiftSequenceUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    """Shift Sequence Update View."""
 
     model = ShiftSequence
     form_class = StaffRuleUpdateForm
@@ -416,8 +422,8 @@ class StaffRuleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVie
     permission_required = "rosters.change_roster"
 
 
-class StaffRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    """Staff Rule Delete View."""
+class ShiftSequenceDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    """Shift Sequence Delete View."""
 
     model = ShiftSequence
     template_name = "shiftsequence_delete.html"
@@ -426,8 +432,8 @@ class StaffRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVie
     permission_required = "rosters.change_roster"
 
 
-class StaffRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    """Staff Rule Create View."""
+class ShiftSequenceCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    """Shift Sequence Create View."""
 
     model = ShiftSequence
     form_class = StaffRuleCreateForm
@@ -436,23 +442,25 @@ class StaffRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVie
     permission_required = "rosters.change_roster"
 
 
-class StaffRuleShiftListView(LoginRequiredMixin, ListView):
-    """Staff Rule Shift List View."""
+class ShiftSequenceShiftListView(LoginRequiredMixin, ListView):
+    """Shift Sequence Shift List View."""
 
     model = ShiftSequenceShift
     template_name = "shiftsequenceshift_list.html"
 
 
-class StaffRuleShiftDetailView(LoginRequiredMixin, DetailView):
-    """Staff Rule Shift Detail View."""
+class ShiftSequenceShiftDetailView(LoginRequiredMixin, DetailView):
+    """Shift Sequence Shift Detail View."""
 
     model = ShiftSequenceShift
     template_name = "shiftsequenceshift_detail.html"
     success_url = reverse_lazy("staffrule_list")
 
 
-class StaffRuleShiftUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    """Staff Rule Shift Update View."""
+class ShiftSequenceShiftUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
+    """Shift Sequence Shift Update View."""
 
     model = ShiftSequenceShift
     fields = ("shift", "position")
@@ -462,8 +470,10 @@ class StaffRuleShiftUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Upda
     permission_required = "rosters.change_roster"
 
 
-class StaffRuleShiftDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    """Staff Rule Shift Delete View."""
+class ShiftSequenceShiftDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
+    """Shift Sequence Shift Delete View."""
 
     model = ShiftSequenceShift
     template_name = "shiftsequenceshift_delete.html"
@@ -472,8 +482,10 @@ class StaffRuleShiftDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Dele
     permission_required = "rosters.change_roster"
 
 
-class StaffRuleShiftCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    """Staff Rule Shift Create View."""
+class ShiftSequenceShiftCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, CreateView
+):
+    """Shift Sequence Shift Create View."""
 
     model = ShiftSequenceShift
     template_name = "shiftsequenceshift_update.html"
