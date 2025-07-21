@@ -17,11 +17,11 @@
     <td>{{ skillmixrule.shift }}
     <td>{{ skillmixrule.skillmixrule_name }}</td>
     {% if perms.rosters.change_roster %}
-    <td><a href="{% url 'shiftrule_update' skillmixrule.pk %}">Edit</a> | <a
-        href="{% url 'shiftrule_delete' skillmixrule.pk %}">Delete</a></td>
+    <td><a href="{% url 'skillmixrule_update' skillmixrule.pk %}">Edit</a> | <a
+        href="{% url 'skillmixrule_delete' skillmixrule.pk %}">Delete</a></td>
     {% endif %}
     <td>
-      {% for shiftrulerole in skillmixrule.shiftrulerole_set.all %}
+      {% for shiftrulerole in skillmixrule.skillmixrulerole_set.all %}
       {{ shiftrulerole.role}}:{{ shiftrulerole.count}}
       {% if perms.rosters.change_roster %}
       <a href="{% url 'shiftrulerole_update' shiftrulerole.pk %}">Edit</a> | <a

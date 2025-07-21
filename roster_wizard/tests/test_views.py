@@ -250,15 +250,18 @@ def test_download_csv_start_date(init_feasible_db, client):
 def test_shift_rule_role_create_view_post(init_feasible_db, client):
     """Test shift rule role create view post."""
     client.login(username="temporary", password="temporary")
-    shiftrule = SkillMixRule.objects.first()
+    skillmixrule = SkillMixRule.objects.first()
+    print(f"SKILLMIXRULE ID:{skillmixrule.id}")
     role = Role.objects.first()
     data = {
         "role": role.id,
         "count": 2,
     }
-    response = client.post(reverse("shiftrulerole_create", args=(shiftrule.id,)), data)
+    response = client.post(
+        reverse("shiftrulerole_create", args=(skillmixrule.id,)), data
+    )
     assert response.status_code == 302
-    assert reverse("shiftrule_list") in response.url
+    assert reverse("skillmixrule_list") in response.url
 
 
 def test_staff_rule_shift_create_view_post(init_feasible_db, client):
@@ -357,7 +360,7 @@ def test_role_list_view(init_feasible_db, client):
 def test_shift_rule_list_view(init_feasible_db, client):
     """Test shift rule list view."""
     client.login(username="temporary", password="temporary")
-    response = client.get(reverse("shiftrule_list"))
+    response = client.get(reverse("skillmixrule_list"))
     assert response.status_code == 200
     assert "Skill Mix Rules:" in response.rendered_content
     assert "skillmixrule_list.html" in [t.name for t in response.templates]

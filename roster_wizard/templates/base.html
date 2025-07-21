@@ -84,10 +84,10 @@
                   Skill Mix
                 </button>
                 <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{% url 'shiftrule_list' %}">Display Skill Mix Rules</a>
+                  <a class="dropdown-item" href="{% url 'skillmixrule_list' %}">Display Skill Mix Rules</a>
                   {% if perms.rosters.change_roster %}
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'shiftrule_create' %}">Create New Skill Mix Rule</a>
+                  <a class="dropdown-item" href="{% url 'skillmixrule_create' %}">Create New Skill Mix Rule</a>
                   {% endif %}
                 </div>
               </div>

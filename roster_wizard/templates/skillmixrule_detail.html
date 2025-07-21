@@ -5,16 +5,16 @@
     <h2>Skill Mix Rule Name: {{ skillmixrule.skillmixrule_name }}</h2>
     <p>Shift: {{ skillmixrule.shift }}</p>
     <p>
-      Roles:{% for shiftrulerole in skillmixrule.shiftrulerole_set.all %}
+      Roles:{% for shiftrulerole in skillmixrule.skillmixrulerole_set.all %}
         {{ shiftrulerole.role.role_name }}:{{ shiftrulerole.count }}
       {% endfor %}
     </p>
   </div>
 
   <p>
-    <a href="{% url 'shiftrule_update' skillmixrule.pk %}">Edit</a> | <a href="{% url 'shiftrule_delete' skillmixrule.pk %}">Delete</a>
+    <a href="{% url 'skillmixrule_update' skillmixrule.pk %}">Edit</a> | <a href="{% url 'skillmixrule_delete' skillmixrule.pk %}">Delete</a>
   </p>
   <p>
-    Back to <a href="{% url 'shiftrule_list' %}">All Skill Mix Rules</a>.
+    Back to <a href="{% url 'skillmixrule_list' %}">All Skill Mix Rules</a>.
   </p>
 {% endblock %}

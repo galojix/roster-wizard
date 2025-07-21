@@ -190,7 +190,7 @@ class SkillMixRule(models.Model):
         max_length=20, null=False, blank=False, unique=True
     )
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
-    roles = models.ManyToManyField(Role, through="ShiftRuleRole")
+    roles = models.ManyToManyField(Role, through="SkillMixRuleRole")
 
     def __str__(self):
         """Return a meaningful string representation."""
@@ -198,30 +198,30 @@ class SkillMixRule(models.Model):
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("shiftrule_detail", args=[str(self.id)])
+        return reverse("skillmixrule_detail", args=[str(self.id)])
 
 
-class ShiftRuleRoleManager(models.Manager):
+class SkillMixRuleRoleManager(models.Manager):
     """ShiftRuleRole Manager."""
 
     def get_queryset(self):
         """Select additional related object data."""
         query_set = super().get_queryset()
-        return query_set.select_related("shiftrule", "role")
+        return query_set.select_related("skillmixrule", "role")
 
 
-class ShiftRuleRole(models.Model):
-    """ShiftRuleRole."""
+class SkillMixRuleRole(models.Model):
+    """SkillMixRuleRole."""
 
-    objects = ShiftRuleRoleManager()
-    shiftrule = models.ForeignKey(SkillMixRule, on_delete=models.CASCADE)
+    objects = SkillMixRuleRoleManager()
+    skillmixrule = models.ForeignKey(SkillMixRule, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     count = models.IntegerField(null=False, blank=False)
 
     def __str__(self):
         """Return a meaningful string representation."""
         return (
-            self.shiftrule.skillmixrule_name
+            self.skillmixrule.skillmixrule_name
             + " "
             + self.role.role_name
             + ":"
@@ -230,7 +230,7 @@ class ShiftRuleRole(models.Model):
 
     def get_absolute_url(self):
         """Next URL to display after updating."""
-        return reverse("shiftrule_list")
+        return reverse("skillmixrule_list")
 
 
 class ShiftSequenceManager(models.Manager):

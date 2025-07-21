@@ -11,7 +11,7 @@ from rosters.models import (
     DayGroupDay,
     Shift,
     SkillMixRule,
-    ShiftRuleRole,
+    SkillMixRuleRole,
     ShiftSequence,
     ShiftSequenceShift,
     TimeSlot,
@@ -86,18 +86,20 @@ def test_shift_get_absolute_url(init_feasible_db):
     assert shift.get_absolute_url() == f"/rosters/shift/{shift.id}/"
 
 
-def test_shiftrule_get_absolute_url(init_feasible_db):
+def test_skillmixrule_get_absolute_url(init_feasible_db):
     """Test shiftrule get_absolute_url custom method."""
-    shiftrule = SkillMixRule.objects.first()
+    skillmixrule = SkillMixRule.objects.first()
     # This will also fail if the urlconf is not defined.
-    assert shiftrule.get_absolute_url() == f"/rosters/shiftrule/{shiftrule.id}/"
+    assert (
+        skillmixrule.get_absolute_url() == f"/rosters/skillmixrule/{skillmixrule.id}/"
+    )
 
 
 def test_shiftrulerole_object_name(init_feasible_db):
     """Test shiftrulerole object name."""
-    shiftrulerole = ShiftRuleRole.objects.first()
+    shiftrulerole = SkillMixRuleRole.objects.first()
     expected_object_name = (
-        f"{shiftrulerole.shiftrule.skillmixrule_name} "
+        f"{shiftrulerole.skillmixrule.skillmixrule_name} "
         f"{shiftrulerole.role.role_name}:"
         f"{shiftrulerole.count}"
     )

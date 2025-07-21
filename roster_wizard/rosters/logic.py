@@ -378,7 +378,7 @@ class RosterGenerator:
             self.shiftrules[shift.id] = []
             shiftrules = SkillMixRule.objects.filter(shift=shift)
             for shiftrule in shiftrules:
-                shiftruleroles = shiftrule.shiftrulerole_set.all()
+                shiftruleroles = shiftrule.skillmixrulerole_set.all()
                 role_count = {role.id: 0 for role in Role.objects.all()}
                 for shiftrulerole in shiftruleroles:
                     role_count[shiftrulerole.role.id] = shiftrulerole.count

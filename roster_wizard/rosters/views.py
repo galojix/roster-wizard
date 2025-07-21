@@ -34,7 +34,7 @@ from .models import (
     Role,
     Shift,
     SkillMixRule,
-    ShiftRuleRole,
+    SkillMixRuleRole,
     ShiftSequence,
     ShiftSequenceShift,
     TimeSlot,
@@ -319,7 +319,7 @@ class ShiftRuleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVie
 
     model = SkillMixRule
     template_name = "skillmixrule_delete.html"
-    success_url = reverse_lazy("shiftrule_list")
+    success_url = reverse_lazy("skillmixrule_list")
 
     permission_required = "rosters.change_roster"
 
@@ -337,26 +337,26 @@ class ShiftRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVie
 class ShiftRuleRoleListView(LoginRequiredMixin, ListView):
     """Shift Rule Role List View."""
 
-    model = ShiftRuleRole
+    model = SkillMixRuleRole
     template_name = "shiftrulerole_list.html"
 
     def get_queryset(self):
         """Change order of shift rule role list view."""
-        return ShiftRuleRole.objects.order_by("shiftrule", "role")
+        return SkillMixRuleRole.objects.order_by("skillmixrule", "role")
 
 
 class ShiftRuleRoleDetailView(LoginRequiredMixin, DetailView):
     """Shift Rule Role Detail View."""
 
-    model = ShiftRuleRole
+    model = SkillMixRuleRole
     template_name = "shiftrulerole_detail.html"
 
 
 class ShiftRuleRoleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Shift Rule Role Update View."""
 
-    model = ShiftRuleRole
-    fields = ("shiftrule", "role", "count")
+    model = SkillMixRuleRole
+    fields = ("skillmixrule", "role", "count")
     template_name = "shiftrulerole_update.html"
 
     permission_required = "rosters.change_roster"
@@ -365,9 +365,9 @@ class ShiftRuleRoleUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Updat
 class ShiftRuleRoleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Shift Rule Role Delete View."""
 
-    model = ShiftRuleRole
+    model = SkillMixRuleRole
     template_name = "shiftrulerole_delete.html"
-    success_url = reverse_lazy("shiftrule_list")
+    success_url = reverse_lazy("skillmixrule_list")
 
     permission_required = "rosters.change_roster"
 
@@ -375,7 +375,7 @@ class ShiftRuleRoleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Delet
 class ShiftRuleRoleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Shift Rule Role Create View."""
 
-    model = ShiftRuleRole
+    model = SkillMixRuleRole
     template_name = "shiftrulerole_create.html"
     fields = ("role", "count")
 
@@ -383,8 +383,8 @@ class ShiftRuleRoleCreateView(LoginRequiredMixin, PermissionRequiredMixin, Creat
 
     def form_valid(self, form):
         """Process shift rule role create form."""
-        shiftrule = get_object_or_404(SkillMixRule, id=self.kwargs["shiftrule"])
-        form.instance.shiftrule = shiftrule
+        skillmixrule = get_object_or_404(SkillMixRule, id=self.kwargs["skillmixrule"])
+        form.instance.skillmixrule = skillmixrule
         return super().form_valid(form)
 
 

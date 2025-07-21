@@ -8,7 +8,7 @@ from .models import (
     Role,
     Shift,
     SkillMixRule,
-    ShiftRuleRole,
+    SkillMixRuleRole,
     ShiftSequence,
     ShiftSequenceShift,
     TimeSlot,
@@ -73,7 +73,7 @@ admin.site.register(Leave, LeaveAdmin)
 admin.site.register(Role)
 admin.site.register(Shift)
 admin.site.register(SkillMixRule)
-admin.site.register(ShiftRuleRole)
+admin.site.register(SkillMixRuleRole)
 admin.site.register(ShiftSequence)
 admin.site.register(ShiftSequenceShift)
 admin.site.register(TimeSlot, TimeSlotAdmin)
