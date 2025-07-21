@@ -36,7 +36,7 @@ from .models import (
     ShiftRule,
     ShiftRuleRole,
     ShiftSequence,
-    StaffRuleShift,
+    ShiftSequenceShift,
     TimeSlot,
     StaffRequest,
     DayGroup,
@@ -439,14 +439,14 @@ class StaffRuleCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVie
 class StaffRuleShiftListView(LoginRequiredMixin, ListView):
     """Staff Rule Shift List View."""
 
-    model = StaffRuleShift
+    model = ShiftSequenceShift
     template_name = "staffruleshift_list.html"
 
 
 class StaffRuleShiftDetailView(LoginRequiredMixin, DetailView):
     """Staff Rule Shift Detail View."""
 
-    model = StaffRuleShift
+    model = ShiftSequenceShift
     template_name = "staffruleshift_detail.html"
     success_url = reverse_lazy("staffrule_list")
 
@@ -454,7 +454,7 @@ class StaffRuleShiftDetailView(LoginRequiredMixin, DetailView):
 class StaffRuleShiftUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Staff Rule Shift Update View."""
 
-    model = StaffRuleShift
+    model = ShiftSequenceShift
     fields = ("shift", "position")
     template_name = "staffruleshift_update.html"
     success_url = reverse_lazy("staffrule_list")
@@ -465,7 +465,7 @@ class StaffRuleShiftUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Upda
 class StaffRuleShiftDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Staff Rule Shift Delete View."""
 
-    model = StaffRuleShift
+    model = ShiftSequenceShift
     template_name = "staffruleshift_delete.html"
     success_url = reverse_lazy("staffrule_list")
 
@@ -475,7 +475,7 @@ class StaffRuleShiftDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Dele
 class StaffRuleShiftCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Staff Rule Shift Create View."""
 
-    model = StaffRuleShift
+    model = ShiftSequenceShift
     template_name = "staffruleshift_create.html"
     form_class = StaffRuleShiftCreateForm
     # fields = ("shift", "position")

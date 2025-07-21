@@ -10,7 +10,7 @@ from .models import (
     ShiftRule,
     ShiftRuleRole,
     ShiftSequence,
-    StaffRuleShift,
+    ShiftSequenceShift,
     TimeSlot,
     DayGroup,
     Day,
@@ -75,7 +75,7 @@ admin.site.register(Shift)
 admin.site.register(ShiftRule)
 admin.site.register(ShiftRuleRole)
 admin.site.register(ShiftSequence)
-admin.site.register(StaffRuleShift)
+admin.site.register(ShiftSequenceShift)
 admin.site.register(TimeSlot, TimeSlotAdmin)
 admin.site.register(DayGroup)
 admin.site.register(Day)

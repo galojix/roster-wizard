@@ -15,7 +15,7 @@ from rosters.models import (
     Role,
     StaffRequest,
     ShiftSequence,
-    StaffRuleShift,
+    ShiftSequenceShift,
     Leave,
     TimeSlot,
 )
@@ -226,9 +226,13 @@ def init_feasible_db(init_db):
     )
     staff_rule1.staff.add(staff_member1)
     staff_rule1.staff.add(staff_member2)
-    StaffRuleShift.objects.create(shift=late_shift, staffrule=staff_rule1, position=1)
-    StaffRuleShift.objects.create(shift=early_shift, staffrule=staff_rule1, position=2)
-    StaffRuleShift.objects.create(staffrule=staff_rule1, position=3)
+    ShiftSequenceShift.objects.create(
+        shift=late_shift, staffrule=staff_rule1, position=1
+    )
+    ShiftSequenceShift.objects.create(
+        shift=early_shift, staffrule=staff_rule1, position=2
+    )
+    ShiftSequenceShift.objects.create(staffrule=staff_rule1, position=3)
     Leave.objects.create(
         date=datetime.datetime.now(),
         description="Leave",

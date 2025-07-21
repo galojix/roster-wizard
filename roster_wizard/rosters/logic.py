@@ -175,7 +175,7 @@ class RosterGenerator:
         Example: { 1: [ "E", "L", "N"], 2: ["E", "L"] }
         """
         shift_sequence = OrderedDict()
-        staffruleshifts = shiftsequence.staffruleshift_set.order_by("position")
+        staffruleshifts = shiftsequence.shiftsequenceshift_set.order_by("position")
         for staffruleshift in staffruleshifts:
             shift_sequence.setdefault(staffruleshift.position, []).append(
                 staffruleshift.shift

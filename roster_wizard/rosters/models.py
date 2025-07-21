@@ -248,7 +248,7 @@ class ShiftSequence(models.Model):
     objects = ShiftSequenceManager()
     staffrule_name = models.CharField(max_length=40, null=False, blank=False)
     staff = models.ManyToManyField(get_user_model(), blank=True)
-    shifts = models.ManyToManyField(Shift, through="StaffRuleShift")
+    shifts = models.ManyToManyField(Shift, through="ShiftSequenceShift")
     daygroup = models.ForeignKey(
         DayGroup, null=True, blank=False, on_delete=models.SET_NULL
     )
@@ -262,8 +262,8 @@ class ShiftSequence(models.Model):
         return reverse("staffrule_detail", args=[str(self.id)])
 
 
-class StaffRuleShiftManager(models.Manager):
-    """StaffRuleShift Manager."""
+class ShiftSequenceShiftManager(models.Manager):
+    """ShiftSequenceShift Manager."""
 
     def get_queryset(self):
         """Select additional related object data."""
@@ -271,10 +271,10 @@ class StaffRuleShiftManager(models.Manager):
         return query_set.select_related("staffrule", "shift")
 
 
-class StaffRuleShift(models.Model):
-    """StaffRuleShift."""
+class ShiftSequenceShift(models.Model):
+    """ShiftSequenceShift."""
 
-    objects = StaffRuleShiftManager()
+    objects = ShiftSequenceShiftManager()
     staffrule = models.ForeignKey(ShiftSequence, on_delete=models.CASCADE)
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE, null=True, blank=True)
     position = models.IntegerField(null=False, blank=False)

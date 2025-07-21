@@ -13,7 +13,7 @@ from rosters.models import (
     ShiftRule,
     ShiftRuleRole,
     ShiftSequence,
-    StaffRuleShift,
+    ShiftSequenceShift,
     TimeSlot,
     StaffRequest,
 )
@@ -120,7 +120,7 @@ def test_staffrule_get_absolute_url(init_feasible_db):
 
 def test_staffruleshift_object_name(init_feasible_db):
     """Test staffruleshift object name."""
-    staffruleshift = StaffRuleShift.objects.first()
+    staffruleshift = ShiftSequenceShift.objects.first()
     expected_object_name = (
         f"{staffruleshift.staffrule.staffrule_name}:"
         f"{staffruleshift.shift.shift_type}:"

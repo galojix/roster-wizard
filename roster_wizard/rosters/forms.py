@@ -12,7 +12,7 @@ from .models import (
     ShiftSequence,
     DayGroupDay,
     DayGroup,
-    StaffRuleShift,
+    ShiftSequenceShift,
 )
 
 
@@ -221,7 +221,7 @@ class StaffRuleShiftCreateForm(ModelForm):
     class Meta:
         """Meta."""
 
-        model = StaffRuleShift
+        model = ShiftSequenceShift
         fields = ("shift", "position")
 
     def __init__(self, *args, **kwargs):
