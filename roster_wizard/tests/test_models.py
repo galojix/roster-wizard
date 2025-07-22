@@ -95,15 +95,15 @@ def test_skillmixrule_get_absolute_url(init_feasible_db):
     )
 
 
-def test_shiftrulerole_object_name(init_feasible_db):
-    """Test shiftrulerole object name."""
-    shiftrulerole = SkillMixRuleRole.objects.first()
+def test_skillmixrulerole_object_name(init_feasible_db):
+    """Test skillmixrulerole object name."""
+    skillmixrulerole = SkillMixRuleRole.objects.first()
     expected_object_name = (
-        f"{shiftrulerole.skillmixrule.skillmixrule_name} "
-        f"{shiftrulerole.role.role_name}:"
-        f"{shiftrulerole.count}"
+        f"{skillmixrulerole.skillmixrule.skillmixrule_name} "
+        f"{skillmixrulerole.role.role_name}:"
+        f"{skillmixrulerole.count}"
     )
-    assert expected_object_name == str(shiftrulerole)
+    assert expected_object_name == str(skillmixrulerole)
 
 
 def test_staffrule_object_name(init_feasible_db):

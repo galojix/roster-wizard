@@ -21,16 +21,16 @@
         href="{% url 'skillmixrule_delete' skillmixrule.pk %}">Delete</a></td>
     {% endif %}
     <td>
-      {% for shiftrulerole in skillmixrule.skillmixrulerole_set.all %}
-      {{ shiftrulerole.role}}:{{ shiftrulerole.count}}
+      {% for skillmixrulerole in skillmixrule.skillmixrulerole_set.all %}
+      {{ skillmixrulerole.role}}:{{ skillmixrulerole.count}}
       {% if perms.rosters.change_roster %}
-      <a href="{% url 'shiftrulerole_update' shiftrulerole.pk %}">Edit</a> | <a
-        href="{% url 'shiftrulerole_delete' shiftrulerole.pk %}">Delete</a>
+      <a href="{% url 'skillmixrulerole_update' skillmixrulerole.pk %}">Edit</a> | <a
+        href="{% url 'skillmixrulerole_delete' skillmixrulerole.pk %}">Delete</a>
       {% endif %}
       <br />
       {% endfor %}
       {% if perms.rosters.change_roster %}
-      <a href="{% url 'shiftrulerole_create' skillmixrule.pk %}">Add Role</a>
+      <a href="{% url 'skillmixrulerole_create' skillmixrule.pk %}">Add Role</a>
       {% endif %}
     </td>
   </tr>

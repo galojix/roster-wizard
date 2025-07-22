@@ -258,7 +258,7 @@ def test_shift_rule_role_create_view_post(init_feasible_db, client):
         "count": 2,
     }
     response = client.post(
-        reverse("shiftrulerole_create", args=(skillmixrule.id,)), data
+        reverse("skillmixrulerole_create", args=(skillmixrule.id,)), data
     )
     assert response.status_code == 302
     assert reverse("skillmixrule_list") in response.url
@@ -369,10 +369,10 @@ def test_shift_rule_list_view(init_feasible_db, client):
 def test_shift_rule_role_list_view(init_feasible_db, client):
     """Test shift rule role list view."""
     client.login(username="temporary", password="temporary")
-    response = client.get(reverse("shiftrulerole_list"))
+    response = client.get(reverse("skillmixrulerole_list"))
     assert response.status_code == 200
     assert "Shift Rule Roles:" in response.rendered_content
-    assert "shiftrulerole_list.html" in [t.name for t in response.templates]
+    assert "skillmixrulerole_list.html" in [t.name for t in response.templates]
 
 
 def test_staff_rule_list_view(init_feasible_db, client):

@@ -338,7 +338,7 @@ class SkillMixRuleRoleListView(LoginRequiredMixin, ListView):
     """Skill Mix Rule Role List View."""
 
     model = SkillMixRuleRole
-    template_name = "shiftrulerole_list.html"
+    template_name = "skillmixrulerole_list.html"
 
     def get_queryset(self):
         """Change order of shift rule role list view."""
@@ -349,7 +349,7 @@ class SkillMixRuleRoleDetailView(LoginRequiredMixin, DetailView):
     """Skill Mix Rule Role Detail View."""
 
     model = SkillMixRuleRole
-    template_name = "shiftrulerole_detail.html"
+    template_name = "skillmixrulerole_detail.html"
 
 
 class SkillMixRuleRoleUpdateView(
@@ -359,7 +359,7 @@ class SkillMixRuleRoleUpdateView(
 
     model = SkillMixRuleRole
     fields = ("skillmixrule", "role", "count")
-    template_name = "shiftrulerole_update.html"
+    template_name = "skillmixrulerole_update.html"
 
     permission_required = "rosters.change_roster"
 
@@ -370,7 +370,7 @@ class SkillMixRuleRoleDeleteView(
     """Skill Mix Rule Role Delete View."""
 
     model = SkillMixRuleRole
-    template_name = "shiftrulerole_delete.html"
+    template_name = "skillmixrulerole_delete.html"
     success_url = reverse_lazy("skillmixrule_list")
 
     permission_required = "rosters.change_roster"
@@ -382,7 +382,7 @@ class SkillMixRuleRoleCreateView(
     """Skill Mix Rule Role Create View."""
 
     model = SkillMixRuleRole
-    template_name = "shiftrulerole_create.html"
+    template_name = "skillmixrulerole_create.html"
     fields = ("role", "count")
 
     permission_required = "rosters.change_roster"

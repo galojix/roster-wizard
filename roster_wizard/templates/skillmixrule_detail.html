@@ -5,8 +5,8 @@
     <h2>Skill Mix Rule Name: {{ skillmixrule.skillmixrule_name }}</h2>
     <p>Shift: {{ skillmixrule.shift }}</p>
     <p>
-      Roles:{% for shiftrulerole in skillmixrule.skillmixrulerole_set.all %}
-        {{ shiftrulerole.role.role_name }}:{{ shiftrulerole.count }}
+      Roles:{% for skillmixrulerole in skillmixrule.skillmixrulerole_set.all %}
+        {{ skillmixrulerole.role.role_name }}:{{ skillmixrulerole.count }}
       {% endfor %}
     </p>
   </div>
