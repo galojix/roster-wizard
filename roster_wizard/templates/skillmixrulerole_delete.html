@@ -4,7 +4,7 @@
   <h1>Delete</h1>
   <form action="" method="post">
     {% csrf_token %}
-    <p>Are you sure you want to delete "{{ skillmixrulerole.role }}:{{ skillmixrulerole.count }}" from shift rule "{{ skillmixrulerole.shiftrule }}"?</p>
+    <p>Are you sure you want to delete "{{ skillmixrulerole.role }}:{{ skillmixrulerole.count }}" from shift rule "{{ skillmixrulerole.skillmixrule }}"?</p>
     <button class="btn btn-danger ml-2" type="submit">Confirm</button>
   </form>
 {% endblock %}

@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="timeslot-entry">
+  <div>
     <h2>{{ timeslot.date }}</h2>
-    <p>for {{ timeslot.shift.shift_type}} on {{ timeslot.date }}</p>
+    <p>for {{ timeslot.shift.shift_type }} on {{ timeslot.date }}</p>
   </div>
 
-  <p><a href="{% url 'timeslot_update' timeslot.pk %}">Edit</a> | <a href="{% url 'timeslot_delete' timeslot.pk %}">Delete</a></p>
-  <p>Back to <a href="{% url 'timeslot_list' %}">Rosters</a></p>
-{% endblock content %}
+  <p>
+    <a href="{% url 'timeslot_update' timeslot.pk %}">Edit</a> | <a href="{% url 'timeslot_delete' timeslot.pk %}">Delete</a>
+  </p>
+  <p>
+    Back to <a href="{% url 'timeslot_list' %}">Rosters</a>
+  </p>
+{% endblock %}

@@ -87,7 +87,7 @@ def test_shift_get_absolute_url(init_feasible_db):
 
 
 def test_skillmixrule_get_absolute_url(init_feasible_db):
-    """Test shiftrule get_absolute_url custom method."""
+    """Test skill mix rule  get_absolute_url custom method."""
     skillmixrule = SkillMixRule.objects.first()
     # This will also fail if the urlconf is not defined.
     assert (
