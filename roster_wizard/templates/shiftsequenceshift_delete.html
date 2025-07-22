@@ -4,7 +4,7 @@
   <h1>Delete</h1>
   <form action="" method="post">
     {% csrf_token %}
-    <p>Are you sure you want to delete "{{ shiftsequenceshift.shift.shift_type }}:{{ shiftsequenceshift.position }}" from staff rule "{{ shiftsequenceshift.staffrule }}"?</p>
+    <p>Are you sure you want to delete "{{ shiftsequenceshift.shift.shift_type }}:{{ shiftsequenceshift.position }}" from staff rule "{{ shiftsequenceshift.shiftsequence }}"?</p>
     <button class="btn btn-danger ml-2" type="submit">Confirm</button>
   </form>
 {% endblock %}

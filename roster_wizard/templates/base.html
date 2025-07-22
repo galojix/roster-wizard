@@ -98,10 +98,10 @@
                   Shift Sequences
                 </button>
                 <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{% url 'staffrule_list' %}">Display Shift Sequences</a>
+                  <a class="dropdown-item" href="{% url 'shiftsequence_list' %}">Display Shift Sequences</a>
                   {% if perms.rosters.change_roster %}
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'staffrule_create' %}">Create New Shift Sequence</a>
+                  <a class="dropdown-item" href="{% url 'shiftsequence_create' %}">Create New Shift Sequence</a>
                   {% endif %}
                 </div>
               </div>

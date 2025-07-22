@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="staffrule-entry">
+  <div class="shiftsequence-entry">
     <h4>Day Group Name: {{ daygroup.name }}</h4>
-      <p>Days: {% for daygroupday in daygroup.daygroupday_set.all %}
+    <p>
+      Days:{% for daygroupday in daygroup.daygroupday_set.all %}
         {{ daygroupday.day.number }}
-        {% endfor %}
-      </p>
+      {% endfor %}
+    </p>
   </div>
 
-  <p><a href="{% url 'daygroup_update' daygroup.pk %}">Edit</a> | <a href="{% url 'daygroup_delete' daygroup.pk %}">Delete</a></p>
-  <p>Back to <a href="{% url 'daygroup_list' %}">All Day Groups</a>.</p>
-{% endblock content %}
+  <p>
+    <a href="{% url 'daygroup_update' daygroup.pk %}">Edit</a> | <a href="{% url 'daygroup_delete' daygroup.pk %}">Delete</a>
+  </p>
+  <p>
+    Back to <a href="{% url 'daygroup_list' %}">All Day Groups</a>.
+  </p>
+{% endblock %}

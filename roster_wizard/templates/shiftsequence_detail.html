@@ -2,7 +2,7 @@
 
 {% block content %}
   <div class="staffrule-entry">
-    <h2>Shift Sequence Name: {{ shiftsequence.staffrule_name }}</h2>
+    <h2>Shift Sequence Name: {{ shiftsequence.shiftsequence_name }}</h2>
     <p>Day Group: {{ shiftsequence.daygroup.name }}</p>
     <p>
       Shifts:{% for shiftsequenceshift in shiftsequence.shiftsequenceshift_set.all %}
@@ -12,9 +12,9 @@
   </div>
 
   <p>
-    <a href="{% url 'staffrule_update' shiftsequence.pk %}">Edit</a> | <a href="{% url 'staffrule_delete' shiftsequence.pk %}">Delete</a>
+    <a href="{% url 'shiftsequence_update' shiftsequence.pk %}">Edit</a> | <a href="{% url 'shiftsequence_delete' shiftsequence.pk %}">Delete</a>
   </p>
   <p>
-    Back to <a href="{% url 'staffrule_list' %}">All Shift Sequences</a>.
+    Back to <a href="{% url 'shiftsequence_list' %}">All Shift Sequences</a>.
   </p>
 {% endblock %}

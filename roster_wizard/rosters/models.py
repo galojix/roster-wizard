@@ -246,7 +246,7 @@ class ShiftSequence(models.Model):
     """Shift Sequence Rule."""
 
     objects = ShiftSequenceManager()
-    staffrule_name = models.CharField(max_length=40, null=False, blank=False)
+    shiftsequence_name = models.CharField(max_length=40, null=False, blank=False)
     staff = models.ManyToManyField(get_user_model(), blank=True)
     shifts = models.ManyToManyField(Shift, through="ShiftSequenceShift")
     daygroup = models.ForeignKey(
@@ -255,11 +255,11 @@ class ShiftSequence(models.Model):
 
     def __str__(self):
         """Return a meaningful string representation."""
-        return self.staffrule_name
+        return str(self.shiftsequence_name)
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("staffrule_detail", args=[str(self.id)])
+        return reverse("shiftsequence_detail", args=[str(self.id)])
 
 
 class ShiftSequenceShiftManager(models.Manager):
@@ -268,14 +268,14 @@ class ShiftSequenceShiftManager(models.Manager):
     def get_queryset(self):
         """Select additional related object data."""
         query_set = super().get_queryset()
-        return query_set.select_related("staffrule", "shift")
+        return query_set.select_related("shiftsequence", "shift")
 
 
 class ShiftSequenceShift(models.Model):
     """ShiftSequenceShift."""
 
     objects = ShiftSequenceShiftManager()
-    staffrule = models.ForeignKey(ShiftSequence, on_delete=models.CASCADE)
+    shiftsequence = models.ForeignKey(ShiftSequence, on_delete=models.CASCADE)
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE, null=True, blank=True)
     position = models.IntegerField(null=False, blank=False)
 
@@ -288,12 +288,16 @@ class ShiftSequenceShift(models.Model):
         """Return a meaningful string representation."""
         shift_type = "X" if self.shift is None else self.shift.shift_type
         return (
-            self.staffrule.staffrule_name + ":" + shift_type + ":" + str(self.position)
+            self.shiftsequence.shiftsequence_name
+            + ":"
+            + shift_type
+            + ":"
+            + str(self.position)
         )
 
     def get_absolute_url(self):
         """URL."""
-        return reverse("staffrule_list")
+        return reverse("shiftsequence_list")
 
 
 class TimeSlotManager(models.Manager):

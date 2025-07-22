@@ -402,7 +402,7 @@ class ShiftSequenceListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         """Change list order."""
-        return ShiftSequence.objects.order_by("staffrule_name")
+        return ShiftSequence.objects.order_by("shiftsequence_name")
 
 
 class ShiftSequenceDetailView(LoginRequiredMixin, DetailView):
@@ -427,7 +427,7 @@ class ShiftSequenceDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Delet
 
     model = ShiftSequence
     template_name = "shiftsequence_delete.html"
-    success_url = reverse_lazy("staffrule_list")
+    success_url = reverse_lazy("shiftsequence_list")
 
     permission_required = "rosters.change_roster"
 
@@ -454,7 +454,7 @@ class ShiftSequenceShiftDetailView(LoginRequiredMixin, DetailView):
 
     model = ShiftSequenceShift
     template_name = "shiftsequenceshift_detail.html"
-    success_url = reverse_lazy("staffrule_list")
+    success_url = reverse_lazy("shiftsequence_list")
 
 
 class ShiftSequenceShiftUpdateView(
@@ -465,7 +465,7 @@ class ShiftSequenceShiftUpdateView(
     model = ShiftSequenceShift
     fields = ("shift", "position")
     template_name = "shiftsequenceshift_update.html"
-    success_url = reverse_lazy("staffrule_list")
+    success_url = reverse_lazy("shiftsequence_list")
 
     permission_required = "rosters.change_roster"
 
@@ -477,7 +477,7 @@ class ShiftSequenceShiftDeleteView(
 
     model = ShiftSequenceShift
     template_name = "shiftsequenceshift_delete.html"
-    success_url = reverse_lazy("staffrule_list")
+    success_url = reverse_lazy("shiftsequence_list")
 
     permission_required = "rosters.change_roster"
 
@@ -496,8 +496,10 @@ class ShiftSequenceShiftCreateView(
 
     def form_valid(self, form):
         """Process staff rule shift create form."""
-        staffrule = get_object_or_404(ShiftSequence, id=self.kwargs["staffrule"])
-        form.instance.staffrule = staffrule
+        shiftsequence = get_object_or_404(
+            ShiftSequence, id=self.kwargs["shiftsequence"]
+        )
+        form.instance.shiftsequence = shiftsequence
         return super().form_valid(form)
 
 

@@ -222,17 +222,17 @@ def init_feasible_db(init_db):
         staff_member=staff_member1,
     )
     staff_rule1 = ShiftSequence.objects.create(
-        staffrule_name="No Early after Late", daygroup=daygroup
+        shiftsequence_name="No Early after Late", daygroup=daygroup
     )
     staff_rule1.staff.add(staff_member1)
     staff_rule1.staff.add(staff_member2)
     ShiftSequenceShift.objects.create(
-        shift=late_shift, staffrule=staff_rule1, position=1
+        shift=late_shift, shiftsequence=staff_rule1, position=1
     )
     ShiftSequenceShift.objects.create(
-        shift=early_shift, staffrule=staff_rule1, position=2
+        shift=early_shift, shiftsequence=staff_rule1, position=2
     )
-    ShiftSequenceShift.objects.create(staffrule=staff_rule1, position=3)
+    ShiftSequenceShift.objects.create(shiftsequence=staff_rule1, position=3)
     Leave.objects.create(
         date=datetime.datetime.now(),
         description="Leave",

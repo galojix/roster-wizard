@@ -267,15 +267,17 @@ def test_shift_rule_role_create_view_post(init_feasible_db, client):
 def test_staff_rule_shift_create_view_post(init_feasible_db, client):
     """Test staff rule shift create view post."""
     client.login(username="temporary", password="temporary")
-    staffrule = ShiftSequence.objects.first()
+    shiftsequence = ShiftSequence.objects.first()
     shift = Shift.objects.first()
     data = {
         "shift": shift.id,
         "position": 2,
     }
-    response = client.post(reverse("staffruleshift_create", args=(staffrule.id,)), data)
+    response = client.post(
+        reverse("shiftsequenceshift_create", args=(shiftsequence.id,)), data
+    )
     assert response.status_code == 302
-    assert reverse("staffrule_list") in response.url
+    assert reverse("shiftsequence_list") in response.url
 
 
 def test_day_group_create_view_post(init_feasible_db, client):
@@ -378,7 +380,7 @@ def test_shift_rule_role_list_view(init_feasible_db, client):
 def test_staff_rule_list_view(init_feasible_db, client):
     """Test staff rule list view."""
     client.login(username="temporary", password="temporary")
-    response = client.get(reverse("staffrule_list"))
+    response = client.get(reverse("shiftsequence_list"))
     assert response.status_code == 200
     assert "Shift Sequences:" in response.rendered_content
     assert "shiftsequence_list.html" in [t.name for t in response.templates]

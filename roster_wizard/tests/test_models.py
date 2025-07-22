@@ -106,29 +106,32 @@ def test_skillmixrulerole_object_name(init_feasible_db):
     assert expected_object_name == str(skillmixrulerole)
 
 
-def test_staffrule_object_name(init_feasible_db):
-    """Test staffrule object name."""
-    staffrule = ShiftSequence.objects.first()
-    expected_object_name = f"{staffrule.staffrule_name}"
-    assert expected_object_name == str(staffrule)
+def test_shiftsequence_object_name(init_feasible_db):
+    """Test shiftsequence object name."""
+    shiftsequence = ShiftSequence.objects.first()
+    expected_object_name = f"{shiftsequence.shiftsequence_name}"
+    assert expected_object_name == str(shiftsequence)
 
 
-def test_staffrule_get_absolute_url(init_feasible_db):
-    """Test staffrule day get_absolute_url custom method."""
-    staffrule = ShiftSequence.objects.first()
+def test_shiftsequence_get_absolute_url(init_feasible_db):
+    """Test shiftsequence day get_absolute_url custom method."""
+    shiftsequence = ShiftSequence.objects.first()
     # This will also fail if the urlconf is not defined.
-    assert staffrule.get_absolute_url() == f"/rosters/staffrule/{staffrule.id}/"
-
-
-def test_staffruleshift_object_name(init_feasible_db):
-    """Test staffruleshift object name."""
-    staffruleshift = ShiftSequenceShift.objects.first()
-    expected_object_name = (
-        f"{staffruleshift.staffrule.staffrule_name}:"
-        f"{staffruleshift.shift.shift_type}:"
-        f"{staffruleshift.position}"
+    assert (
+        shiftsequence.get_absolute_url()
+        == f"/rosters/shiftsequence/{shiftsequence.id}/"
     )
-    assert expected_object_name == str(staffruleshift)
+
+
+def test_shiftsequenceshift_object_name(init_feasible_db):
+    """Test shiftsequenceshift object name."""
+    shiftsequenceshift = ShiftSequenceShift.objects.first()
+    expected_object_name = (
+        f"{shiftsequenceshift.shiftsequence.shiftsequence_name}:"
+        f"{shiftsequenceshift.shift.shift_type}:"
+        f"{shiftsequenceshift.position}"
+    )
+    assert expected_object_name == str(shiftsequenceshift)
 
 
 def test_timeslot_object_name(init_feasible_db):

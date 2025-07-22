@@ -144,7 +144,7 @@ class StaffRuleUpdateForm(ModelForm):
         """Meta."""
 
         model = ShiftSequence
-        fields = ("staffrule_name", "daygroup", "staff")
+        fields = ("shiftsequence_name", "daygroup", "staff")
         widgets = {"staff": forms.CheckboxSelectMultiple()}
 
 
@@ -155,7 +155,7 @@ class StaffRuleCreateForm(ModelForm):
         """Meta."""
 
         model = ShiftSequence
-        fields = ("staffrule_name", "daygroup", "staff")
+        fields = ("shiftsequence_name", "daygroup", "staff")
         widgets = {"staff": forms.CheckboxSelectMultiple()}
 
 
