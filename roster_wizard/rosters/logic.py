@@ -116,7 +116,7 @@ class RosterGenerator:
     def _create_shift_decision_vars(self):
         """Create shift decision variables.
 
-        shift_vars[(n, r, d, t)]:
+        shift_decision_vars[(n, r, d, t)]:
         worker 'n' with role 'r' works on date 'd' in timeslot 't'
         """
         log.info("Shift decision variable creation started...")
@@ -179,7 +179,7 @@ class RosterGenerator:
         timeslots = TimeSlot.objects.filter(date__range=self.extended_date_range)
         return {(timeslot.date, timeslot.shift): timeslot.id for timeslot in timeslots}
 
-    def _get_shift_seq(self, shiftsequence):
+    def _get_shift_sequence(self, shiftsequence):
         """Create shift sequence for each rule.
 
         Example: { 1: [ "E", "L", "N"], 2: ["E", "L"] }
@@ -292,7 +292,7 @@ class RosterGenerator:
         self.invalid_shift_sequences = {}
         for worker in self.workers:
             for shiftsequence in worker.shiftsequence_set.all():
-                invalid_shift_seq = self._get_shift_seq(shiftsequence)
+                invalid_shift_seq = self._get_shift_sequence(shiftsequence)
                 self.invalid_shift_sequences[(worker.id, shiftsequence.id)] = (
                     invalid_shift_seq
                 )
@@ -370,7 +370,7 @@ class RosterGenerator:
                     # Enforce one intermediate variable to be true
                     # Only need to enforce one position per rule
                     all_intermediate_vars = [
-                        value for item, value in intermediate_vars.items()
+                        value for value in intermediate_vars.values()
                     ]
                     self.model.Add(sum(all_intermediate_vars) >= 1)
 
