@@ -350,22 +350,18 @@ class RosterGenerator:
                     }
 
                     # Enforce "off" rule
-                    for position in shift_vars_in_seq_off:
-                        if len(shift_vars_in_seq_off[position]) > 0:
-                            self.model.Add(
-                                sum(shift_vars_in_seq_off[position]) >= 1
-                            ).OnlyEnforceIf(
+                    for position, shift_vars in shift_vars_in_seq_off.items():
+                        if len(shift_vars) > 0:
+                            self.model.Add(sum(shift_vars) >= 1).OnlyEnforceIf(
                                 intermediate_vars[
                                     (worker.id, date, shiftsequence.id, position)
                                 ]
                             )
 
                     # Enforce "on" rule
-                    for position in shift_vars_in_seq_on:
-                        if len(shift_vars_in_seq_on[position]) > 0:
-                            self.model.Add(
-                                sum(shift_vars_in_seq_on[position]) == 0
-                            ).OnlyEnforceIf(
+                    for position, shift_vars in shift_vars_in_seq_on.items():
+                        if len(shift_vars) > 0:
+                            self.model.Add(sum(shift_vars) == 0).OnlyEnforceIf(
                                 intermediate_vars[
                                     (worker.id, date, shiftsequence.id, position)
                                 ]
