@@ -21,6 +21,7 @@ dependencies = [
     "gunicorn>=23.0.0",
     "ortools>=9.12.4544",
     "psycopg2-binary>=2.9.10",
+    "pylint-django>=2.6.1",
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
     "pytest-django>=4.11.1",
