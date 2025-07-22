@@ -89,29 +89,31 @@ class RosterGenerator:
             )
             self.timeslots_lookup[date] = timeslots_for_date
 
-    def _collect_shift_requests(self):
-        """Collect shift requests into friendly data structure."""
-        log.info("Shift request collection started...")
+    def _collect_staff_requests(self):
+        """Collect staff requests into friendly data structure."""
+        log.info("Staff request collection started...")
         self.staff_requests = [
             [[0 for _ in self.shifts] for _ in self.days] for worker in self.workers
         ]
-        for staffrequest in StaffRequest.objects.filter(date__range=self.date_range):
-            worker_num = self.worker_lookup[staffrequest.staff_member.id]
-            day_num = self.date_lookup[staffrequest.date]
-            shift_num = self.shift_lookup[staffrequest.shift.id]
+        for staff_request in StaffRequest.objects.filter(date__range=self.date_range):
+            worker_num = self.worker_lookup[staff_request.staff_member.id]
+            day_num = self.date_lookup[staff_request.date]
+            shift_num = self.shift_lookup[staff_request.shift.id]
             self.staff_requests[worker_num][day_num][shift_num] = (
-                staffrequest.priority if staffrequest.like else -staffrequest.priority
+                staff_request.priority
+                if staff_request.like
+                else -staff_request.priority
             )
-        log.info("Shift request collection completed...")
+        log.info("Staff request collection completed...")
 
-    def _create_shift_vars(self):
-        """Create shift variables.
+    def _create_shift_decision_vars(self):
+        """Create shift decision variables.
 
         shift_vars[(n, r, d, t)]:
         worker 'n' with role 'r' works on date 'd' in timeslot 't'
         """
-        log.info("Shift variable creation started...")
-        self.shift_vars = {
+        log.info("Shift decision variable creation started...")
+        self.shift_decision_vars = {
             (worker.id, role.id, date, timeslot.id): self.model.NewBoolVar(
                 f"shift_n{worker.id}r{role.id}d{date}t{timeslot.id}"
             )
@@ -120,12 +122,12 @@ class RosterGenerator:
             for worker in self.workers
             for role in worker.roles.all()
         }
-        log.info("Shift variable creation completed...")
+        log.info("Shift decision variable creation completed...")
 
-    def _create_previous_shift_vars(self):
-        # Create shift variables and fixed constraints
+    def _create_previous_shift_decision_vars(self):
+        # Create shift decision variables and fixed constraints
         # for previous roster period
-        log.info("Creation of shift variables for previous period started...")
+        log.info("Creation of shift decision variables for previous period started...")
         previous_timeslots = TimeSlot.objects.filter(
             date__range=self.previous_date_range
         )
@@ -135,14 +137,16 @@ class RosterGenerator:
                 r = worker.roles.all()[0].id
                 d = timeslot.date
                 t = timeslot.id
-                self.shift_vars[(n, r, d, t)] = self.model.NewBoolVar(
+                self.shift_decision_vars[(n, r, d, t)] = self.model.NewBoolVar(
                     f"shift_n{n}r{r}d{d}t{t}"
                 )
                 if worker in timeslot.staff.all():
-                    self.model.Add(self.shift_vars[(n, r, d, t)] == 1)
+                    self.model.Add(self.shift_decision_vars[(n, r, d, t)] == 1)
                 else:
-                    self.model.Add(self.shift_vars[(n, r, d, t)] == 0)
-        log.info("Creation of shift variables for previous period completed...")
+                    self.model.Add(self.shift_decision_vars[(n, r, d, t)] == 0)
+        log.info(
+            "Creation of shift decision variables for previous period completed..."
+        )
 
     def _exclude_leave_dates(self):
         """Ensure staff members are not assigned to any shifts while on leave."""
@@ -151,7 +155,7 @@ class RosterGenerator:
             for role in leave.staff_member.roles.all():
                 for timeslot in self.timeslots_lookup[leave.date]:
                     self.model.Add(
-                        self.shift_vars[
+                        self.shift_decision_vars[
                             (
                                 leave.staff_member.id,
                                 role.id,
@@ -181,12 +185,12 @@ class RosterGenerator:
             )
         return shift_sequence
 
-    def _get_work_days_in_seq(self, shift_seq):
+    def _get_work_days_in_sequence(self, shift_seq):
         """Get number of working days in shift sequence."""
         return sum(shift_seq[position][0] is not None for position in shift_seq)
 
-    def _get_all_days_in_seq(self, shiftsequence):
-        """Get number of days in staff rule."""
+    def _get_all_days_in_sequence(self, shiftsequence):
+        """Get number of days in shift sequence rule."""
         daygroupday_set = shiftsequence.daygroup.daygroupday_set.all()
         return [daygroupday.day.number for daygroupday in daygroupday_set]
 
@@ -223,7 +227,7 @@ class RosterGenerator:
                         try:
                             for timeslot in self.timeslots_lookup[day_to_test]:
                                 shift_vars_in_seq_off[day_num].append(
-                                    self.shift_vars[
+                                    self.shift_decision_vars[
                                         (
                                             worker.id,
                                             role.id,
@@ -264,7 +268,7 @@ class RosterGenerator:
                     for role in roles:
                         try:
                             shift_vars_in_seq_on[day_num].append(
-                                self.shift_vars[
+                                self.shift_decision_vars[
                                     (
                                         worker.id,
                                         role.id,
@@ -302,7 +306,7 @@ class RosterGenerator:
                     (worker.id, shiftsequence.id)
                 ]
                 # invalid_shift_seq = self._get_shift_seq(shiftsequence)
-                all_days_in_seq = self._get_all_days_in_seq(shiftsequence)
+                all_days_in_seq = self._get_all_days_in_sequence(shiftsequence)
 
                 for date in self.extended_dates:
                     shift_vars_in_seq_off = (
@@ -423,7 +427,7 @@ class RosterGenerator:
                         for timeslot in shift_timeslots:
                             self.model.Add(
                                 sum(
-                                    self.shift_vars[
+                                    self.shift_decision_vars[
                                         (
                                             worker.id,
                                             role_id,
@@ -451,7 +455,9 @@ class RosterGenerator:
                 if worker.enforce_one_shift_per_day:
                     self.model.Add(
                         sum(
-                            self.shift_vars[(worker.id, role.id, date, timeslot.id)]
+                            self.shift_decision_vars[
+                                (worker.id, role.id, date, timeslot.id)
+                            ]
                             for role in roles
                             for timeslot in timeslots
                         )
@@ -475,7 +481,7 @@ class RosterGenerator:
         log.info("Enforcement of shifts per roster started...")
         for worker in self.workers:
             num_shifts_worked = sum(
-                self.shift_vars[(worker.id, role.id, date, timeslot.id)]
+                self.shift_decision_vars[(worker.id, role.id, date, timeslot.id)]
                 for role in worker.roles.all()
                 for date in self.dates
                 for timeslot in self.timeslots_lookup[date]
@@ -507,7 +513,7 @@ class RosterGenerator:
             dates = [date for date in self.dates if date not in leave_dates]
             dates1, dates2 = self._split_list(dates, wanted_parts=2)
             num_shifts_worked1 = sum(
-                self.shift_vars[(worker.id, role.id, date, timeslot.id)]
+                self.shift_decision_vars[(worker.id, role.id, date, timeslot.id)]
                 for role in worker.roles.all()
                 for date in dates1
                 for timeslot in self.timeslots_lookup[date]
@@ -535,7 +541,9 @@ class RosterGenerator:
             max_timeslot_size = max_shift_size_lookup[timeslot.shift.id]
             min_timeslot_size = max_shift_size_lookup[timeslot.shift.id]
             num_staff_allocated = sum(
-                self.shift_vars[(worker.id, role.id, timeslot.date, timeslot.id)]
+                self.shift_decision_vars[
+                    (worker.id, role.id, timeslot.date, timeslot.id)
+                ]
                 for worker in self.workers
                 for role in worker.roles.all()
             )
@@ -549,7 +557,7 @@ class RosterGenerator:
         self.model.Maximize(
             sum(
                 self.staff_requests[n][d][s]
-                * self.shift_vars[(worker.id, role.id, date, timeslot.id)]
+                * self.shift_decision_vars[(worker.id, role.id, date, timeslot.id)]
                 for n, worker in enumerate(self.workers)
                 for role in worker.roles.all()
                 for d, date in enumerate(self.dates)
@@ -575,8 +583,8 @@ class RosterGenerator:
         """Populate roster."""
         log.info("Population of roster started...")
         shift_vars_for_current_period = {
-            shift_var_key: self.shift_vars[shift_var_key]
-            for shift_var_key in self.shift_vars
+            shift_var_key: self.shift_decision_vars[shift_var_key]
+            for shift_var_key in self.shift_decision_vars
             if shift_var_key[2] in self.dates
         }
         TimeSlotStaffRelationship = TimeSlot.staff.through
@@ -584,7 +592,7 @@ class RosterGenerator:
         for shift_var_key in shift_vars_for_current_period:
             worker_id = shift_var_key[0]
             timeslot_id = shift_var_key[3]
-            if self.solver.Value(self.shift_vars[shift_var_key]):
+            if self.solver.Value(self.shift_decision_vars[shift_var_key]):
                 staff_to_add.append(
                     TimeSlotStaffRelationship(
                         timeslot_id=timeslot_id,
@@ -601,9 +609,9 @@ class RosterGenerator:
         self._clear_existing_timeslots()
         self._create_timeslots()
         self._create_timeslots_lookup()
-        self._collect_shift_requests()
-        self._create_shift_vars()
-        self._create_previous_shift_vars()
+        self._collect_staff_requests()
+        self._create_shift_decision_vars()
+        self._create_previous_shift_decision_vars()
         self._exclude_leave_dates()
         self._enforce_one_shift_per_day()
         self._enforce_shifts_per_roster()
