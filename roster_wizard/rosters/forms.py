@@ -137,8 +137,8 @@ class SelectBulkDeletionPeriodForm(forms.Form):
     end_date = forms.DateTimeField(widget=DateInput())
 
 
-class StaffRuleUpdateForm(ModelForm):
-    """Staff Rule Update Form."""
+class ShiftSequenceUpdateForm(ModelForm):
+    """Shift Sequence Update Form."""
 
     class Meta:
         """Meta."""
@@ -148,8 +148,8 @@ class StaffRuleUpdateForm(ModelForm):
         widgets = {"staff": forms.CheckboxSelectMultiple()}
 
 
-class StaffRuleCreateForm(ModelForm):
-    """Staff Rule Create Form."""
+class ShiftSequenceCreateForm(ModelForm):
+    """Shift Sequence Create Form."""
 
     class Meta:
         """Meta."""
@@ -215,8 +215,8 @@ class DayGroupDayCreateForm(ModelForm):
         return cleaned_data
 
 
-class StaffRuleShiftCreateForm(ModelForm):
-    """Staff Rule Create Form."""
+class ShiftSequenceShiftCreateForm(ModelForm):
+    """Shift Sequence Shift Create Form."""
 
     class Meta:
         """Meta."""

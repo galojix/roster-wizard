@@ -50,8 +50,8 @@ from .forms import (
     LeaveUpdateForm,
     TimeSlotUpdateForm,
     TimeSlotCreateForm,
-    StaffRuleUpdateForm,
-    StaffRuleCreateForm,
+    ShiftSequenceUpdateForm,
+    ShiftSequenceCreateForm,
     DaySetCreateForm,
     GenerateRosterForm,
     EditRosterForm,
@@ -59,7 +59,7 @@ from .forms import (
     StaffRequestUpdateForm,
     RosterSettingsForm,
     SelectBulkDeletionPeriodForm,
-    StaffRuleShiftCreateForm,
+    ShiftSequenceShiftCreateForm,
 )
 from .logic import (
     SolutionNotFeasible,
@@ -416,7 +416,7 @@ class ShiftSequenceUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Updat
     """Shift Sequence Update View."""
 
     model = ShiftSequence
-    form_class = StaffRuleUpdateForm
+    form_class = ShiftSequenceUpdateForm
     template_name = "shiftsequence_update.html"
 
     permission_required = "rosters.change_roster"
@@ -436,7 +436,7 @@ class ShiftSequenceCreateView(LoginRequiredMixin, PermissionRequiredMixin, Creat
     """Shift Sequence Create View."""
 
     model = ShiftSequence
-    form_class = StaffRuleCreateForm
+    form_class = ShiftSequenceCreateForm
     template_name = "shiftsequence_create.html"
 
     permission_required = "rosters.change_roster"
@@ -489,7 +489,7 @@ class ShiftSequenceShiftCreateView(
 
     model = ShiftSequenceShift
     template_name = "shiftsequenceshift_update.html"
-    form_class = StaffRuleShiftCreateForm
+    form_class = ShiftSequenceShiftCreateForm
     # fields = ("shift", "position")
 
     permission_required = "rosters.change_roster"
