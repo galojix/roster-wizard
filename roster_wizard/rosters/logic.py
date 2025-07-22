@@ -65,6 +65,14 @@ class RosterGenerator:
         ]
         self.model = cp_model.CpModel()
         self.complete = False
+        self.timeslots = None
+        self.timeslots_lookup = {}
+        self.staff_requests = None
+        self.shift_decision_vars = None
+        self.invalid_shift_sequences = None
+        self.skill_mix_rules = None
+        self.intermediate_skill_mix_vars = None
+        self.solver = None
 
     def _clear_existing_timeslots(self):
         # Delete existing timeslots in date range
@@ -82,7 +90,6 @@ class RosterGenerator:
 
     def _create_timeslots_lookup(self):
         # Create timeslot id lookup
-        self.timeslots_lookup = {}
         for date in self.extended_dates:
             timeslots_for_date = list(
                 TimeSlot.objects.filter(date=date).order_by("shift__shift_type")
@@ -511,7 +518,7 @@ class RosterGenerator:
                 leave.date for leave in self.leaves.filter(staff_member=worker)
             ]
             dates = [date for date in self.dates if date not in leave_dates]
-            dates1, dates2 = self._split_list(dates, wanted_parts=2)
+            dates1, _ = self._split_list(dates, wanted_parts=2)
             num_shifts_worked1 = sum(
                 self.shift_decision_vars[(worker.id, role.id, date, timeslot.id)]
                 for role in worker.roles.all()
