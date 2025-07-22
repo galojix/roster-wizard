@@ -29,6 +29,8 @@ from django.forms import formset_factory
 
 # from django.db import connection, reset_queries
 
+from celery.result import AsyncResult
+
 from .models import (
     Leave,
     Role,
@@ -66,7 +68,6 @@ from .logic import (
     get_roster_by_staff,
 )
 from .tasks import generate_roster
-from celery.result import AsyncResult
 
 
 class RosterSettingsView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
