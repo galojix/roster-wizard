@@ -49,7 +49,6 @@ class RosterGenerator:
             start_date.date() + datetime.timedelta(days=self.num_days - 1),
         ]
         self.leaves = Leave.objects.filter(date__range=self.date_range)
-        self.staffrequests = StaffRequest.objects.filter(date__range=self.date_range)
         self.days = [day.number for day in Day.objects.order_by("number")]
         self.dates = [
             (start_date + datetime.timedelta(days=n)).date()
@@ -96,7 +95,7 @@ class RosterGenerator:
         self.staff_requests = [
             [[0 for _ in self.shifts] for _ in self.days] for worker in self.workers
         ]
-        for staffrequest in self.staffrequests:
+        for staffrequest in StaffRequest.objects.filter(date__range=self.date_range):
             worker_num = self.worker_lookup[staffrequest.staff_member.id]
             day_num = self.date_lookup[staffrequest.date]
             shift_num = self.shift_lookup[staffrequest.shift.id]
