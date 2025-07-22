@@ -374,27 +374,27 @@ class RosterGenerator:
         log.info("Enforcement of invalid shift sequence rules completed...")
 
     def _collect_skill_mix_rules(self):
-        """Collect shift rules into friendly structure."""
+        """Collect skill mix rules into friendly structure."""
         log.info("Collection of skill mix rules started...")
-        self.shiftrules = {}
+        self.skill_mix_rules = {}
         for shift in self.shifts:
-            self.shiftrules[shift.id] = []
-            shiftrules = SkillMixRule.objects.filter(shift=shift)
-            for shiftrule in shiftrules:
-                shiftruleroles = shiftrule.skillmixrulerole_set.all()
+            self.skill_mix_rules[shift.id] = []
+            skill_mix_rules = SkillMixRule.objects.filter(shift=shift)
+            for skill_mix_rule in skill_mix_rules:
+                skillmixruleroles = skill_mix_rule.skillmixrulerole_set.all()
                 role_count = {role.id: 0 for role in Role.objects.all()}
-                for shiftrulerole in shiftruleroles:
-                    role_count[shiftrulerole.role.id] = shiftrulerole.count
-                self.shiftrules[shift.id].append(role_count)
+                for skillmixrulerole in skillmixruleroles:
+                    role_count[skillmixrulerole.role.id] = skillmixrulerole.count
+                self.skill_mix_rules[shift.id].append(role_count)
         log.info("Collection of skill mix rules completed...")
 
     def _create_intermediate_skill_mix_vars(self):
-        # Intermediate shift rule variables
+        """Collect intermediate shift rule variables."""
         log.info("Creation of skill mix intermediate variables started...")
         self.intermediate_skill_mix_vars = {
             (timeslot.id, rule_num): self.model.NewBoolVar(f"t{timeslot.id}r{rule_num}")
             for timeslot in self.timeslots
-            for rule_num, rule in enumerate(self.shiftrules[timeslot.shift.id])
+            for rule_num, rule in enumerate(self.skill_mix_rules[timeslot.shift.id])
         }
         log.info("Creation of skill mix intermediate variables completed...")
 
@@ -402,12 +402,12 @@ class RosterGenerator:
         """Only one skill mix rule at a time should be enforced."""
         log.info("Enforcement of one skill mix rule at a time started...")
         for timeslot in self.timeslots:
-            if len(self.shiftrules[timeslot.shift.id]) >= 1:
+            if len(self.skill_mix_rules[timeslot.shift.id]) >= 1:
                 self.model.Add(
                     sum(
                         self.intermediate_skill_mix_vars[(timeslot.id, rule_num)]
                         for rule_num, rule in enumerate(
-                            self.shiftrules[timeslot.shift.id]
+                            self.skill_mix_rules[timeslot.shift.id]
                         )
                     )
                     == 1
@@ -417,10 +417,10 @@ class RosterGenerator:
     def _enforce_skill_mix_rules(self):
         """Enforce one skill mix rule per shift per timeslot."""
         log.info("Enforcement of skill mix rules started...")
-        for shift_id in self.shiftrules:
+        for shift_id in self.skill_mix_rules:
             shift_timeslots = self.timeslots.filter(shift__id=shift_id)
-            if len(self.shiftrules[shift_id]) >= 1:
-                for rule_num, rule in enumerate(self.shiftrules[shift_id]):
+            if len(self.skill_mix_rules[shift_id]) >= 1:
+                for rule_num, rule in enumerate(self.skill_mix_rules[shift_id]):
                     for role_id in rule:
                         workers = self.workers.filter(roles__id=role_id)
                         role_count = rule[role_id]
@@ -529,9 +529,9 @@ class RosterGenerator:
         log.info("Enforcement of staff numbers started...")
         max_shift_size_lookup = {}
         min_shift_size_lookup = {}
-        for shift_id in self.shiftrules:
+        for shift_id in self.skill_mix_rules:
             role_count_sizes = []
-            for role_counts in self.shiftrules[shift_id]:
+            for role_counts in self.skill_mix_rules[shift_id]:
                 role_count_sizes.append(sum(role_counts.values()))
             max_shift_size = max(role_count_sizes)
             min_shift_size = min(role_count_sizes)
