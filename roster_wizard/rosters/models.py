@@ -67,7 +67,7 @@ class Role(models.Model):
 
     def __str__(self):
         """Return a meaningful string representation."""
-        return self.role_name
+        return str(self.role_name)
 
     def get_absolute_url(self):
         """URL."""
@@ -166,7 +166,7 @@ class Shift(models.Model):
 
     def __str__(self):
         """Return a meaningful string representation."""
-        return self.shift_type
+        return str(self.shift_type)
 
     def get_absolute_url(self):
         """URL."""
@@ -194,7 +194,7 @@ class SkillMixRule(models.Model):
 
     def __str__(self):
         """Return a meaningful string representation."""
-        return self.skillmixrule_name
+        return str(self.skillmixrule_name)
 
     def get_absolute_url(self):
         """URL."""
