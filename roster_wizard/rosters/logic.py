@@ -192,12 +192,12 @@ class RosterGenerator:
             )
         return shift_sequence
 
-    def _get_work_days_in_sequence(self, shift_seq):
+    def _get_num_work_days_in_sequence(self, shift_seq):
         """Get number of working days in shift sequence."""
         return sum(shift_seq[position][0] is not None for position in shift_seq)
 
-    def _get_all_days_in_sequence(self, shiftsequence):
-        """Get number of days in shift sequence rule."""
+    def _get_all_day_nums_in_sequence(self, shiftsequence):
+        """Get all day numbers in shift sequence."""
         daygroupday_set = shiftsequence.daygroup.daygroupday_set.all()
         return [daygroupday.day.number for daygroupday in daygroupday_set]
 
@@ -205,19 +205,19 @@ class RosterGenerator:
         self,
         date,
         shift_seq,
-        all_days_in_seq,
+        all_day_nums_in_seq,
         roles,
         worker,
     ):
         """Find non-working shift variables in shift sequence.
 
-        A blank/None position (no shift) in a staff rule means no shift worked
+        A blank/None position (no shift) in a shift sequence rule means no shift worked
         that day.
 
         """
-        shift_vars_in_seq_off = {}
+        non_working_shift_vars_in_seq = {}
         for day_num in shift_seq:
-            shift_vars_in_seq_off[day_num] = []
+            non_working_shift_vars_in_seq[day_num] = []
             for shift in shift_seq[day_num]:
                 if shift is None:
                     day_to_test = date + datetime.timedelta(days=day_num - 1)
@@ -227,13 +227,13 @@ class RosterGenerator:
                     daygroupday_num = (
                         delta + self.num_days + 1 if delta < 0 else delta + 1
                     )
-                    if daygroupday_num not in all_days_in_seq:
+                    if daygroupday_num not in all_day_nums_in_seq:
                         break
 
                     for role in roles:
                         try:
                             for timeslot in self.timeslots_lookup[day_to_test]:
-                                shift_vars_in_seq_off[day_num].append(
+                                non_working_shift_vars_in_seq[day_num].append(
                                     self.shift_decision_vars[
                                         (
                                             worker.id,
@@ -245,7 +245,7 @@ class RosterGenerator:
                                 )
                         except KeyError:
                             continue
-        return shift_vars_in_seq_off
+        return non_working_shift_vars_in_seq
 
     def _get_working_shift_variables_in_sequence(
         self,
@@ -257,9 +257,9 @@ class RosterGenerator:
         timeslot_ids,
     ):
         """Find working day shift variables in shift sequence."""
-        shift_vars_in_seq_on = {}
+        working_shift_vars_in_seq = {}
         for day_num in shift_seq:
-            shift_vars_in_seq_on[day_num] = []
+            working_shift_vars_in_seq[day_num] = []
             for shift in shift_seq[day_num]:
                 if shift is not None:
                     day_to_test = date + datetime.timedelta(days=day_num - 1)
@@ -274,7 +274,7 @@ class RosterGenerator:
 
                     for role in roles:
                         try:
-                            shift_vars_in_seq_on[day_num].append(
+                            working_shift_vars_in_seq[day_num].append(
                                 self.shift_decision_vars[
                                     (
                                         worker.id,
@@ -286,9 +286,9 @@ class RosterGenerator:
                             )
                         except KeyError:
                             continue
-        return shift_vars_in_seq_on
+        return working_shift_vars_in_seq
 
-    def _precompute_invalid_shift_sequences(self):
+    def _create_invalid_shift_sequence_lookup(self):
         self.invalid_shift_sequences = {}
         for worker in self.workers:
             for shiftsequence in worker.shiftsequence_set.all():
@@ -312,11 +312,10 @@ class RosterGenerator:
                 invalid_shift_seq = self.invalid_shift_sequences[
                     (worker.id, shiftsequence.id)
                 ]
-                # invalid_shift_seq = self._get_shift_seq(shiftsequence)
-                all_days_in_seq = self._get_all_days_in_sequence(shiftsequence)
+                all_days_in_seq = self._get_all_day_nums_in_sequence(shiftsequence)
 
                 for date in self.extended_dates:
-                    shift_vars_in_seq_off = (
+                    non_working_shift_vars_in_seq = (
                         self._get_non_working_shift_variables_in_sequence(
                             date,
                             invalid_shift_seq,
@@ -325,7 +324,7 @@ class RosterGenerator:
                             worker,
                         )
                     )
-                    shift_vars_in_seq_on = (
+                    working_shift_vars_in_seq = (
                         self._get_working_shift_variables_in_sequence(
                             date,
                             invalid_shift_seq,
@@ -337,7 +336,7 @@ class RosterGenerator:
                     )
 
                     # Create intermediate vars
-                    intermediate_vars = {
+                    intermediate_shift_sequence_vars = {
                         (
                             worker.id,
                             date,
@@ -346,33 +345,33 @@ class RosterGenerator:
                         ): self.model.NewBoolVar(
                             f"w{worker.id}d{date}sr{shiftsequence.id}p{position}"
                         )
-                        for position in shift_vars_in_seq_on
+                        for position in working_shift_vars_in_seq
                     }
 
-                    # Enforce "off" rule
-                    for position, shift_vars in shift_vars_in_seq_off.items():
+                    # Enforce invalidation of non-working day in shift sequence
+                    for day_num, shift_vars in non_working_shift_vars_in_seq.items():
                         if len(shift_vars) > 0:
                             self.model.Add(sum(shift_vars) >= 1).OnlyEnforceIf(
-                                intermediate_vars[
-                                    (worker.id, date, shiftsequence.id, position)
+                                intermediate_shift_sequence_vars[
+                                    (worker.id, date, shiftsequence.id, day_num)
                                 ]
                             )
 
-                    # Enforce "on" rule
-                    for position, shift_vars in shift_vars_in_seq_on.items():
+                    # Enforce invalidation of working day in shift sequence
+                    for day_num, shift_vars in working_shift_vars_in_seq.items():
                         if len(shift_vars) > 0:
                             self.model.Add(sum(shift_vars) == 0).OnlyEnforceIf(
-                                intermediate_vars[
-                                    (worker.id, date, shiftsequence.id, position)
+                                intermediate_shift_sequence_vars[
+                                    (worker.id, date, shiftsequence.id, day_num)
                                 ]
                             )
 
                     # Enforce one intermediate variable to be true
                     # Only need to enforce one position per rule
-                    all_intermediate_vars = [
-                        value for value in intermediate_vars.values()
+                    all_intermediate_shift_sequence_vars = [
+                        value for value in intermediate_shift_sequence_vars.values()
                     ]
-                    self.model.Add(sum(all_intermediate_vars) >= 1)
+                    self.model.Add(sum(all_intermediate_shift_sequence_vars) >= 1)
 
         log.info("Enforcement of invalid shift sequence rules completed...")
 
@@ -623,7 +622,7 @@ class RosterGenerator:
         self._enforce_one_skill_mix_rule_at_a_time()
         self._enforce_skill_mix_rules()
         self._enforce_balanced_shifts()
-        self._precompute_invalid_shift_sequences()
+        self._create_invalid_shift_sequence_lookup()
         self._enforce_invalid_shift_sequences()
         self._enforce_staff_numbers()
         self._maximise_staff_requests()
