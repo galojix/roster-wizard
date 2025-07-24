@@ -1,7 +1,7 @@
 """Business logic testing."""
 
-import pytest
 import datetime
+import pytest
 
 from rosters.logic import (
     RosterGenerator,

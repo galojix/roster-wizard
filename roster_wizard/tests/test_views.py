@@ -1,7 +1,7 @@
 """View Testing."""
 
-import pytest
 import datetime
+import pytest
 
 from django.urls import reverse
 from django.test import SimpleTestCase

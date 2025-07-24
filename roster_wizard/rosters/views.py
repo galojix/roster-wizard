@@ -800,6 +800,15 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
     form_class = StaffRequestUpdateForm
     success_url = reverse_lazy("staffrequest_list")
 
+    def __init__(self):
+        """Initialize StaffRequestUpdateView."""
+        super().__init__()
+        self.staff_member = None
+        self.dates = []
+        self.shifts = []
+        self.requests = []
+        self.priorities = []
+
     def dispatch(self, request, *args, **kwargs):
         """Collect requests."""
         self.staff_member = get_object_or_404(
@@ -849,7 +858,7 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
                     day_shifts_map[day.number].append(shift)
         for day in days:
             for shift in day_shifts_map[day.number]:
-                date = (start_date + datetime.timedelta(days=(day.number - 1))).date()
+                date = (start_date + datetime.timedelta(days=day.number - 1)).date()
                 self.dates.append(date)
                 self.shifts.append(shift)
                 request_id = (date, shift)
@@ -975,6 +984,10 @@ class SelectBulkDeletionPeriodView(
 class GenerateRosterView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     """Generate Roster View."""
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.task_id = None
+
     template_name = "generate_roster.html"
     form_class = GenerateRosterForm
     permission_required = "rosters.change_roster"
@@ -995,7 +1008,7 @@ class GenerateRosterView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
         self.request.session["start_date"] = start_date.date().strftime("%d-%b-%Y")
         try:
             result = generate_roster.delay(start_date=start_date)
-        except Exception as error:
+        except Exception as error:  # pylint: disable=broad-exception-caught
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -1086,7 +1099,7 @@ def edit_roster(request):
 def populate_edit_roster_form(
     staff_members,
     all_timeslots,
-    EditRosterFormSet,
+    EditRosterFormSet,  # pylint: disable=invalid-name
     dates,
     shift_types,
     num_days,
@@ -1131,7 +1144,7 @@ def process_edit_roster_form(dates, all_timeslots, formset, start_date, staff_id
         timeslot.staff.clear()
 
     # Populate timeslots with staff as per form
-    TimeSlotStaffRelationship = TimeSlot.staff.through
+    TimeSlotStaffRelationship = TimeSlot.staff.through  # pylint: disable=invalid-name
     staff_to_add = []
     for staff_num, shift_set in enumerate(formset.cleaned_data):
         for day_num, day_label in enumerate(shift_set):
@@ -1162,11 +1175,17 @@ def roster_generation_status(request, task_id):
             status = "SUCCEEDED"
         except SolutionNotFeasible:
             status = "FAILED"
-            status_message = "Could not generate roster, ensure staff details and rules are correct..."
-        except Exception as error:
+            status_message = (
+                "Could not generate roster, "
+                "ensure staff details and rules are correct..."
+            )
+        except Exception as error:  # pylint: disable=broad-exception-caught
             status = "FAILED"
             if "no attribute 'daygroupday_set'" in str(error):
-                status_message = "Please check that all shifts and shift sequences have day groups assigned..."
+                status_message = (
+                    "Please check that all shifts and "
+                    "shift sequences have day groups assigned..."
+                )
             else:
                 status_message = f"{error.__class__.__name__}:{error}"
     else:

@@ -81,15 +81,3 @@ admin.site.register(DayGroup)
 admin.site.register(Day)
 admin.site.register(DayGroupDay)
 admin.site.register(StaffRequest, StaffRequestAdmin)
-
-# class CommentInLine(admin.TabularInline):
-#     model = Comment
-#
-#
-# class ArticleAdmin(admin.ModelAdmin):
-#     inlines = [
-#         CommentInLine,
-#     ]
-#
-# admin.site.register(Article, ArticleAdmin)
-# admin.site.register(Comment)

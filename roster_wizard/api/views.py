@@ -6,13 +6,12 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 
 from rosters.models import Leave, TimeSlot
+from rosters.tasks import generate_roster
 from .serializers import (
     LeaveSerializer,
     TimeSlotSerializer,
     DateTimeSerializer,
 )
-
-from rosters.tasks import generate_roster
 
 
 class LeaveViewSet(viewsets.ModelViewSet):
@@ -60,16 +59,16 @@ class GenerateRosterViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         """Not used."""
-        pass
+        pass  # pylint: disable=unnecessary-pass
 
     def update(self, request, pk=None):
         """Not used."""
-        pass
+        pass  # pylint: disable=unnecessary-pass
 
     def partial_update(self, request, pk=None):
         """Not used."""
-        pass
+        pass  # pylint: disable=unnecessary-pass
 
     def destroy(self, request, pk=None):
         """Not used."""
-        pass
+        pass  # pylint: disable=unnecessary-pass

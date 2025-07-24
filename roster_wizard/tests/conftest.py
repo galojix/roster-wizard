@@ -1,7 +1,7 @@
 """Shared fixtures."""
 
-import pytest
 import datetime
+import pytest
 
 from django.contrib.auth import get_user_model
 
@@ -30,7 +30,7 @@ def init_db():
     get_user_model().objects.create_user(
         username="temporary",
         password="temporary",
-        email="temporrary@fred.com",
+        email="temporary@fred.com",
         last_name="Joey",
         first_name="Smith",
         available=False,

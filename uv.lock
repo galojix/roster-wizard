@@ -687,6 +687,19 @@ wheels = [
 ]
 
 [[package]]
+name = "pylint-pytest"
+version = "1.1.7"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pylint" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/aa/6e/36a916bfd251d4901ef9f5ddfece3b0e113f9109de29d962c6ea6b53cc17/pylint-pytest-1.1.7.tar.gz", hash = "sha256:7a38be02c014eb6d98791eb978e79ed292f1904d3a518289c6d7ac4fb4122e98", size = 12768, upload-time = "2023-12-04T07:29:49.797Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/98/1a/549ecc83f626f1b99b31c7123523555c262c8678260336b0a6eb6382732e/pylint_pytest-1.1.7-py3-none-any.whl", hash = "sha256:5d687a2f4b17e85654fc2a8f04944761efb11cb15dc46d008f420c377b149151", size = 10750, upload-time = "2023-12-04T07:29:48.749Z" },
+]
+
+[[package]]
 name = "pytest"
 version = "8.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -831,6 +844,7 @@ dependencies = [
     { name = "ortools" },
     { name = "psycopg2-binary" },
     { name = "pylint-django" },
+    { name = "pylint-pytest" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-django" },
@@ -858,6 +872,7 @@ requires-dist = [
     { name = "ortools", specifier = ">=9.12.4544" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "pylint-django", specifier = ">=2.6.1" },
+    { name = "pylint-pytest", specifier = ">=1.1.7" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "pytest-cov", specifier = ">=6.1.1" },
     { name = "pytest-django", specifier = ">=4.11.1" },
