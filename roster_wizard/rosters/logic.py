@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 class SolutionNotFeasible(Exception):
     """Exception for when there is no feasible solution."""
 
-    pass
+    pass  # pylint: disable=unnecessary-pass
 
 
 class RosterGenerator:
@@ -589,7 +589,7 @@ class RosterGenerator:
             for shift_var_key in self.shift_decision_vars
             if shift_var_key[2] in self.dates
         }
-        TimeSlotStaffRelationship = TimeSlot.staff.through
+        TimeSlotStaffRelationship = TimeSlot.staff.through  # pylint: disable=invalid-name
         staff_to_add = []
         for shift_var_key in shift_vars_for_current_period:
             worker_id = shift_var_key[0]

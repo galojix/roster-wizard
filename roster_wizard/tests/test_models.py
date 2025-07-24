@@ -32,7 +32,7 @@ def test_leave_object_name(init_feasible_db):
     """Test leave object name."""
     leave = Leave.objects.first()
     expected_object_name = (
-        f"{leave.staff_member.last_name}, {leave.staff_member.first_name} {leave.date}"
+        f"{leave.staff_member.last_name},{leave.staff_member.first_name} {leave.date}"
     )
     assert expected_object_name == str(leave)
 
@@ -152,7 +152,7 @@ def test_staffrequest_object_name(init_feasible_db):
     """Test staffrequest object name."""
     staffrequest = StaffRequest.objects.first()
     expected_object_name = (
-        f"{staffrequest.staff_member.last_name}, "
+        f"{staffrequest.staff_member.last_name},"
         f"{staffrequest.staff_member.first_name} "
         f"{staffrequest.shift.shift_type} "
         f"{staffrequest.date}"
