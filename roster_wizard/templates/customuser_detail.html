@@ -5,10 +5,9 @@
     <h4>{{ customuser.last_name }}, {{ customuser.first_name }}:</h4>
     <table class="table table-striped table-bordered table-hover">
       <tr>
-        <th>Username</th>
+        <th>Email Address</th>
         <th>Last Name</th>
         <th>First Name</th>
-        <th>Email Address</th>
         <th>Shifts per Roster</th>
         <th>Enforce Shifts per Roster</th>
         <th>Enforce One Shift per Day</th>
@@ -17,10 +16,9 @@
         <th>Roles</th>
       </tr>
       <tr>
-        <td>{{ customuser.username }}</td>
+        <td>{{ customuser.email }}</td>
         <td>{{ customuser.last_name }}</td>
         <td>{{ customuser.first_name }}</td>
-        <td>{{ customuser.email }}</td>
         <td>{{ customuser.shifts_per_roster }}</td>
         <td>{{ customuser.enforce_shifts_per_roster }}</td>
         <td>{{ customuser.enforce_one_shift_per_day }}</td>

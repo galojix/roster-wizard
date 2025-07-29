@@ -15,12 +15,12 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = [
         "email",
-        "username",
         "first_name",
         "last_name",
         "shifts_per_roster",
         "is_staff",
     ]
+    ordering = ("email",)
 
 
 admin.site.register(CustomUser, CustomUserAdmin)

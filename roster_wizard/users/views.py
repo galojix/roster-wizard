@@ -36,7 +36,6 @@ class CustomUserUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVi
     model = CustomUser
     template_name = "customuser_update.html"
     fields = (
-        "username",
         "first_name",
         "last_name",
         "email",
@@ -67,7 +66,6 @@ class CustomUserCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVi
     model = CustomUser
     template_name = "customuser_create.html"
     fields = (
-        "username",
         "first_name",
         "last_name",
         "email",

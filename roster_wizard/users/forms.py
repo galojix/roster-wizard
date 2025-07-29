@@ -12,7 +12,10 @@ class CustomUserCreationForm(UserCreationForm):
         """Meta data."""
 
         model = CustomUser
-        fields = UserCreationForm.Meta.fields + ("shifts_per_roster",)
+        fields = (
+            "email",
+            "shifts_per_roster",
+        )
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -22,4 +25,7 @@ class CustomUserChangeForm(UserChangeForm):
         """Meta data."""
 
         model = CustomUser
-        fields = UserChangeForm.Meta.fields
+        fields = (
+            "email",
+            "shifts_per_roster",
+        )

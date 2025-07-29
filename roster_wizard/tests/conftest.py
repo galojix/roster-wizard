@@ -28,7 +28,6 @@ pytestmark = pytest.mark.django_db
 def init_db():
     """Initialise database."""
     get_user_model().objects.create_user(
-        username="temporary",
         password="temporary",
         email="temporary@fred.com",
         last_name="Joey",
@@ -43,7 +42,6 @@ def init_db():
 def init_feasible_db(init_db):
     """Initialise database."""
     staff_member1 = get_user_model().objects.create_user(
-        username="one",
         password="temporary",
         last_name="One",
         first_name="One",
@@ -52,7 +50,6 @@ def init_feasible_db(init_db):
         shifts_per_roster=10,
     )
     staff_member2 = get_user_model().objects.create_user(
-        username="two",
         password="temporary",
         last_name="Two",
         first_name="Two",
@@ -61,7 +58,6 @@ def init_feasible_db(init_db):
         shifts_per_roster=10,
     )
     staff_member3 = get_user_model().objects.create_user(
-        username="three",
         password="temporary",
         last_name="Three",
         first_name="Three",
@@ -70,7 +66,6 @@ def init_feasible_db(init_db):
         shifts_per_roster=10,
     )
     staff_member4 = get_user_model().objects.create_user(
-        username="four",
         password="temporary",
         last_name="Four",
         first_name="Four",
@@ -79,7 +74,6 @@ def init_feasible_db(init_db):
         shifts_per_roster=10,
     )
     staff_member5 = get_user_model().objects.create_user(
-        username="casual",
         password="temporary",
         last_name="casual",
         first_name="casual",
@@ -90,7 +84,6 @@ def init_feasible_db(init_db):
         enforce_one_shift_per_day=False,
     )
     staff_member6 = get_user_model().objects.create_user(
-        username="six",
         password="temporary",
         last_name="Six",
         first_name="Six",
@@ -255,7 +248,6 @@ def init_feasible_db(init_db):
 def init_infeasible_db(init_db):
     """Initialise database."""
     staff_member1 = get_user_model().objects.create_user(
-        username="one",
         password="temporary",
         last_name="One",
         first_name="One",
@@ -264,7 +256,6 @@ def init_infeasible_db(init_db):
         shifts_per_roster=10,
     )
     staff_member2 = get_user_model().objects.create_user(
-        username="two",
         password="temporary",
         last_name="Two",
         first_name="Two",
@@ -293,7 +284,6 @@ def init_infeasible_db(init_db):
 def init_too_many_staff_db(init_db):
     """Initialise database."""
     staff_member1 = get_user_model().objects.create_user(
-        username="one",
         password="temporary",
         last_name="One",
         first_name="One",
@@ -302,7 +292,6 @@ def init_too_many_staff_db(init_db):
         shifts_per_roster=10,
     )
     staff_member2 = get_user_model().objects.create_user(
-        username="two",
         password="temporary",
         last_name="Two",
         first_name="Two",

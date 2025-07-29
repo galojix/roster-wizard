@@ -15,15 +15,15 @@ class CustomUserManager(BaseUserManager):
         query_set = super().get_queryset()
         return query_set
 
-    def create_user(self, username, password, **extra_fields):
-        """Create and save a User with the given username and password."""
-        user = self.model(username=username, **extra_fields)
+    def create_user(self, email, password, **extra_fields):
+        """Create and save a User with the given email and password."""
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save()
         return user
 
-    def create_superuser(self, username, password, **extra_fields):
-        """Create and save a SuperUser with the given username and password."""
+    def create_superuser(self, email, password, **extra_fields):
+        """Create and save a SuperUser with the given email and password."""
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
@@ -32,7 +32,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
-        return self.create_user(username, password, **extra_fields)
+        return self.create_user(email, password, **extra_fields)
 
 
 class CustomUser(AbstractUser):
@@ -44,6 +44,7 @@ class CustomUser(AbstractUser):
         ordering = ("last_name", "first_name")
 
     objects = CustomUserManager()
+    username = None
     email = models.EmailField(
         _("email address"),
         blank=False,
@@ -53,6 +54,8 @@ class CustomUser(AbstractUser):
             "unique": _("A user with that email address already exists."),
         },
     )
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
     available = models.BooleanField(null=False, blank=False, default=True)
     shifts_per_roster = models.IntegerField(null=False, blank=False, default=0)
     max_shifts = models.BooleanField(null=False, blank=False, default=True)
