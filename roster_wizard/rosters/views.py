@@ -1016,6 +1016,7 @@ class GenerateRosterView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
             )
             return HttpResponseRedirect(reverse("generate_roster"))
         self.task_id = result.task_id
+        self.request.session["task_id"] = self.task_id
         return super().form_valid(form)
 
 

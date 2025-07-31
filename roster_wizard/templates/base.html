@@ -177,6 +177,9 @@
               {% else %}
                 <a type="button" class="btn btn-primary" href="{% url 'select_roster_period' %}">{{ roster_name }}, Period: Not Set</a>
               {% endif %}
+              {% if request.session.task_id %}
+                <a type="button" class="btn btn-primary" href="{% url 'roster_generation_status' request.session.task_id %}">Check Roster</a>
+              {% endif %}
             </div>
           {% endif %}
         </div>
