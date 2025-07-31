@@ -1,243 +1,213 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-<head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}?v=3" type="image/x-icon" />
+    <link rel="icon" href="{% static ' img/favicon.ico' %}?v=3" type="image/x-icon" />
 
-  <!-- Favicon -->
-  <link rel="shortcut icon" href="{% static "img/favicon.ico" %}?v=3" type="image/x-icon">
-  <link rel="icon" href="{% static " img/favicon.ico" %}?v=3" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    <title>
+      {% block title %}
+        Roster: {{ roster_name }}
+      {% endblock %}
+    </title>
+  </head>
 
-  <title>{% block title %}Roster: {{roster_name}}{% endblock title %}</title>
-</head>
-
-<body>
-
-  <nav class="navbar fixed-top navbar-expand-xl navbar-dark bg-primary">
-    <a class="navbar-brand" href="{% url 'home' %}">Roster Wizard</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-      aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-      <div class="d-flex flex-column flex-grow-1">
-        <div class="flex-grow-1">
+  <body>
+    <nav class="navbar fixed-top navbar-expand-xl navbar-dark bg-primary">
+      <a class="navbar-brand" href="{% url 'home' %}">Roster Wizard</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="d-flex flex-column flex-grow-1">
+          <div class="flex-grow-1">
+            {% if user.is_authenticated %}
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Staff</button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'customuser_list' %}">Display Staff</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'role_list' %}">Display Staff by Role</a>
+                      {% if perms.rosters.change_roster %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'customuser_create' %}">Create New Staff Member</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'role_create' %}">Create New Role</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Day Groups</button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'daygroup_list' %}">Display Day Groups</a>
+                      {% if perms.rosters.change_roster %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'daygroup_create' %}">Create New Day Group</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'day_set_create' %}">Set Number of Days</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Shifts</button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'shift_list' %}">Display Shifts</a>
+                      {% if perms.rosters.change_roster %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'shift_create' %}">Create New Shift</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Skill Mix</button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'skillmixrule_list' %}">Display Skill Mix Rules</a>
+                      {% if perms.rosters.change_roster %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'skillmixrule_create' %}">Create New Skill Mix Rule</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Shift Sequences</button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'shiftsequence_list' %}">Display Shift Sequences</a>
+                      {% if perms.rosters.change_roster %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'shiftsequence_create' %}">Create New Shift Sequence</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Leave</button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'leave_list' %}">Display Leave</a>
+                      {% if perms.rosters.change_roster %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'leave_create' %}">Create New Leave</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Staff Requests</button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'staffrequest_list' %}">Display Staff Requests</a>
+                      <div class="dropdown-divider"></div>
+                      {% if perms.rosters.change_roster %}
+                        <a class="dropdown-item" href="{% url 'staffrequest_create' %}">Create Staff Requests</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'staff_request_status' %}">Staff Request Status</a>
+                      {% else %}
+                        <a class="dropdown-item" href="{% url 'staffrequest_update' user.id %}">Edit My Shift Requests</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </li>
+                <li class="nav-item mr-auto">
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Roster</button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'timeslot_list' %}">Display Roster by Day</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'roster_by_staff' %}">Display Roster by Staff</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'select_roster_period' %}">Select Roster Period</a>
+                      <div class="dropdown-divider"></div>
+                      {% if perms.rosters.change_roster %}
+                        <a class="dropdown-item" href="{% url 'generate_roster' %}">Generate New Roster</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'edit_roster' %}">Manually Edit Roster</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'select_bulk_deletion_period' %}">Delete Rosters</a>
+                        <div class="dropdown-divider"></div>
+                      {% endif %}
+                      <a class="dropdown-item" href="{% url 'download_csv' %}">Download Roster as CSV File</a>
+                      {% if perms.rosters.change_roster %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'roster_settings' %}">Settings</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">{{ user.email }}</button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
+                      <a class="dropdown-item" href="{% url 'password_change' %}">Change Password</a>
+                      {% if perms.rosters.change_roster %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'admin:index' %}">Database Admin</a>
+                      {% endif %}
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            {% else %}
+              <form class="form-inline justify-content-end">
+                <a href="{% url 'account_login' %}" class="btn btn-primary">Log In</a>
+              </form>
+            {% endif %}
+          </div>
           {% if user.is_authenticated %}
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <div class="dropdown">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                  Staff
-                </button>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{% url 'customuser_list' %}">Display Staff</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'role_list' %}">Display Staff by Role</a>
-                  {% if perms.rosters.change_roster %}
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'customuser_create' %}">Create New Staff Member</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'role_create' %}">Create New Role</a>
-                  {% endif %}
-                </div>
-              </div>
-            </li>
-            <li class="nav-item">
-              <div class="dropdown">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                  Day Groups
-                </button>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{% url 'daygroup_list' %}">Display Day Groups</a>
-                  {% if perms.rosters.change_roster %}
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'daygroup_create' %}">Create New Day Group</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'day_set_create' %}">Set Number of Days</a>
-                  {% endif %}
-                </div>
-              </div>
-            </li>
-            <li class="nav-item">
-              <div class="dropdown">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                  Shifts
-                </button>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{% url 'shift_list' %}">Display Shifts</a>
-                  {% if perms.rosters.change_roster %}
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'shift_create' %}">Create New Shift</a>
-                  {% endif %}
-                </div>
-              </div>
-            </li>
-            <li class="nav-item">
-              <div class="dropdown">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                  Skill Mix
-                </button>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{% url 'skillmixrule_list' %}">Display Skill Mix Rules</a>
-                  {% if perms.rosters.change_roster %}
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'skillmixrule_create' %}">Create New Skill Mix Rule</a>
-                  {% endif %}
-                </div>
-              </div>
-            </li>
-            <li class="nav-item">
-              <div class="dropdown">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                  Shift Sequences
-                </button>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{% url 'shiftsequence_list' %}">Display Shift Sequences</a>
-                  {% if perms.rosters.change_roster %}
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'shiftsequence_create' %}">Create New Shift Sequence</a>
-                  {% endif %}
-                </div>
-              </div>
-            </li>
-            <li class="nav-item">
-              <div class="dropdown">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                  Leave
-                </button>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{% url 'leave_list' %}">Display Leave</a>
-                  {% if perms.rosters.change_roster %}
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'leave_create' %}">Create New Leave</a>
-                  {% endif %}
-                </div>
-              </div>
-            </li>
-            <li class="nav-item">
-              <div class="dropdown">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                  Staff Requests
-                </button>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{% url 'staffrequest_list' %}">Display Staff Requests</a>
-                  <div class="dropdown-divider"></div>
-                  {% if perms.rosters.change_roster %}
-                  <a class="dropdown-item" href="{% url 'staffrequest_create' %}">Create Staff Requests</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'staff_request_status' %}">Staff Request Status</a>
-                  {% else %}
-                  <a class="dropdown-item" href="{% url 'staffrequest_update' user.id %}">Edit My Shift Requests</a>
-                  {% endif %}
-                </div>
-              </div>
-            </li>
-            <li class="nav-item mr-auto">
-              <div class="dropdown">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                  Roster
-                </button>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{% url 'timeslot_list' %}">Display Roster by Day</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'roster_by_staff' %}">Display Roster by Staff</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'select_roster_period' %}">Select Roster Period</a>
-                  <div class="dropdown-divider"></div>
-                  {% if perms.rosters.change_roster %}
-                  <a class="dropdown-item" href="{% url 'generate_roster' %}">Generate New Roster</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'edit_roster' %}">Manually Edit Roster</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'select_bulk_deletion_period' %}">Delete Rosters</a>
-                  <div class="dropdown-divider"></div>
-                  {% endif %}
-                  <a class="dropdown-item" href="{% url 'download_csv' %}">Download Roster as CSV File</a>
-                  {% if perms.rosters.change_roster %}
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'roster_settings' %}">Settings</a>
-                  {% endif %}
-                </div>
-              </div>
-            </li>
-            <li class="nav-item">
-              <div class="dropdown">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                  {{ user.email }}
-                </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
-                  <a class="dropdown-item" href="{% url 'password_change' %}">Change Password</a>
-                  {% if perms.rosters.change_roster %}
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'admin:index' %}">Database Admin</a>
-                  {% endif %}
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'account_logout' %}">
-                    Log Out</a>
-                </div>
-              </div>
-            </li>
-          </ul>
-          {% else %}
-          <form class="form-inline justify-content-end">
-            <a href="{% url 'account_login' %}" class="btn btn-primary">
-              Log In</a>
-          </form>
+            <div class="text-white bg-primary">
+              {% if request.session.start_date %}
+                <a type="button" class="btn btn-primary" href="{% url 'select_roster_period' %}">{{ roster_name }}, Period:{{ request.session.start_date }}</a>
+              {% else %}
+                <a type="button" class="btn btn-primary" href="{% url 'select_roster_period' %}">{{ roster_name }}, Period: Not Set</a>
+              {% endif %}
+            </div>
           {% endif %}
         </div>
-        {% if user.is_authenticated %}
-        <div class="text-white bg-primary">
-          {% if request.session.start_date %}
-          <a type="button" class="btn btn-primary" href="{% url 'select_roster_period' %}">{{roster_name}},
-            Period:{{ request.session.start_date }}</a>
-          </button>
-          {% else %}
-          <a type="button" class="btn btn-primary" href="{% url 'select_roster_period' %}">{{roster_name}}, Period: Not
-            Set</a>
-          {% endif %}
-        </div>
-        {% endif %}
       </div>
-    </div>
-  </nav>
-  <div class="container-fluid" style="margin-top:100px">
-    {% if messages %}
-    {% for message in messages %}
-    <div
-      class="{% if message.tags %}container messages alert {{ message.tags }} {% else %}container messages alert alert-danger{% endif %}">
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-      <p>{{ message }}</p>
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% block content-wide %}
-    <div class="container">
-      {% block content %}
-      {% endblock content %}
-    </div>
-    {% endblock content-wide %}
-  </div>
+    </nav>
+    <div class="container-fluid" style="margin-top:100px">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="{% if message.tags %} container alert {{ message.tags }} {% endif %}">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <p>{{ message }}</p>
+            </div>
+        {% endfor %}
+      {% endif %}
+      {% block contentwide %}
+        <div class="container">
+          {% block content %}
 
-  <!-- Optional JavaScript -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+          {% endblock %}
+        </div>
+      {% endblock %}
+    </div>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
-    crossorigin="anonymous"></script>
-  {% block extra-js %}
-  {% endblock extra-js %}
-</body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    {% block extrajs %}
+
+    {% endblock %}
+  </body>
 </html>

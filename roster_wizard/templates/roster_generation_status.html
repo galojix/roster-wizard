@@ -2,29 +2,28 @@
 {% load static %}
 
 {% block content %}
-<h3>Roster Generation:</h2>
-  {% if status == "PROCESSING" %}
-  <div class="generating mt-3">
-    <div class="spinner-border text-success"></div>
-  </div>
+  <h3>Roster Generation:</h3>
+  {% if status == 'PROCESSING' %}
+    <div class="generating mt-3">
+      <div class="spinner-border text-success"></div>
+    </div>
   {% endif %}
 
-  {% if status == "FAILED" %}
-  <p class="text-danger">Roster failed...</p>
+  {% if status == 'FAILED' %}
+    <p class="text-danger">Roster failed...</p>
   {% endif %}
 
   <p></p>
-  <p>{{status_message}}</p>
+  <p>{{ status_message }}</p>
 
-  {% if status == "SUCCEEDED" %}
-  <a type="button" class="btn btn-success" href="{% url 'timeslot_list' %}">Display Roster by Day</a>
-  <a type="button" class="btn btn-success" href="{% url 'roster_by_staff' %}">Display Roster by Staff</a>
+  {% if status == 'SUCCEEDED' %}
+    <a type="button" class="btn btn-success" href="{% url 'timeslot_list' %}">Display Roster by Day</a>
+    <a type="button" class="btn btn-success" href="{% url 'roster_by_staff' %}">Display Roster by Staff</a>
   {% endif %}
-  
-  {% endblock content %}
+{% endblock %}
 
-  {% block extra-js %}
-  {% if status == "PROCESSING" %}
-  <script src="{% static "js/refresh.js" %}"></script>
+{% block extrajs %}
+  {% if status == 'PROCESSING' %}
+    <script src="{% static 'js/refresh.js' %}"></script>
   {% endif %}
-  {% endblock extra-js %}
+{% endblock %}
