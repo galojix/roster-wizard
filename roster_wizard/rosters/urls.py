@@ -71,10 +71,9 @@ from .views import (
     DayDeleteView,
     DayCreateView,
     DaySetCreateView,
-    roster_generation_status,
     staff_request_status,
     roster_status_indicator,
-    mini_roster_generation_status,
+    roster_generation_status,
 )
 
 urlpatterns = [
@@ -332,11 +331,6 @@ urlpatterns = [
     ),
     path("download_csv/", download_csv, name="download_csv"),
     path(
-        "roster_status/<str:task_id>/",
-        roster_generation_status,
-        name="roster_generation_status",
-    ),
-    path(
         "roster_settings/",
         RosterSettingsView.as_view(),
         name="roster_settings",
@@ -352,8 +346,8 @@ urlpatterns = [
         name="roster_status_indicator",
     ),
     path(
-        "mini_roster_status/<str:task_id>/",
-        mini_roster_generation_status,
-        name="mini_roster_generation_status",
+        "roster_status/<str:task_id>/",
+        roster_generation_status,
+        name="roster_generation_status",
     ),
 ]

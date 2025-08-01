@@ -1166,41 +1166,6 @@ def process_edit_roster_form(dates, all_timeslots, formset, start_date, staff_id
 
 
 @login_required
-@permission_required("rosters.change_roster")
-def roster_generation_status(request, task_id):
-    """Display roster generation status."""
-    task = AsyncResult(task_id)
-    status = "PROCESSING"
-    if task.ready():
-        try:
-            status_message = task.get()
-            status = "SUCCEEDED"
-        except SolutionNotFeasible:
-            status = "FAILED"
-            status_message = (
-                "Could not generate roster, "
-                "ensure staff details and rules are correct..."
-            )
-        except Exception as error:  # pylint: disable=broad-exception-caught
-            status = "FAILED"
-            if "no attribute 'daygroupday_set'" in str(error):
-                status_message = (
-                    "Please check that all shifts and "
-                    "shift sequences have day groups assigned..."
-                )
-            else:
-                status_message = f"{error.__class__.__name__}:{error}"
-    else:
-        status = "PROCESSING"
-        status_message = "Processing..."
-    return render(
-        request,
-        "roster_generation_status.html",
-        {"status_message": status_message, "status": status},
-    )
-
-
-@login_required
 def download_csv(request):
     """Download roster as CSV file."""
     if "start_date" in request.session:
@@ -1293,7 +1258,7 @@ def roster_status_indicator(request):
 
 @login_required
 @permission_required("rosters.change_roster")
-def mini_roster_generation_status(request, task_id):
+def roster_generation_status(request, task_id):
     """Display roster generation status."""
     task = AsyncResult(task_id)
     status = "PROCESSING"
@@ -1321,6 +1286,6 @@ def mini_roster_generation_status(request, task_id):
         status_message = "Processing..."
     return render(
         request,
-        "mini_roster_generation_status.html",
+        "roster_generation_status.html",
         {"status_message": status_message, "status": status},
     )

@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block content %}
+<div class="container">
   <h3>Roster Generation:</h3>
   {% if status == 'PROCESSING' %}
     <div class="generating mt-3">
@@ -20,10 +17,4 @@
     <a type="button" class="btn btn-success" href="{% url 'timeslot_list' %}">Display Roster by Day</a>
     <a type="button" class="btn btn-success" href="{% url 'roster_by_staff' %}">Display Roster by Staff</a>
   {% endif %}
-{% endblock %}
-
-{% block extrajs %}
-  {% if status == 'PROCESSING' %}
-    <script src="{% static 'js/refresh.js' %}"></script>
-  {% endif %}
-{% endblock %}
+</div>

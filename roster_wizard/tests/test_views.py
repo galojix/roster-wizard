@@ -123,7 +123,7 @@ def test_generate_roster_view_post_feasible(init_db, client, mocker):
         reverse("generate_roster"), {"start_date": datetime.datetime.now()}
     )
     assert response.status_code == 302
-    assert "/rosters/roster_status/" in response.url
+    assert "/rosters/generate_roster/" in response.url
 
 
 def test_roster_generation_status_view_feasible(init_db, client, mocker):
