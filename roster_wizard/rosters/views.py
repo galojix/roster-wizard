@@ -998,6 +998,15 @@ class GenerateRosterView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
         """Process generate roster form."""
         start_date = form.cleaned_data["start_date"]
         self.request.session["start_date"] = start_date.date().strftime("%d-%b-%Y")
+        if "task_id" in self.request.session:
+            task = AsyncResult(self.request.session["task_id"])
+            if not task.ready():
+                messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    "Roster generation is already in progress...",
+                )
+                return render(self.request, "generate_roster.html", {"form": form})
         try:
             result = generate_roster.delay(start_date=start_date)
         except Exception as error:  # pylint: disable=broad-exception-caught
