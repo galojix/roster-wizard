@@ -102,7 +102,6 @@ class RosterSettingsView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
                 roster_name=roster_name, not_used=not_used
             )
         new_settings.save()
-        # messages.set_level(self.request, messages.DEBUG)
         messages.add_message(
             self.request, messages.SUCCESS, "Settings have been updated..."
         )
@@ -991,16 +990,13 @@ class GenerateRosterView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     template_name = "generate_roster.html"
     form_class = GenerateRosterForm
     permission_required = "rosters.change_roster"
+    success_url = reverse_lazy("generate_roster")
 
     def get_form_kwargs(self):
         """Pass request to form."""
         kwargs = super().get_form_kwargs()
         kwargs.update(request=self.request)
         return kwargs
-
-    def get_success_url(self):
-        """Get success URL."""
-        return reverse("roster_generation_status", args=(self.task_id,))
 
     def form_valid(self, form):
         """Process generate roster form."""
@@ -1017,6 +1013,11 @@ class GenerateRosterView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
             return HttpResponseRedirect(reverse("generate_roster"))
         self.task_id = result.task_id
         self.request.session["task_id"] = self.task_id
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            "Roster is generating, see menu bar for status...",
+        )
         return super().form_valid(form)
 
 
@@ -1268,4 +1269,58 @@ def staff_request_status(request):
             "successes": successes,
             "failures": failures,
         },
+    )
+
+
+@login_required
+@permission_required("rosters.change_roster")
+def roster_status_indicator(request):
+    """Indicate roster status."""
+    if not request.session["task_id"]:
+        return HttpResponse(
+            "<button class='btn btn-warning' id='roster-status'>Roster: Not Started</button>"
+        )
+    task = AsyncResult(request.session["task_id"])
+    if task.ready():
+        return render(
+            request, "roster_ready.html", {"task_id": request.session["task_id"]}
+        )
+    else:
+        return HttpResponse(
+            "<button class='btn btn-warning' id='roster-status'>Roster: Processing</button>"
+        )
+
+
+@login_required
+@permission_required("rosters.change_roster")
+def mini_roster_generation_status(request, task_id):
+    """Display roster generation status."""
+    task = AsyncResult(task_id)
+    status = "PROCESSING"
+    if task.ready():
+        try:
+            status_message = task.get()
+            status = "SUCCEEDED"
+        except SolutionNotFeasible:
+            status = "FAILED"
+            status_message = (
+                "Could not generate roster, "
+                "ensure staff details and rules are correct..."
+            )
+        except Exception as error:  # pylint: disable=broad-exception-caught
+            status = "FAILED"
+            if "no attribute 'daygroupday_set'" in str(error):
+                status_message = (
+                    "Please check that all shifts and "
+                    "shift sequences have day groups assigned..."
+                )
+            else:
+                status_message = f"{error.__class__.__name__}:{error}"
+    else:
+        status = "PROCESSING"
+        status_message = "Processing..."
+    return render(
+        request,
+        "mini_roster_generation_status.html",
+        {"status_message": status_message, "status": status},
     )

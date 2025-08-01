@@ -12,12 +12,16 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js" integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm" crossorigin="anonymous"></script>
 
     <title>
       {% block title %}
         Roster: {{ roster_name }}
       {% endblock %}
     </title>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous" defer></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous" defer></script>
   </head>
 
   <body>
@@ -178,7 +182,8 @@
                 <a type="button" class="btn btn-primary" href="{% url 'select_roster_period' %}">{{ roster_name }}, Period: Not Set</a>
               {% endif %}
               {% if request.session.task_id %}
-                <a type="button" class="btn btn-primary" href="{% url 'roster_generation_status' request.session.task_id %}">Check Roster</a>
+                <span hx-get="{% url 'roster_status_indicator' %}" hx-trigger="load, every 2s" hx-target="#roster-status"></span>
+                <span id="roster-status"></span>
               {% endif %}
             </div>
           {% endif %}
@@ -188,27 +193,25 @@
     <div class="container-fluid" style="margin-top:100px">
       {% if messages %}
         {% for message in messages %}
-          <div class="{% if message.tags %} container alert {{ message.tags }} {% endif %}">
+          {# prettier-ignore #}
+          <div class="{% if message.tags %} container alert {{ message.tags }}
+            {% endif %}">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <p>{{ message }}</p>
-            </div>
+          </div>
         {% endfor %}
       {% endif %}
-      {% block contentwide %}
-        <div class="container">
-          {% block content %}
+      <div id="data-display">
+        {% block contentwide %}
+          <div class="container">
+            {% block content %}
 
-          {% endblock %}
-        </div>
-      {% endblock %}
+            {% endblock %}
+          </div>
+        {% endblock %}
+      </div>
     </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     {% block extrajs %}
 
     {% endblock %}

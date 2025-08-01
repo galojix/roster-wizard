@@ -73,6 +73,8 @@ from .views import (
     DaySetCreateView,
     roster_generation_status,
     staff_request_status,
+    roster_status_indicator,
+    mini_roster_generation_status,
 )
 
 urlpatterns = [
@@ -343,5 +345,15 @@ urlpatterns = [
         "staff_request_status/",
         staff_request_status,
         name="staff_request_status",
+    ),
+    path(
+        "roster_status_indicator/",
+        roster_status_indicator,
+        name="roster_status_indicator",
+    ),
+    path(
+        "mini_roster_status/<str:task_id>/",
+        mini_roster_generation_status,
+        name="mini_roster_generation_status",
     ),
 ]
