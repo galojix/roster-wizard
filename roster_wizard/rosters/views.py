@@ -985,7 +985,6 @@ class GenerateRosterView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.task_id = None
 
     template_name = "generate_roster.html"
     form_class = GenerateRosterForm
@@ -1011,8 +1010,7 @@ class GenerateRosterView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
                 f"Error: {error}, Please try again...",
             )
             return HttpResponseRedirect(reverse("generate_roster"))
-        self.task_id = result.task_id
-        self.request.session["task_id"] = self.task_id
+        self.request.session["task_id"] = result.task_id
         messages.add_message(
             self.request,
             messages.SUCCESS,
