@@ -983,9 +983,6 @@ class SelectBulkDeletionPeriodView(
 class GenerateRosterView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     """Generate Roster View."""
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
     template_name = "generate_roster.html"
     form_class = GenerateRosterForm
     permission_required = "rosters.change_roster"
