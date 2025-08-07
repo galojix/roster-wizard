@@ -132,8 +132,9 @@ class RosterGenerator:
         log.info("Shift decision variable creation completed...")
 
     def _create_previous_shift_decision_vars(self):
-        # Create shift decision variables and fixed constraints
-        # for previous roster period
+        """Create shift decision variables and fixed constraints
+        for previous roster period.
+        """
         log.info("Creation of shift decision variables for previous period started...")
         previous_timeslots = TimeSlot.objects.filter(
             date__range=self.previous_date_range
@@ -141,7 +142,10 @@ class RosterGenerator:
         for timeslot in previous_timeslots:
             for worker in self.workers:
                 n = worker.id
-                r = worker.roles.all()[0].id
+                roles = worker.roles.all()
+                if not roles:
+                    continue
+                r = roles[0].id
                 d = timeslot.date
                 t = timeslot.id
                 self.shift_decision_vars[(n, r, d, t)] = self.model.NewBoolVar(
