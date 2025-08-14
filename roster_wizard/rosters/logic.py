@@ -3,6 +3,7 @@
 import datetime
 import logging
 import math
+import threading
 from collections import OrderedDict
 
 from ortools.sat.python import cp_model
@@ -22,11 +23,29 @@ class SolutionNotFeasible(Exception):
     pass  # pylint: disable=unnecessary-pass
 
 
+class MaxConcurrentGenerationsExceeded(Exception):
+    """Exception for maximum concurrent roster generations exceeded."""
+
+    pass  # pylint: disable=unnecessary-pass
+
+
 class RosterGenerator:
     """Roster generator."""
 
-    def __init__(self, start_date):
-        """Create starting conditions."""
+    _generation_lock = threading.Lock()
+    _active_generations = 0
+
+    def __init__(self, start_date, max_concurrent=1):
+        """Create starting conditions.
+
+        Args:
+            start_date: The start date for roster generation
+            max_concurrent: Maximum concurrent roster generations allowed (default: 1)
+        """
+        self.max_concurrent = max_concurrent
+        self._acquired_lock = False
+
+        # Initialize all data structures for roster generation."""
         self.workers = get_user_model().objects.filter(available=True)
         self.worker_lookup = {
             worker.id: worker_num for worker_num, worker in enumerate(self.workers)
@@ -73,6 +92,54 @@ class RosterGenerator:
         self.skill_mix_rules = None
         self.intermediate_skill_mix_vars = None
         self.solver = None
+
+    def __enter__(self):
+        """Context manager entry - acquire concurrency lock."""
+        if not RosterGenerator._generation_lock.acquire(blocking=False):
+            if RosterGenerator._active_generations >= self.max_concurrent:
+                raise MaxConcurrentGenerationsExceeded(
+                    f"Maximum concurrent roster generations ({self.max_concurrent}) exceeded"
+                )
+
+        RosterGenerator._active_generations += 1
+        self._acquired_lock = True
+        log.info(
+            "Roster generation started. Active generations: %s",
+            RosterGenerator._active_generations,
+        )
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Context manager exit - release lock and cleanup."""
+        if self._acquired_lock:
+            RosterGenerator._active_generations -= 1
+            RosterGenerator._generation_lock.release()
+            log.info(
+                "Roster generation completed. Active generations: %s",
+                RosterGenerator._active_generations,
+            )
+
+        self._cleanup()
+
+        if exc_type is not None:
+            log.error("Roster generation failed: %s", exc_val)
+            return False  # Re-raise the exception
+
+    def _cleanup(self):
+        """Clean up large data structures to free memory."""
+        # Clear large dictionaries and lists to help with garbage collection
+        if hasattr(self, "shift_decision_vars"):
+            self.shift_decision_vars = None
+        if hasattr(self, "staff_requests"):
+            self.staff_requests = None
+        if hasattr(self, "intermediate_skill_mix_vars"):
+            self.intermediate_skill_mix_vars = None
+        if hasattr(self, "model"):
+            self.model = None
+        if hasattr(self, "solver"):
+            self.solver = None
+
+        log.debug("Roster generator resources cleaned up")
 
     def _clear_existing_timeslots(self):
         # Delete existing timeslots in date range
