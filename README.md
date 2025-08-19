@@ -14,6 +14,6 @@ It uses Google's OR-Tools CP-SAT Solver.
 
 ## More Information
 
-Visit [Roster Wizard](https://www.galojix.com/case-studies/roster/)
+Visit [Roster Wizard](https://www.galojix.com/projects/roster/)
 
-[![Roster Wizard](https://www.galojix.com/media/images/roster.original.png)](https://www.galojix.com/case-studies/roster/)
+[![Roster Wizard](https://www.galojix.com/media/images/roster.original.png)](https://www.galojix.com/projects/roster/)
