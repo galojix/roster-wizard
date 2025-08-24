@@ -13,7 +13,7 @@ services:
         max-size: "10m"
 
   rabbitmq:
-    image: rabbitmq:latest
+    image: rabbitmq:4
     user: ${USERID}:${GROUPID}
     volumes:
       - rabbitmq:/var/lib/rabbitmq/
@@ -27,7 +27,7 @@ services:
         max-size: "10m"
 
   redis:
-    image: redis:latest
+    image: redis:8
     user: ${USERID}:${GROUPID}
     volumes:
       - redis:/data
