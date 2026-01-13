@@ -12,3 +12,6 @@ docker-compose.override.yml
 roster.sql
 .ruff_cache
 .venv
+.pytest_cache
+.ruff_cache
+.venv
