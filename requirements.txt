@@ -1,4 +1,4 @@
-absl-py==2.3.1
+absl-py==2.4.0
 amqp==5.3.1
 asgiref==3.11.0
 astroid==4.0.3
@@ -9,7 +9,7 @@ click==8.3.1
 click-didyoumean==0.3.1
 click-plugins==1.1.1.2
 click-repl==0.3.0
-coverage==7.13.1
+coverage==7.13.2
 crispy-bootstrap4==2025.6
 dill==0.4.1
 dj-database-url==3.1.0
@@ -18,7 +18,7 @@ dj-rest-auth==7.0.2
 django==5.2.10
 django-admin-rangefilter==0.13.5
 django-allauth==65.14.0
-django-cache-url==3.4.5
+django-cache-url==3.4.6
 django-cors-headers==4.9.0
 django-crispy-forms==2.5
 django-debug-toolbar==6.2.0
@@ -26,7 +26,7 @@ django-extensions==4.1
 djangorestframework==3.16.1
 drf-spectacular==0.29.0
 environs==14.5.0
-gunicorn==24.1.1
+gunicorn==25.0.1
 immutabledict==4.2.2
 inflection==0.5.1
 iniconfig==2.3.0
@@ -36,14 +36,14 @@ jsonschema-specifications==2025.9.1
 kombu==5.6.2
 marshmallow==4.2.1
 mccabe==0.7.0
-numpy==2.4.1
+numpy==2.4.2
 ortools==9.15.6755
 packaging==26.0
 pandas==3.0.0
 platformdirs==4.5.1
 pluggy==1.6.0
 prompt-toolkit==3.0.52
-protobuf==6.33.4
+protobuf==6.33.5
 psycopg2-binary==2.9.11
 pygments==2.19.2
 pylint==4.0.4
@@ -69,4 +69,4 @@ tzlocal==5.3.1
 uritemplate==4.2.0
 vine==5.1.0
 watchdog==6.0.0
-wcwidth==0.3.2
+wcwidth==0.5.3
