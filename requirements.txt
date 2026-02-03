@@ -1,6 +1,6 @@
 absl-py==2.4.0
 amqp==5.3.1
-asgiref==3.11.0
+asgiref==3.11.1
 astroid==4.0.3
 attrs==25.4.0
 billiard==4.2.4
@@ -9,13 +9,13 @@ click==8.3.1
 click-didyoumean==0.3.1
 click-plugins==1.1.1.2
 click-repl==0.3.0
-coverage==7.13.2
+coverage==7.13.3
 crispy-bootstrap4==2025.6
 dill==0.4.1
 dj-database-url==3.1.0
 dj-email-url==1.0.6
 dj-rest-auth==7.0.2
-django==5.2.10
+django==5.2.11
 django-admin-rangefilter==0.13.5
 django-allauth==65.14.0
 django-cache-url==3.4.6
