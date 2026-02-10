@@ -20,6 +20,34 @@ class CustomUserAdmin(UserAdmin):
         "shifts_per_roster",
         "is_staff",
     ]
+    fieldsets = (
+        (None, {"fields": ("email", "password")}),
+        ("Personal info", {"fields": ("first_name", "last_name")}),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "shifts_per_roster",
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
+        ("Important dates", {"fields": ("last_login", "date_joined")}),
+    )
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("email", "password"),
+            },
+        ),
+    )
+    search_fields = ("email", "first_name", "last_name")
     ordering = ("email",)
 
 
