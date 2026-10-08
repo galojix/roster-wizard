@@ -6,13 +6,11 @@ import math
 import threading
 from collections import OrderedDict
 
-from ortools.sat.python import cp_model
 from django.contrib.auth import get_user_model
+from ortools.sat.python import cp_model
 
 # from django.db import connection, reset_queries
-
-from .models import Leave, Role, Shift, SkillMixRule, TimeSlot, Day, StaffRequest
-
+from .models import Day, Leave, Role, Shift, SkillMixRule, StaffRequest, TimeSlot
 
 log = logging.getLogger(__name__)
 
@@ -20,13 +18,9 @@ log = logging.getLogger(__name__)
 class SolutionNotFeasible(Exception):
     """Exception for when there is no feasible solution."""
 
-    pass  # pylint: disable=unnecessary-pass
-
 
 class MaxConcurrentGenerationsExceeded(Exception):
     """Exception for maximum concurrent roster generations exceeded."""
-
-    pass  # pylint: disable=unnecessary-pass
 
 
 class RosterGenerator:
@@ -95,11 +89,13 @@ class RosterGenerator:
 
     def __enter__(self):
         """Context manager entry - acquire concurrency lock."""
-        if not RosterGenerator._generation_lock.acquire(blocking=False):
-            if RosterGenerator._active_generations >= self.max_concurrent:
-                raise MaxConcurrentGenerationsExceeded(
-                    f"Maximum concurrent roster generations ({self.max_concurrent}) exceeded"
-                )
+        if (
+            not RosterGenerator._generation_lock.acquire(blocking=False)
+            and RosterGenerator._active_generations >= self.max_concurrent
+        ):
+            raise MaxConcurrentGenerationsExceeded(
+                f"Maximum concurrent roster generations ({self.max_concurrent}) exceeded"
+            )
 
         RosterGenerator._active_generations += 1
         self._acquired_lock = True

@@ -4,18 +4,18 @@ from django.contrib import admin
 from rangefilter.filters import DateRangeFilter
 
 from .models import (
+    Day,
+    DayGroup,
+    DayGroupDay,
     Leave,
     Role,
     Shift,
-    SkillMixRule,
-    SkillMixRuleRole,
     ShiftSequence,
     ShiftSequenceShift,
-    TimeSlot,
-    DayGroup,
-    Day,
-    DayGroupDay,
+    SkillMixRule,
+    SkillMixRuleRole,
     StaffRequest,
+    TimeSlot,
 )
 
 admin.site.site_header = "Roster Wizard Database Administration"

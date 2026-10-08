@@ -1,18 +1,19 @@
 """Forms."""
 
 import datetime
+
 from django import forms
-from django.forms import ModelForm
 from django.core.exceptions import ValidationError
+from django.forms import ModelForm
 
 from .models import (
+    DayGroup,
+    DayGroupDay,
     Leave,
     RosterSettings,
-    TimeSlot,
     ShiftSequence,
-    DayGroupDay,
-    DayGroup,
     ShiftSequenceShift,
+    TimeSlot,
 )
 
 
@@ -100,9 +101,9 @@ class GenerateRosterForm(forms.Form):
         if "start_date" in request.session:
             start_date = datetime.datetime.strptime(
                 request.session["start_date"], "%d-%b-%Y"
-            )
+            ).astimezone(datetime.UTC)
         else:
-            start_date = datetime.datetime.now()
+            start_date = datetime.datetime.now(tz=datetime.UTC)
         self.fields["start_date"] = forms.DateTimeField(
             widget=DateInput(), initial=start_date
         )
@@ -180,7 +181,7 @@ class StaffRequestUpdateForm(forms.Form):
             self.fields[f"request_{i}"] = forms.ChoiceField(
                 choices=choices,
                 label="",
-                initial=requests[i],
+                initial=request,
                 required=False,
             )
             self.fields[f"priority_{i}"] = forms.IntegerField(

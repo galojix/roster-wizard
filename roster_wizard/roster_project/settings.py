@@ -12,9 +12,10 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 from pathlib import Path
-from environs import Env
+
 from django.conf import settings
 from django.contrib.messages import constants as messages
+from environs import Env
 
 # Use
 env = Env()

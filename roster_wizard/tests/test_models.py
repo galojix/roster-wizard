@@ -1,22 +1,21 @@
 """Model testing."""
 
 import pytest
-
-from users.models import CustomUser
 from rosters.models import (
+    Day,
+    DayGroup,
+    DayGroupDay,
     Leave,
     Role,
-    DayGroup,
-    Day,
-    DayGroupDay,
     Shift,
-    SkillMixRule,
-    SkillMixRuleRole,
     ShiftSequence,
     ShiftSequenceShift,
-    TimeSlot,
+    SkillMixRule,
+    SkillMixRuleRole,
     StaffRequest,
+    TimeSlot,
 )
+from users.models import CustomUser
 
 pytestmark = pytest.mark.django_db
 

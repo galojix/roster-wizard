@@ -1,25 +1,24 @@
 """Shared fixtures."""
 
 import datetime
+
 import pytest
-
 from django.contrib.auth import get_user_model
-
+from rosters.logic import RosterGenerator
 from rosters.models import (
-    Shift,
     Day,
     DayGroup,
     DayGroupDay,
-    SkillMixRule,
-    SkillMixRuleRole,
+    Leave,
     Role,
-    StaffRequest,
+    Shift,
     ShiftSequence,
     ShiftSequenceShift,
-    Leave,
+    SkillMixRule,
+    SkillMixRuleRole,
+    StaffRequest,
     TimeSlot,
 )
-from rosters.logic import RosterGenerator
 
 pytestmark = pytest.mark.django_db
 
@@ -140,77 +139,77 @@ def init_feasible_db(init_db):
     StaffRequest.objects.create(
         priority=1,
         like=True,
-        date=datetime.datetime.now(),
+        date=datetime.datetime.now(tz=datetime.UTC),
         shift=early_shift,
         staff_member=staff_member1,
     )
     StaffRequest.objects.create(
         priority=2,
         like=True,
-        date=datetime.datetime.now(),
+        date=datetime.datetime.now(tz=datetime.UTC),
         shift=late_shift,
         staff_member=staff_member1,
     )
     StaffRequest.objects.create(
         priority=100,
         like=True,
-        date=datetime.datetime.now() + datetime.timedelta(days=1),
+        date=datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=1),
         shift=late_shift,
         staff_member=staff_member1,
     )
     StaffRequest.objects.create(
         priority=1,
         like=False,
-        date=datetime.datetime.now() + datetime.timedelta(days=1),
+        date=datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=1),
         shift=late_shift,
         staff_member=staff_member1,
     )
     StaffRequest.objects.create(
         priority=10,
         like=False,
-        date=datetime.datetime.now() + datetime.timedelta(days=1),
+        date=datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=1),
         shift=early_shift,
         staff_member=staff_member1,
     )
     StaffRequest.objects.create(
         priority=10,
         like=False,
-        date=datetime.datetime.now() + datetime.timedelta(days=2),
+        date=datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=2),
         shift=early_shift,
         staff_member=staff_member1,
     )
     StaffRequest.objects.create(
         priority=10,
         like=False,
-        date=datetime.datetime.now() + datetime.timedelta(days=2),
+        date=datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=2),
         shift=late_shift,
         staff_member=staff_member1,
     )
     StaffRequest.objects.create(
         priority=10,
         like=False,
-        date=datetime.datetime.now() + datetime.timedelta(days=3),
+        date=datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=3),
         shift=early_shift,
         staff_member=staff_member1,
     )
     StaffRequest.objects.create(
         priority=10,
         like=False,
-        date=datetime.datetime.now() + datetime.timedelta(days=3),
+        date=datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=3),
         shift=late_shift,
         staff_member=staff_member1,
     )
     StaffRequest.objects.create(
         priority=10,
         like=False,
-        date=datetime.datetime.now() + datetime.timedelta(days=4),
+        date=datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=4),
         shift=early_shift,
         staff_member=staff_member1,
     )
     StaffRequest.objects.create(
         priority=10,
         like=False,
-        date=datetime.datetime.now() + datetime.timedelta(days=4),
+        date=datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=4),
         shift=late_shift,
         staff_member=staff_member1,
     )
@@ -227,18 +226,18 @@ def init_feasible_db(init_db):
     )
     ShiftSequenceShift.objects.create(shiftsequence=staff_rule1, position=3)
     Leave.objects.create(
-        date=datetime.datetime.now(),
+        date=datetime.datetime.now(tz=datetime.UTC),
         description="Leave",
         staff_member=staff_member2,
     )
-    for i in range(0, 13):
+    for i in range(13):
         Leave.objects.create(
-            date=datetime.datetime.now() + datetime.timedelta(days=i),
+            date=datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=i),
             description="Leave",
             staff_member=staff_member6,
         )
     timeslot = TimeSlot.objects.create(
-        date=datetime.datetime.now() - datetime.timedelta(days=1),
+        date=datetime.datetime.now(tz=datetime.UTC) - datetime.timedelta(days=1),
         shift=early_shift,
     )
     timeslot.staff.set([staff_member1, staff_member2])
@@ -319,6 +318,6 @@ def init_too_many_staff_db(init_db):
 @pytest.fixture()
 def init_roster_db(init_feasible_db):
     """Initialise a database with a populated roster."""
-    roster = RosterGenerator(start_date=datetime.datetime.now())
+    roster = RosterGenerator(start_date=datetime.datetime.now(tz=datetime.UTC))
     roster.create()
     assert roster.complete

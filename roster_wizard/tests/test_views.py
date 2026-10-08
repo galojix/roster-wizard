@@ -1,15 +1,14 @@
 """View Testing."""
 
 import datetime
+
 import pytest
-
-from django.urls import reverse
-from django.test import SimpleTestCase
 from django.contrib.auth import get_user_model
-
-from rosters.models import Day, Role, SkillMixRule, ShiftSequence, Shift, DayGroup
-from rosters.views import generate_roster, AsyncResult
+from django.test import SimpleTestCase
+from django.urls import reverse
 from rosters.logic import SolutionNotFeasible
+from rosters.models import Day, DayGroup, Role, Shift, ShiftSequence, SkillMixRule
+from rosters.views import AsyncResult, generate_roster
 
 pytestmark = pytest.mark.django_db
 
@@ -37,7 +36,9 @@ def test_roster_by_staff_view_start_date(init_roster_db, client):
     """Test roster by staff view."""
     client.login(email="temporary@fred.com", password="temporary")
     session = client.session
-    session["start_date"] = datetime.datetime.now().date().strftime("%d-%b-%Y")
+    session["start_date"] = (
+        datetime.datetime.now(tz=datetime.UTC).date().strftime("%d-%b-%Y")
+    )
     session.save()
     response = client.get(reverse("roster_by_staff"))
     assert response.status_code == 200
@@ -120,7 +121,8 @@ def test_generate_roster_view_post_feasible(init_db, client, mocker):
     delay_result.task_id = 12345
     mocker.patch.object(generate_roster, "delay", return_value=delay_result)
     response = client.post(
-        reverse("generate_roster"), {"start_date": datetime.datetime.now()}
+        reverse("generate_roster"),
+        {"start_date": datetime.datetime.now(tz=datetime.UTC)},
     )
     assert response.status_code == 302
     assert "/rosters/generate_roster/" in response.url
@@ -182,8 +184,8 @@ def test_leave_create_view_post(init_feasible_db, client):
     data = {
         "staff_member": staff_member.id,
         "description": "Leave",
-        "start_date": datetime.datetime.now(),
-        "end_date": datetime.datetime.now() + datetime.timedelta(days=2),
+        "start_date": datetime.datetime.now(tz=datetime.UTC),
+        "end_date": datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=2),
     }
     response = client.post(reverse("leave_create"), data)
     assert response.status_code == 302
@@ -203,7 +205,9 @@ def test_staff_request_update_view_start_date(init_feasible_db, client):
     """Test leave create view post."""
     client.login(email="temporary@fred.com", password="temporary")
     session = client.session
-    session["start_date"] = datetime.datetime.now().date().strftime("%d-%b-%Y")
+    session["start_date"] = (
+        datetime.datetime.now(tz=datetime.UTC).date().strftime("%d-%b-%Y")
+    )
     session.save()
     staff_member = get_user_model().objects.first()
     response = client.get(reverse("staffrequest_update", args=(staff_member.id,)))
@@ -240,7 +244,9 @@ def test_download_csv_start_date(init_feasible_db, client):
     """Test download CSV."""
     client.login(email="temporary@fred.com", password="temporary")
     session = client.session
-    session["start_date"] = datetime.datetime.now().date().strftime("%d-%b-%Y")
+    session["start_date"] = (
+        datetime.datetime.now(tz=datetime.UTC).date().strftime("%d-%b-%Y")
+    )
     session.save()
     response = client.get(reverse("download_csv"))
     assert response.status_code == 200
@@ -342,7 +348,9 @@ def test_staff_request_list_view_start_date(init_feasible_db, client):
     """Test staff request list view."""
     client.login(email="temporary@fred.com", password="temporary")
     session = client.session
-    session["start_date"] = datetime.datetime.now().date().strftime("%d-%b-%Y")
+    session["start_date"] = (
+        datetime.datetime.now(tz=datetime.UTC).date().strftime("%d-%b-%Y")
+    )
     session.save()
     response = client.get(reverse("staffrequest_list"))
     assert response.status_code == 200
@@ -408,7 +416,7 @@ def test_select_roster_period_view_post(init_roster_db, client):
     """Test roster by staff view."""
     client.login(email="temporary@fred.com", password="temporary")
     data = {
-        "start_date": datetime.datetime.now().date(),
+        "start_date": datetime.datetime.now(tz=datetime.UTC).date(),
     }
     response = client.post(reverse("select_roster_period"), data)
     assert response.status_code == 302

@@ -3,11 +3,11 @@
 from django.urls import path
 
 from .views import (
+    CustomUserCreateView,
+    CustomUserDeleteView,
+    CustomUserDetailView,
     CustomUserListView,
     CustomUserUpdateView,
-    CustomUserDetailView,
-    CustomUserDeleteView,
-    CustomUserCreateView,
 )
 
 urlpatterns = [

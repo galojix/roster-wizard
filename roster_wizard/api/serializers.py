@@ -1,8 +1,9 @@
 """Serializers."""
 
 from datetime import datetime
+
 from rest_framework import serializers
-from rosters.models import TimeSlot, Leave
+from rosters.models import Leave, TimeSlot
 
 
 class LeaveSerializer(serializers.ModelSerializer):
@@ -42,7 +43,7 @@ class DateTimeSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         """Create date."""
-        return datetime(**validated_data)
+        return datetime(**validated_data, tzinfo=datetime.UTC)
 
     def update(self, instance, validated_data):
         """Update date."""

@@ -1,16 +1,15 @@
 """Views."""
 
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-
-
 from rosters.models import Leave, TimeSlot
 from rosters.tasks import generate_roster
+
 from .serializers import (
+    DateTimeSerializer,
     LeaveSerializer,
     TimeSlotSerializer,
-    DateTimeSerializer,
 )
 
 
@@ -59,16 +58,12 @@ class GenerateRosterViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         """Not used."""
-        pass  # pylint: disable=unnecessary-pass
 
     def update(self, request, pk=None):
         """Not used."""
-        pass  # pylint: disable=unnecessary-pass
 
     def partial_update(self, request, pk=None):
         """Not used."""
-        pass  # pylint: disable=unnecessary-pass
 
     def destroy(self, request, pk=None):
         """Not used."""
-        pass  # pylint: disable=unnecessary-pass

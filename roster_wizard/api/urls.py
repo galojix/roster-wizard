@@ -1,7 +1,8 @@
 """URLs."""
 
 from rest_framework.routers import SimpleRouter
-from .views import LeaveViewSet, TimeSlotViewSet, GenerateRosterViewSet
+
+from .views import GenerateRosterViewSet, LeaveViewSet, TimeSlotViewSet
 
 router = SimpleRouter()
 router.register("leave", LeaveViewSet, basename="leave")

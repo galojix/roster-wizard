@@ -1,9 +1,10 @@
 """Celery tasks."""
 
 from datetime import datetime
-from dateutil import parser
 
 from celery import shared_task
+from dateutil import parser
+
 from .logic import RosterGenerator
 
 

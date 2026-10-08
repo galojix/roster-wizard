@@ -1,71 +1,68 @@
 """Views."""
 
-import datetime
 import csv
-
+import datetime
 from collections import namedtuple
 
-from django.views.generic import ListView, DetailView, TemplateView
-from django.views.generic.edit import (
-    UpdateView,
-    DeleteView,
-    CreateView,
-    FormView,
-)
-from django.urls import reverse_lazy, reverse
+# from django.db import connection, reset_queries
+from celery.result import AsyncResult
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin,
 )
+from django.forms import formset_factory
 from django.http import (
     HttpResponse,
     HttpResponseRedirect,
 )
 from django.shortcuts import get_object_or_404, render
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth import get_user_model
-from django.contrib import messages
-from django.forms import formset_factory
-
-# from django.db import connection, reset_queries
-
-from celery.result import AsyncResult
-
-from .models import (
-    Leave,
-    Role,
-    Shift,
-    SkillMixRule,
-    SkillMixRuleRole,
-    ShiftSequence,
-    ShiftSequenceShift,
-    TimeSlot,
-    StaffRequest,
-    DayGroup,
-    Day,
-    DayGroupDay,
-    RosterSettings,
+from django.urls import reverse, reverse_lazy
+from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic.edit import (
+    CreateView,
+    DeleteView,
+    FormView,
+    UpdateView,
 )
+
 from .forms import (
     DayGroupDayCreateForm,
+    DaySetCreateForm,
+    EditRosterForm,
+    GenerateRosterForm,
     LeaveCreateForm,
     LeaveUpdateForm,
-    TimeSlotUpdateForm,
-    TimeSlotCreateForm,
-    ShiftSequenceUpdateForm,
-    ShiftSequenceCreateForm,
-    DaySetCreateForm,
-    GenerateRosterForm,
-    EditRosterForm,
-    SelectRosterForm,
-    StaffRequestUpdateForm,
     RosterSettingsForm,
     SelectBulkDeletionPeriodForm,
+    SelectRosterForm,
+    ShiftSequenceCreateForm,
     ShiftSequenceShiftCreateForm,
+    ShiftSequenceUpdateForm,
+    StaffRequestUpdateForm,
+    TimeSlotCreateForm,
+    TimeSlotUpdateForm,
 )
 from .logic import (
     SolutionNotFeasible,
     get_roster_by_staff,
+)
+from .models import (
+    Day,
+    DayGroup,
+    DayGroupDay,
+    Leave,
+    Role,
+    RosterSettings,
+    Shift,
+    ShiftSequence,
+    ShiftSequenceShift,
+    SkillMixRule,
+    SkillMixRuleRole,
+    StaffRequest,
+    TimeSlot,
 )
 from .tasks import generate_roster
 
@@ -119,9 +116,9 @@ class LeaveListView(LoginRequiredMixin, ListView):
         if "start_date" in self.request.session:
             start_date = datetime.datetime.strptime(
                 self.request.session["start_date"], "%d-%b-%Y"
-            )
+            ).astimezone(datetime.UTC)
         else:
-            start_date = datetime.datetime.now()
+            start_date = datetime.datetime.now(tz=datetime.UTC)
         num_days = datetime.timedelta(days=Day.objects.count() - 1)
         end_date = start_date + num_days
         date_range = [start_date, end_date]
@@ -514,9 +511,9 @@ class TimeSlotListView(LoginRequiredMixin, ListView):
         if "start_date" in self.request.session:
             start_date = datetime.datetime.strptime(
                 self.request.session["start_date"], "%d-%b-%Y"
-            )
+            ).astimezone(datetime.UTC)
         else:
-            start_date = datetime.datetime.now()
+            start_date = datetime.datetime.now(tz=datetime.UTC)
         num_days = datetime.timedelta(days=Day.objects.count() - 1)
         end_date = start_date + num_days
         date_range = [start_date, end_date]
@@ -758,9 +755,9 @@ class StaffRequestListView(LoginRequiredMixin, ListView):
         if "start_date" in self.request.session:
             start_date = datetime.datetime.strptime(
                 self.request.session["start_date"], "%d-%b-%Y"
-            )
+            ).astimezone(datetime.UTC)
         else:
-            start_date = datetime.datetime.now()
+            start_date = datetime.datetime.now(tz=datetime.UTC)
         num_days = datetime.timedelta(days=Day.objects.count() - 1)
         end_date = start_date + num_days
         date_range = [start_date, end_date]
@@ -822,9 +819,9 @@ class StaffRequestUpdateView(LoginRequiredMixin, FormView):
         if "start_date" in self.request.session:
             start_date = datetime.datetime.strptime(
                 self.request.session["start_date"], "%d-%b-%Y"
-            )
+            ).astimezone(datetime.UTC)
         else:
-            start_date = datetime.datetime.now()
+            start_date = datetime.datetime.now(tz=datetime.UTC)
         num_days = datetime.timedelta(days=Day.objects.count() - 1)
         end_date = start_date + num_days
         date_range = [start_date, end_date]
@@ -937,9 +934,9 @@ class RosterByStaffView(LoginRequiredMixin, TemplateView):
         if "start_date" in self.request.session:
             start_date = datetime.datetime.strptime(
                 self.request.session["start_date"], "%d-%b-%Y"
-            )
+            ).astimezone(datetime.UTC)
         else:
-            start_date = datetime.datetime.now()
+            start_date = datetime.datetime.now(tz=datetime.UTC)
         dates, roster = get_roster_by_staff(start_date)
         context["dates"] = dates
         context["roster"] = roster
@@ -1032,9 +1029,9 @@ def edit_roster(request):
     if "start_date" in request.session:
         start_date = datetime.datetime.strptime(
             request.session["start_date"], "%d-%b-%Y"
-        )
+        ).astimezone(datetime.UTC)
     else:
-        start_date = datetime.datetime.now()
+        start_date = datetime.datetime.now(tz=datetime.UTC)
 
     num_days = Day.objects.count()
 
@@ -1175,9 +1172,9 @@ def download_csv(request):
     if "start_date" in request.session:
         start_date = datetime.datetime.strptime(
             request.session["start_date"], "%d-%b-%Y"
-        )
+        ).astimezone(datetime.UTC)
     else:
-        start_date = datetime.datetime.now()
+        start_date = datetime.datetime.now(tz=datetime.UTC)
 
     dates, roster = get_roster_by_staff(start_date)
 
@@ -1199,13 +1196,12 @@ def download_csv(request):
 @permission_required("rosters.change_roster")
 def staff_request_status(request):
     """Display staff request status."""
-    print("starting")
     if "start_date" in request.session:
         start_date = datetime.datetime.strptime(
             request.session["start_date"], "%d-%b-%Y"
-        )
+        ).astimezone(datetime.UTC)
     else:
-        start_date = datetime.datetime.now()
+        start_date = datetime.datetime.now(tz=datetime.UTC)
 
     num_days = datetime.timedelta(days=Day.objects.count() - 1)
     end_date = start_date + num_days

@@ -30,3 +30,6 @@ dependencies = [
     "python-dateutil>=2.9.0.post0",
     "watchdog[watchmedo]>=6.0.0",
 ]
+
+[dependency-groups]
+dev = []
