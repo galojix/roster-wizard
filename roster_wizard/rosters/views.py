@@ -1258,8 +1258,8 @@ def roster_status_indicator(request):
 
 @login_required
 @permission_required("rosters.change_roster")
-def roster_generation_status(request, task_id):
-    """Display roster generation status."""
+def roster_generation_result(request, task_id):
+    """Display roster generation result."""
     task = AsyncResult(task_id)
     status = "PROCESSING"
     if task.ready():
@@ -1272,7 +1272,7 @@ def roster_generation_status(request, task_id):
                 "Could not generate roster, "
                 "ensure staff details and rules are correct..."
             )
-        except Exception as error:  # pylint: disable=broad-exception-caught
+        except Exception as error:
             status = "FAILED"
             if "no attribute 'daygroupday_set'" in str(error):
                 status_message = (
@@ -1286,6 +1286,6 @@ def roster_generation_status(request, task_id):
         status_message = "Processing..."
     return render(
         request,
-        "roster_generation_status.html",
+        "roster_generation_result.html",
         {"status_message": status_message, "status": status},
     )

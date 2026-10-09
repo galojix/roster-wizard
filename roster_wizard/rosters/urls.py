@@ -71,7 +71,7 @@ from .views import (
     TimeSlotUpdateView,
     download_csv,
     edit_roster,
-    roster_generation_status,
+    roster_generation_result,
     roster_status_indicator,
     staff_request_status,
 )
@@ -346,8 +346,8 @@ urlpatterns = [
         name="roster_status_indicator",
     ),
     path(
-        "roster_status/<str:task_id>/",
-        roster_generation_status,
-        name="roster_generation_status",
+        "roster_generation_result/<str:task_id>/",
+        roster_generation_result,
+        name="roster_generation_result",
     ),
 ]
