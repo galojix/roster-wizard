@@ -1248,7 +1248,7 @@ def roster_status_indicator(request):
     task = AsyncResult(request.session["task_id"])
     if task.ready():
         return render(
-            request, "roster_ready.html", {"task_id": request.session["task_id"]}
+            request, "roster_ready_button.html", {"task_id": request.session["task_id"]}
         )
     else:
         return HttpResponse(
