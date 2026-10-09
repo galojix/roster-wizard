@@ -128,53 +128,53 @@ def test_generate_roster_view_post_feasible(init_db, client, mocker):
     assert "/rosters/generate_roster/" in response.url
 
 
-def test_roster_generation_status_view_feasible(init_db, client, mocker):
+def test_roster_generation_result_view_feasible(init_db, client, mocker):
     """Test roster generation status view."""
     client.login(email="temporary@fred.com", password="temporary")
     mocker.patch.object(AsyncResult, "ready", return_value=True)
     mocker.patch.object(AsyncResult, "get", return_value="Roster is complete...")
-    response = client.get(reverse("roster_generation_status", args=("12345",)))
+    response = client.get(reverse("roster_generation_result", args=("12345",)))
     assert response.status_code == 200
     assert "Roster is complete..." in str(response.getvalue())
-    assert "roster_generation_status.html" in [t.name for t in response.templates]
+    assert "roster_generation_result.html" in [t.name for t in response.templates]
 
 
-def test_roster_generation_status_view_infeasible(init_db, client, mocker):
+def test_roster_generation_result_view_infeasible(init_db, client, mocker):
     """Test roster generation status view."""
     client.login(email="temporary@fred.com", password="temporary")
     mocker.patch.object(AsyncResult, "ready", return_value=True)
     mocker.patch.object(AsyncResult, "get", side_effect=SolutionNotFeasible)
-    response = client.get(reverse("roster_generation_status", args=("12345",)))
+    response = client.get(reverse("roster_generation_result", args=("12345",)))
     assert response.status_code == 200
     assert (
         "Could not generate roster, ensure staff details and rules are correct..."
         in str(response.getvalue())
     )
-    assert "roster_generation_status.html" in [t.name for t in response.templates]
+    assert "roster_generation_result.html" in [t.name for t in response.templates]
 
 
-def test_roster_generation_status_view_too_many_staff(init_db, client, mocker):
+def test_roster_generation_result_view_too_many_staff(init_db, client, mocker):
     """Test roster generation status view."""
     client.login(email="temporary@fred.com", password="temporary")
     mocker.patch.object(AsyncResult, "ready", return_value=True)
     mocker.patch.object(AsyncResult, "get", side_effect=SolutionNotFeasible)
-    response = client.get(reverse("roster_generation_status", args=("12345",)))
+    response = client.get(reverse("roster_generation_result", args=("12345",)))
     assert response.status_code == 200
     assert (
         "Could not generate roster, ensure staff details and rules are correct..."
         in str(response.getvalue())
     )
-    assert "roster_generation_status.html" in [t.name for t in response.templates]
+    assert "roster_generation_result.html" in [t.name for t in response.templates]
 
 
-def test_roster_generation_status_view_processing(init_db, client, mocker):
+def test_roster_generation_result_view_processing(init_db, client, mocker):
     """Test roster generation status view."""
     client.login(email="temporary@fred.com", password="temporary")
     mocker.patch.object(AsyncResult, "ready", return_value=False)
-    response = client.get(reverse("roster_generation_status", args=("12345",)))
+    response = client.get(reverse("roster_generation_result", args=("12345",)))
     assert response.status_code == 200
     assert "Processing..." in str(response.getvalue())
-    assert "roster_generation_status.html" in [t.name for t in response.templates]
+    assert "roster_generation_result.html" in [t.name for t in response.templates]
 
 
 def test_leave_create_view_post(init_feasible_db, client):
